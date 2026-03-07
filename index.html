@@ -190,16 +190,10 @@
 <!-- Settings Modal -->
 <div class="modal-overlay" id="settingsOverlay" style="display:none">
   <div class="modal">
-    <div class="modal-title">Google Sheets Sync</div>
-    <div class="setup-note">Enter your Google Sheet ID below. Your API key is stored securely in Netlify — you don't need to enter it here.</div>
-    <div style="margin-bottom:16px">
-      <label class="field-label">Google Sheet ID</label>
-      <input class="field-input" id="settingsSheetId" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms"/>
-      <div style="font-size:11px;color:var(--ink-faint);margin-top:6px">From your Sheet URL: docs.google.com/spreadsheets/d/<strong>[this part]</strong>/edit</div>
-    </div>
+    <div class="modal-title">Sync Settings</div>
+    <div class="setup-note">Your data syncs automatically via Supabase. No configuration needed — just close this and keep going. 🌿</div>
     <div class="modal-btns">
-      <button class="modal-btn modal-btn-cancel" onclick="closeSettings()">Cancel</button>
-      <button class="modal-btn modal-btn-save" onclick="saveSettings()">Save & Connect</button>
+      <button class="modal-btn modal-btn-save" onclick="closeSettings()">Close</button>
     </div>
   </div>
 </div>
@@ -307,86 +301,82 @@ function fmtDateTime(d){if(!d||isNaN(d.getTime()))return'—';return d.toLocaleD
 // ── LIVE GATE ─────────────────────────────────────────────────────────────
 function updateLiveGate(){const now=new Date(),deg=getMoonEclipticLongitude(now),gn=getGateFromDegree(deg),gate=GATES[gn];if(!gate)return;const line=getMoonLine(deg,gn),transit=getTransitTimes(gn,now),cc=CENTER_COLORS[gate.center]||'#3A7A3A';document.getElementById('liveGateName').textContent=`Gate ${gn}.${line} — ${gate.name}`;document.getElementById('liveGateName').style.color=cc;document.getElementById('liveGateTheme').textContent=gate.theme;document.getElementById('liveGateMeta').innerHTML=`<div class="live-meta-item"><strong>${gate.center}</strong> Center</div><div class="live-meta-item">Moon at <strong>${deg.toFixed(2)}°</strong></div><div class="live-meta-item">Line <strong>${line}</strong></div>`;if(transit){document.getElementById('transitFill').style.width=transit.pct+'%';document.getElementById('transitTimes').innerHTML=`<span>Entered ${fmtDateTime(transit.entryTime)}</span><span>Exits ~${fmtDateTime(transit.exitTime)}</span>`}}
 
-// ── SHEETS PROXY ──────────────────────────────────────────────────────────
-const TAB_ENTRIES='Entries',TAB_DECISIONS='Decisions',TAB_DEC_DATA='DecisionData';
-function getSheetId(){return localStorage.getItem('lumina_sheet_id')||''}
-function isConnected(){return !!getSheetId()}
+// ── SUPABASE SYNC ─────────────────────────────────────────────────────────
+function isConnected(){return true} // always connected via Netlify function
 let syncDebounceTimers={};
 
 function setSyncStatus(state,msg){const dot=document.getElementById('syncDot'),lbl=document.getElementById('syncLabel');if(!dot)return;dot.className='sync-dot '+state;lbl.textContent=msg}
 
-async function sheetsReq(method,path,data){
-  const sheetId=getSheetId();if(!sheetId)return null;
+async function db(action,table,data,match){
   try{
-    const r=await fetch('/.netlify/functions/sheets',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({method,path,data,sheetId})});
-    if(!r.ok){console.error('Sheets proxy',await r.text());return null}
+    const r=await fetch('/.netlify/functions/sheets',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,table,data,match})});
+    if(!r.ok){console.error('DB error',await r.text());return null}
     return r.json();
-  }catch(e){console.error('Sheets proxy',e);return null}
+  }catch(e){console.error('DB error',e);return null}
 }
 
-async function readSheet(tab){const r=await sheetsReq('GET',`/values/${encodeURIComponent(tab)}`);return r?(r.values||[]).slice(1):null}
-async function writeRow(tab,row){return sheetsReq('POST',`/values/${encodeURIComponent(tab)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,{values:[row]})}
-async function updateRow(tab,idx,row){return sheetsReq('PUT',`/values/${encodeURIComponent(tab+'!A'+(idx+2))}?valueInputOption=RAW`,{values:[row]})}
-
-function entryToRow(cs,di,e){return[cs,di,e.card||'',e.entryTime||'',e.feeling||'',e.environment||'',e.selfObs||'',e.envObs||'',e.energy||'',(e.moods||[]).join('|'),(e.body||[]).join('|'),e.note||'']}
-function rowToEntry(row){return{card:row[2]||'',entryTime:row[3]||'',feeling:row[4]||'',environment:row[5]||'',selfObs:row[6]||'',envObs:row[7]||'',energy:row[8]||'',moods:row[9]?row[9].split('|').filter(Boolean):[],body:row[10]?row[10].split('|').filter(Boolean):[],note:row[11]||''}}
-
-async function pullFromSheets(){
-  if(!isConnected())return;
+async function pullFromDB(){
   setSyncStatus('syncing','Syncing…');
   try{
-    const[entryRows,decRows,decDataRows]=await Promise.all([readSheet(TAB_ENTRIES),readSheet(TAB_DECISIONS),readSheet(TAB_DEC_DATA)]);
-    if(entryRows===null){setSyncStatus('error','Sync error');return}
+    const[entries,decisions,decData]=await Promise.all([
+      db('select','entries'),
+      db('select','decisions'),
+      db('select','decision_data')
+    ]);
+    if(entries===null){setSyncStatus('error','Sync error');return}
+
+    // Rebuild entry cache
     const cycleMap={};
-    (entryRows||[]).forEach(row=>{if(row.length<2)return;const key='lumina_cycle_'+row[0];if(!cycleMap[key])cycleMap[key]={};cycleMap[key][parseInt(row[1])]=rowToEntry(row)});
+    (entries||[]).forEach(row=>{
+      const key='lumina_cycle_'+row.cycle_start;
+      if(!cycleMap[key])cycleMap[key]={};
+      cycleMap[key][row.day_index]={
+        card:row.card||'',entryTime:row.entry_time||'',feeling:row.feeling||'',
+        environment:row.environment||'',selfObs:row.self_obs||'',envObs:row.env_obs||'',
+        energy:row.energy||'',moods:row.moods?row.moods.split('|').filter(Boolean):[],
+        body:row.body?row.body.split('|').filter(Boolean):[],note:row.note||''
+      };
+    });
     Object.entries(cycleMap).forEach(([k,d])=>{try{localStorage.setItem(k,JSON.stringify(d))}catch(e){}});
-    const decisions=(decRows||[]).filter(r=>r[0]&&r[1]!=='__DELETED__').map(r=>({id:r[0],text:r[1]||'',created:r[2]||''}));
-    try{localStorage.setItem('lumina_decisions',JSON.stringify(decisions))}catch(e){}
+
+    // Rebuild decisions
+    const decs=(decisions||[]).map(d=>({id:d.id,text:d.text,created:d.created}));
+    try{localStorage.setItem('lumina_decisions',JSON.stringify(decs))}catch(e){}
+
+    // Rebuild decision data
     const ddMap={};
-    (decDataRows||[]).forEach(row=>{if(row.length<4)return;const key='lumina_cycle_'+row[1]+'_dec_'+row[0];if(!ddMap[key])ddMap[key]={};ddMap[key][parseInt(row[2])]=row[3]});
+    (decData||[]).forEach(row=>{
+      const key='lumina_cycle_'+row.cycle_start+'_dec_'+row.decision_id;
+      if(!ddMap[key])ddMap[key]={};
+      ddMap[key][row.day_index]=row.feeling;
+    });
     Object.entries(ddMap).forEach(([k,d])=>{try{localStorage.setItem(k,JSON.stringify(d))}catch(e){}});
+
     setSyncStatus('synced','Synced');updateProgress();render();
-  }catch(e){console.error('Pull',e);setSyncStatus('error','Sync error')}
+  }catch(e){console.error('Pull error',e);setSyncStatus('error','Sync error')}
 }
 
 async function pushEntry(cycleStart,dayIndex,entry){
-  if(!isConnected())return;
   setSyncStatus('syncing','Saving…');
-  const rows=await readSheet(TAB_ENTRIES);if(rows===null){setSyncStatus('error','Sync error');return}
-  const idx=rows.findIndex(r=>r[0]===cycleStart&&parseInt(r[1])===dayIndex);
-  const rowData=entryToRow(cycleStart,dayIndex,entry);
-  if(idx>=0)await updateRow(TAB_ENTRIES,idx,rowData);else await writeRow(TAB_ENTRIES,rowData);
-  setSyncStatus('synced','Synced');
+  const row={cycle_start:cycleStart,day_index:dayIndex,card:entry.card||'',entry_time:entry.entryTime||'',feeling:entry.feeling||'',environment:entry.environment||'',self_obs:entry.selfObs||'',env_obs:entry.envObs||'',energy:entry.energy||'',moods:(entry.moods||[]).join('|'),body:(entry.body||[]).join('|'),note:entry.note||''};
+  const r=await db('upsert','entries',row);
+  if(r)setSyncStatus('synced','Synced');else setSyncStatus('error','Sync error');
 }
 async function pushDecision(dec){
-  if(!isConnected())return;
-  const rows=await readSheet(TAB_DECISIONS);if(!rows)return;
-  const idx=rows.findIndex(r=>r[0]===dec.id);
-  if(idx>=0)await updateRow(TAB_DECISIONS,idx,[dec.id,dec.text,dec.created]);else await writeRow(TAB_DECISIONS,[dec.id,dec.text,dec.created]);
+  await db('upsert','decisions',{id:dec.id,text:dec.text,created:dec.created});
 }
 async function pushDecisionEntry(decId,cycleStart,dayIndex,feeling){
-  if(!isConnected())return;
-  const rows=await readSheet(TAB_DEC_DATA);if(!rows)return;
-  const idx=rows.findIndex(r=>r[0]===decId&&r[1]===cycleStart&&parseInt(r[2])===dayIndex);
-  if(idx>=0)await updateRow(TAB_DEC_DATA,idx,[decId,cycleStart,dayIndex,feeling]);else await writeRow(TAB_DEC_DATA,[decId,cycleStart,dayIndex,feeling]);
+  await db('upsert','decision_data',{decision_id:decId,cycle_start:cycleStart,day_index:dayIndex,feeling});
 }
-async function deleteDecisionFromSheet(decId){
-  if(!isConnected())return;
-  const rows=await readSheet(TAB_DECISIONS);if(!rows)return;
-  const idx=rows.findIndex(r=>r[0]===decId);
-  if(idx>=0)await updateRow(TAB_DECISIONS,idx,[decId,'__DELETED__','']);
+async function deleteDecisionFromDB(decId){
+  await db('delete','decisions',null,{id:decId});
+  await db('delete','decision_data',null,{decision_id:decId});
 }
 
-// Settings
-function openSettings(){document.getElementById('settingsSheetId').value=getSheetId();document.getElementById('settingsOverlay').style.display='flex'}
+// Settings — just shows connected state now
+function openSettings(){document.getElementById('settingsOverlay').style.display='flex'}
 function closeSettings(){document.getElementById('settingsOverlay').style.display='none'}
-async function saveSettings(){
-  const id=document.getElementById('settingsSheetId').value.trim();
-  if(!id){alert('Please enter your Sheet ID.');return}
-  localStorage.setItem('lumina_sheet_id',id);
-  closeSettings();setSyncStatus('syncing','Connecting…');
-  await pullFromSheets();
-}
+function saveSettings(){closeSettings();pullFromDB()}
 
 // ── LOCAL STORAGE ─────────────────────────────────────────────────────────
 function getCycleStart(){return localStorage.getItem('lumina_cycle_start')||''}
@@ -550,7 +540,7 @@ function renderDecision(el){
 
 function toggleDecision(id){const c=localStorage.getItem('lumina_open_dec');localStorage.setItem('lumina_open_dec',c===id?'':id);render()}
 function saveDecisionEntry(decId,day,value){updateDecisionEntry(decId,day,value);render()}
-function deleteDecision(e,id){e.stopPropagation();if(!confirm('Delete this decision?'))return;saveDecisions(loadDecisions().filter(d=>d.id!==id));localStorage.removeItem(getDecisionKey(id));if(localStorage.getItem('lumina_open_dec')===id)localStorage.removeItem('lumina_open_dec');deleteDecisionFromSheet(id);render()}
+function deleteDecision(e,id){e.stopPropagation();if(!confirm('Delete this decision?'))return;saveDecisions(loadDecisions().filter(d=>d.id!==id));localStorage.removeItem(getDecisionKey(id));if(localStorage.getItem('lumina_open_dec')===id)localStorage.removeItem('lumina_open_dec');deleteDecisionFromDB(id);render()}
 function openModal(){document.getElementById('modalOverlay').style.display='flex';document.getElementById('modalInput').value='';setTimeout(()=>document.getElementById('modalInput').focus(),100)}
 function closeModal(e){if(e&&e.target!==document.getElementById('modalOverlay'))return;document.getElementById('modalOverlay').style.display='none'}
 function addDecision(){
@@ -574,7 +564,7 @@ function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
   if(saved){input.value=saved}else{const d=new Date();d.setDate(d.getDate()-14);const iso=d.toISOString().split('T')[0];localStorage.setItem('lumina_cycle_start',iso);input.value=iso}
   input.addEventListener('change',e=>{localStorage.setItem('lumina_cycle_start',e.target.value);updateProgress();render()});
   updateLiveGate();setInterval(updateLiveGate,60000);
-  if(isConnected()){pullFromSheets()}else{setSyncStatus('offline','Not connected — click Sync Settings to connect')}
+  pullFromDB();
   updateProgress();render();
 })();
 </script>
