@@ -490,40 +490,38 @@ function openDay(i){selectedDay=i;render()}
 
 function renderDetail(el){
   const days=buildDays(),day=days[selectedDay],entry=getEntry(selectedDay);
-  const cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';
   const wg=day.wakingGates||[];
+  const displayGates=wg.length>0?wg:[{gateNum:day.gateNum,gate:day.gate,line:day.line,deg:day.deg,startTime:null}];
 
-  // Build waking gates summary for hero
-  let wakingHtml='';
-  if(wg.length>1){
-    wakingHtml=`<div class="gate-transit-info" style="margin-top:10px"><strong>Gates during your day:</strong><br>${wg.map((g,gi)=>{
-      const timeStr=g.startTime?`from ${fmtTime(g.startTime)}`:(gi===0?'5am onward':'');
-      const gcc=CENTER_COLORS[g.gate.center]||'#3A7A3A';
-      return`<span style="color:${gcc};font-weight:700">Gate ${g.gateNum}.${g.line} ${g.gate.name}</span> <span style="color:var(--ink-faint)">${timeStr}</span>`;
-    }).join(' &nbsp;·&nbsp; ')}</div>`;
-  } else if(day.transit){
-    wakingHtml=`<div class="gate-transit-info" style="margin-top:10px"><strong>Transit:</strong> entered ~${fmtDateTime(day.transit.entryTime)} &nbsp;·&nbsp; exits ~${fmtDateTime(day.transit.exitTime)}<br>Moon at <strong>${day.deg.toFixed(2)}°</strong> &nbsp;·&nbsp; Line <strong>${day.line}</strong></div>`;
-  }
+  const gateBlocksHtml=displayGates.map((g,gi)=>{
+    const cc=CENTER_COLORS[g.gate.center]||'#3A7A3A';
+    const reading=GATE_READINGS[g.gateNum]||'Reading not available for this gate.';
+    const transit=getTransitTimes(g.gateNum,day.date);
+    const timeLabel=g.startTime?`from ${fmtTime(g.startTime)}`:(gi===0&&displayGates.length>1?'5am onward':'');
+    const transitHtml=transit?`<div class="gate-transit-info" style="margin-top:10px"><strong>Transit:</strong> entered ~${fmtDateTime(transit.entryTime)} &nbsp;·&nbsp; exits ~${fmtDateTime(transit.exitTime)}</div>`:'';
+    return`
+      <div class="gate-hero" style="${gi>0?'margin-top:12px':''}">
+        <span class="gate-moon-big">${gi===0?getMoonPhaseEmoji(selectedDay):'🌙'}</span>
+        ${gi===0?`<div class="gate-eyebrow">Day ${day.dayNum} &nbsp;·&nbsp; ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>`:''}
+        ${timeLabel?`<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:6px">${timeLabel}</div>`:''}
+        <div class="gate-title">Gate ${g.gateNum}.${g.line} — ${g.gate.name}</div>
+        <div class="gate-center" style="color:${cc}">${g.gate.center} Center</div>
+        <div class="gate-theme">${g.gate.theme}</div>
+        ${transitHtml}
+      </div>
+      <div class="reading-box">
+        <div class="reading-box-label">✦ Gate ${g.gateNum} Reading</div>
+        <div class="reading-text">${escHtml(reading)}</div>
+      </div>`;
+  }).join('');
 
-  const reading=GATE_READINGS[day.gateNum]||'Reading not available for this gate.';
   const energyChips=Object.entries(ENERGY_COLORS).map(([label,color])=>`<button class="chip-btn ${entry.energy===label?'selected':''}" style="${entry.energy===label?`background:${color};`:''}border-color:${color}" onclick="setChip('energy','${label}')">${label}</button>`).join('');
   const moodChips=MOOD_STATES.map(m=>`<button class="chip-btn ${(entry.moods||[]).includes(m)?'selected':''}" style="${(entry.moods||[]).includes(m)?'background:var(--green);border-color:var(--green);':''}" onclick="toggleMood('${m}')">${m}</button>`).join('');
   const bodyChips=BODY_STATES.map(b=>`<button class="chip-btn ${(entry.body||[]).includes(b)?'selected':''}" style="${(entry.body||[]).includes(b)?'background:var(--gold-warm);border-color:var(--gold-warm);':''}" onclick="toggleBody('${b}')">${b}</button>`).join('');
 
   el.innerHTML=`
     <button class="back-btn" onclick="backToGrid()">← Back to Monthly View</button>
-    <div class="gate-hero">
-      <span class="gate-moon-big">${getMoonPhaseEmoji(selectedDay)}</span>
-      <div class="gate-eyebrow">Day ${day.dayNum} &nbsp;·&nbsp; ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
-      <div class="gate-title">Gate ${day.gateNum}.${day.line} — ${day.gate.name}</div>
-      <div class="gate-center" style="color:${cc}">${day.gate.center} Center</div>
-      <div class="gate-theme">${day.gate.theme}</div>
-      ${wakingHtml}
-    </div>
-    <div class="reading-box">
-      <div class="reading-box-label">✦ Your Daily Gate Reading</div>
-      <div class="reading-text">${escHtml(reading)}</div>
-    </div>
+    ${gateBlocksHtml}
     <div class="fields">
       <div class="field-section">
         <div class="field-section-title">Time of Entry</div>
