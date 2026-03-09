@@ -334,7 +334,8 @@ async function pullFromDB(){
         card:row.card||'',entryTime:row.entry_time||'',feeling:row.feeling||'',
         environment:row.environment||'',selfObs:row.self_obs||'',envObs:row.env_obs||'',
         energy:row.energy||'',moods:row.moods?row.moods.split('|').filter(Boolean):[],
-        body:row.body?row.body.split('|').filter(Boolean):[],note:row.note||''
+        body:row.body?row.body.split('|').filter(Boolean):[],note:row.note||'',
+        reflectorLens:row.reflector_lens||'',cardThemes:row.card_themes||''
       };
     });
     Object.entries(cycleMap).forEach(([k,d])=>{try{localStorage.setItem(k,JSON.stringify(d))}catch(e){}});
@@ -358,7 +359,7 @@ async function pullFromDB(){
 
 async function pushEntry(cycleStart,dayIndex,entry){
   setSyncStatus('syncing','Saving…');
-  const row={cycle_start:cycleStart,day_index:dayIndex,card:entry.card||'',entry_time:entry.entryTime||'',feeling:entry.feeling||'',environment:entry.environment||'',self_obs:entry.selfObs||'',env_obs:entry.envObs||'',energy:entry.energy||'',moods:(entry.moods||[]).join('|'),body:(entry.body||[]).join('|'),note:entry.note||''};
+  const row={cycle_start:cycleStart,day_index:dayIndex,card:entry.card||'',entry_time:entry.entryTime||'',feeling:entry.feeling||'',environment:entry.environment||'',self_obs:entry.selfObs||'',env_obs:entry.envObs||'',energy:entry.energy||'',moods:(entry.moods||[]).join('|'),body:(entry.body||[]).join('|'),note:entry.note||'',reflector_lens:entry.reflectorLens||'',card_themes:entry.cardThemes||''};
   const r=await db('upsert','entries',row);
   if(r)setSyncStatus('synced','Synced');else setSyncStatus('error','Sync error');
 }
@@ -402,6 +403,35 @@ function updateDecisionEntry(decId,day,value){
 
 // ── BUILD DAYS ────────────────────────────────────────────────────────────
 function getMoonPhaseEmoji(i){return MOON_PHASES[Math.floor((i/29)*8)%8]}
+
+function getWakingGates(date){
+  // Sample moon position every 30 min from 5am to 10pm, collect gate transitions
+  const gates=[];
+  let lastGate=null;
+  for(let min=5*60;min<=22*60;min+=30){
+    const t=new Date(date);t.setHours(Math.floor(min/60),min%60,0,0);
+    const deg=getMoonEclipticLongitude(t),gn=getGateFromDegree(deg),line=getMoonLine(deg,gn);
+    if(gn!==lastGate){
+      // Find precise transition time by narrowing down
+      let transitionTime=null;
+      if(lastGate!==null&&min>5*60){
+        // Binary search for exact transition in previous 30 min window
+        let lo=new Date(date);lo.setHours(Math.floor((min-30)/60),(min-30)%60,0,0);
+        let hi=new Date(t);
+        for(let iter=0;iter<8;iter++){
+          const mid=new Date((lo.getTime()+hi.getTime())/2);
+          const mg=getGateFromDegree(getMoonEclipticLongitude(mid));
+          if(mg===lastGate)lo=mid;else hi=mid;
+        }
+        transitionTime=new Date((lo.getTime()+hi.getTime())/2);
+      }
+      gates.push({gateNum:gn,gate:GATES[gn],line,startTime:transitionTime,deg});
+      lastGate=gn;
+    }
+  }
+  return gates;
+}
+
 function buildDays(){
   const sv=localStorage.getItem('lumina_cycle_start');
   const startDate=sv?new Date(sv+'T12:00:00'):(function(){const d=new Date();d.setDate(d.getDate()-14);return d})();
@@ -410,7 +440,8 @@ function buildDays(){
     const date=new Date(startDate);date.setDate(startDate.getDate()+i);
     const noon=new Date(date);noon.setHours(12,0,0,0);
     const deg=getMoonEclipticLongitude(noon),gn=getGateFromDegree(deg),gate=GATES[gn],line=getMoonLine(deg,gn),transit=getTransitTimes(gn,noon);
-    return{date,gate,gateNum:gn,line,deg,transit,isToday:date.toDateString()===today.toDateString(),isPast:date<=today,dayNum:i+1,index:i};
+    const wakingGates=getWakingGates(date);
+    return{date,gate,gateNum:gn,line,deg,transit,wakingGates,isToday:date.toDateString()===today.toDateString(),isPast:date<=today,dayNum:i+1,index:i};
   });
 }
 function updateProgress(){const data=loadData(),filled=Object.keys(data).filter(k=>{const e=data[k];return e&&(e.card||e.note||e.feeling||e.energy||e.moods)}).length;document.getElementById('progressFill').style.width=(filled/29*100)+'%';document.getElementById('progressLabel').textContent=filled+' of 29 days recorded'}
@@ -425,14 +456,27 @@ function renderGrid(el){
   let html='<div class="grid">';
   days.forEach((day,i)=>{
     const entry=data[i]||{},hasEntry=entry.card||entry.note||entry.feeling||entry.energy||entry.moods;
-    const cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';
     const cls=['day-card',day.isToday?'today':'',!day.isPast?'future':'',hasEntry?'has-entry':''].filter(Boolean).join(' ');
     const ec=ENERGY_COLORS[entry.energy]||'';
+    const wg=day.wakingGates||[];
+    let gatesHtml='';
+    if(wg.length===0){
+      const cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';
+      gatesHtml=`<div class="card-gate">Gate ${day.gateNum}.${day.line}</div><div class="card-name" style="color:${cc}">${day.gate.name}</div>`;
+    } else if(wg.length===1){
+      const cc=CENTER_COLORS[wg[0].gate.center]||'#3A7A3A';
+      gatesHtml=`<div class="card-gate">Gate ${wg[0].gateNum}.${wg[0].line}</div><div class="card-name" style="color:${cc}">${wg[0].gate.name}</div>`;
+    } else {
+      gatesHtml=wg.map((g,gi)=>{
+        const cc=CENTER_COLORS[g.gate.center]||'#3A7A3A';
+        const timeStr=g.startTime?` · from ${fmtTime(g.startTime)}`:(gi===0?' · 5am+':'');
+        return`<div class="card-gate" style="margin-bottom:2px">Gate ${g.gateNum}.${g.line}<span style="color:var(--ink-faint);font-size:10px">${timeStr}</span></div><div class="card-name" style="color:${cc};margin-bottom:4px">${g.gate.name}</div>`;
+      }).join('');
+    }
     html+=`<button class="${cls}" ${day.isPast?`onclick="openDay(${i})"`:''}>
       <div class="card-top"><span class="card-moon">${getMoonPhaseEmoji(i)}</span><span class="card-day-num">Day ${day.dayNum}</span></div>
       <div class="card-date">${day.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>
-      <div class="card-gate">Gate ${day.gateNum}.${day.line}</div>
-      <div class="card-name" style="color:${cc}">${day.gate.name}</div>
+      ${gatesHtml}
       ${day.isToday?'<div class="card-today-tag">✦ Today</div>':''}
       ${ec?`<div class="card-energy-dot" style="background:${ec}"></div>`:''}
     </button>`;
@@ -447,12 +491,25 @@ function openDay(i){selectedDay=i;render()}
 function renderDetail(el){
   const days=buildDays(),day=days[selectedDay],entry=getEntry(selectedDay);
   const cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';
-  const feelings=['Expansive ✦','Neutral ○','Contracted ✗','Unclear ~','Excited ◈'];
-  const transitHtml=day.transit?`<div class="gate-transit-info"><strong>Transit window:</strong> entered ~${fmtDateTime(day.transit.entryTime)} &nbsp;·&nbsp; exits ~${fmtDateTime(day.transit.exitTime)}<br>Moon at <strong>${day.deg.toFixed(2)}°</strong> &nbsp;·&nbsp; Line <strong>${day.line}</strong> of Gate ${day.gateNum}</div>`:'';
+  const wg=day.wakingGates||[];
+
+  // Build waking gates summary for hero
+  let wakingHtml='';
+  if(wg.length>1){
+    wakingHtml=`<div class="gate-transit-info" style="margin-top:10px"><strong>Gates during your day:</strong><br>${wg.map((g,gi)=>{
+      const timeStr=g.startTime?`from ${fmtTime(g.startTime)}`:(gi===0?'5am onward':'');
+      const gcc=CENTER_COLORS[g.gate.center]||'#3A7A3A';
+      return`<span style="color:${gcc};font-weight:700">Gate ${g.gateNum}.${g.line} ${g.gate.name}</span> <span style="color:var(--ink-faint)">${timeStr}</span>`;
+    }).join(' &nbsp;·&nbsp; ')}</div>`;
+  } else if(day.transit){
+    wakingHtml=`<div class="gate-transit-info" style="margin-top:10px"><strong>Transit:</strong> entered ~${fmtDateTime(day.transit.entryTime)} &nbsp;·&nbsp; exits ~${fmtDateTime(day.transit.exitTime)}<br>Moon at <strong>${day.deg.toFixed(2)}°</strong> &nbsp;·&nbsp; Line <strong>${day.line}</strong></div>`;
+  }
+
   const reading=GATE_READINGS[day.gateNum]||'Reading not available for this gate.';
   const energyChips=Object.entries(ENERGY_COLORS).map(([label,color])=>`<button class="chip-btn ${entry.energy===label?'selected':''}" style="${entry.energy===label?`background:${color};`:''}border-color:${color}" onclick="setChip('energy','${label}')">${label}</button>`).join('');
   const moodChips=MOOD_STATES.map(m=>`<button class="chip-btn ${(entry.moods||[]).includes(m)?'selected':''}" style="${(entry.moods||[]).includes(m)?'background:var(--green);border-color:var(--green);':''}" onclick="toggleMood('${m}')">${m}</button>`).join('');
   const bodyChips=BODY_STATES.map(b=>`<button class="chip-btn ${(entry.body||[]).includes(b)?'selected':''}" style="${(entry.body||[]).includes(b)?'background:var(--gold-warm);border-color:var(--gold-warm);':''}" onclick="toggleBody('${b}')">${b}</button>`).join('');
+
   el.innerHTML=`
     <button class="back-btn" onclick="backToGrid()">← Back to Monthly View</button>
     <div class="gate-hero">
@@ -461,17 +518,17 @@ function renderDetail(el){
       <div class="gate-title">Gate ${day.gateNum}.${day.line} — ${day.gate.name}</div>
       <div class="gate-center" style="color:${cc}">${day.gate.center} Center</div>
       <div class="gate-theme">${day.gate.theme}</div>
-      ${transitHtml}
+      ${wakingHtml}
     </div>
     <div class="reading-box">
       <div class="reading-box-label">✦ Your Daily Gate Reading</div>
       <div class="reading-text">${escHtml(reading)}</div>
     </div>
-    <div class="reflector-box">
-      <div class="reflector-box-label">✦ Reflector Lens</div>
-      <div class="reflector-box-text">How am I reflecting this gate's energy today? What's coming through me from my environment? Is this energy mine, or am I amplifying someone else's?</div>
-    </div>
     <div class="fields">
+      <div class="field-section">
+        <div class="field-section-title">Time of Entry</div>
+        <div class="time-row"><input class="field-input time-input" type="time" value="${escHtml(entry.entryTime||'')}" onchange="updateEntry(${selectedDay},'entryTime',this.value)"/><span class="time-hint">When did you sit with this gate?</span></div>
+      </div>
       <div class="field-section">
         <div class="field-section-title">How I Am Today</div>
         <div style="margin-bottom:16px"><label class="field-label">Overall Energy</label><div class="chip-row">${energyChips}</div></div>
@@ -479,22 +536,24 @@ function renderDetail(el){
         <div><label class="field-label">Body — how does it feel physically</label><div class="chip-row">${bodyChips}</div></div>
       </div>
       <div class="field-section">
+        <div class="field-section-title">Reflector Lens</div>
+        <textarea class="field-textarea" rows="3" placeholder="Is this energy mine, or am I amplifying something from my environment? What's moving through me today?" oninput="updateEntry(${selectedDay},'reflectorLens',this.value)">${escHtml(entry.reflectorLens||'')}</textarea>
+      </div>
+      <div class="field-section">
         <div class="field-section-title">Gate Observations</div>
         <div style="margin-bottom:16px"><label class="field-label">What I noticed in myself</label><textarea class="field-textarea" rows="3" placeholder="Patterns, reactions, impulses, surprises…" oninput="updateEntry(${selectedDay},'selfObs',this.value)">${escHtml(entry.selfObs||'')}</textarea></div>
         <div><label class="field-label">What I noticed in others / my environment</label><textarea class="field-textarea" rows="3" placeholder="What energy came in from outside? Who activated you?" oninput="updateEntry(${selectedDay},'envObs',this.value)">${escHtml(entry.envObs||'')}</textarea></div>
       </div>
       <div class="field-section">
-        <div class="field-section-title">Decision Tracking</div>
-        <div style="margin-bottom:16px"><label class="field-label">How does the decision feel right now?</label><div class="feeling-row">${feelings.map(f=>`<button class="feeling-btn ${entry.feeling===f?'selected':''}" onclick="setFeeling('${f}')">${f}</button>`).join('')}</div></div>
-        <div><label class="field-label">Decision note</label><textarea class="field-textarea" rows="3" placeholder="Any clarity, resistance, or shift around your decision today…" oninput="updateEntry(${selectedDay},'note',this.value)">${escHtml(entry.note||'')}</textarea></div>
+        <div class="field-section-title">Cards & Themes</div>
+        <div style="margin-bottom:16px"><label class="field-label">Card Pulled</label><input class="field-input" value="${escHtml(entry.card||'')}" placeholder="e.g. The High Priestess, Bear + Moon…" oninput="updateEntry(${selectedDay},'card',this.value)"/></div>
+        <div><label class="field-label">Themes & Connections</label><textarea class="field-textarea" rows="3" placeholder="What does this card say in conversation with today's gate? What patterns are speaking?" oninput="updateEntry(${selectedDay},'cardThemes',this.value)">${escHtml(entry.cardThemes||'')}</textarea></div>
       </div>
       <div class="field-section">
-        <div class="field-section-title">Ritual & Practice</div>
-        <div style="margin-bottom:16px"><label class="field-label">Tarot / Lenormand Card Pulled</label><input class="field-input" value="${escHtml(entry.card||'')}" placeholder="e.g. The High Priestess, Bear + Moon…" oninput="updateEntry(${selectedDay},'card',this.value)"/></div>
-        <div style="margin-bottom:16px"><label class="field-label">Time of Entry</label><div class="time-row"><input class="field-input time-input" type="time" value="${escHtml(entry.entryTime||'')}" onchange="updateEntry(${selectedDay},'entryTime',this.value)"/><span class="time-hint">When did you sit with this gate?</span></div></div>
+        <div class="field-section-title">Practice</div>
         <div><label class="field-label">Environment & Who I Was Around</label><input class="field-input" value="${escHtml(entry.environment||'')}" placeholder="e.g. alone, busy clinic, out with partner…" oninput="updateEntry(${selectedDay},'environment',this.value)"/></div>
       </div>
-      <div class="save-note">✦ Entries save automatically and sync to Google Sheets.</div>
+      <div class="save-note">✦ Entries save automatically and sync to Supabase.</div>
     </div>`;
 }
 
