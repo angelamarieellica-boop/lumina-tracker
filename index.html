@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lumina · Lunar Gate Tracker</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root{--ivory:#FAF8F3;--ivory-mid:#F0EBE0;--green:#2D5016;--green-mid:#3D6B20;--green-light:#5A8A35;--green-pale:#E4EFD8;--gold:#96690A;--gold-warm:#B8860B;--gold-pale:#F8F0D8;--ink:#1A1A10;--ink-mid:#323222;--ink-soft:#525240;--ink-faint:#7A7A60;--border:#C8C0A8;--border-light:#DDD8CC;--white:#FFFFFF}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Georgia,serif;min-height:100vh;font-size:14px;line-height:1.5}
+  .header{background:var(--white);border-bottom:2px solid var(--border);padding:32px 24px 24px;text-align:center;position:relative}
+  .header::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--green),var(--gold-warm),var(--green))}
+  .eyebrow{font-size:10px;font-weight:700;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+  .title{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;color:var(--green);letter-spacing:.5px;margin-bottom:4px;line-height:1.1}
+  .subtitle{font-size:12px;color:var(--ink-soft);margin-bottom:24px;letter-spacing:1px}
+  .live-gate{background:linear-gradient(135deg,var(--green-pale),var(--gold-pale));border:1px solid #B8D09A;border-radius:10px;padding:20px 24px;margin:0 auto 20px;max-width:560px;position:relative}
+  .live-badge{position:absolute;top:12px;right:14px;background:var(--green);color:white;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:10px}
+  .live-gate-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+  .live-gate-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;margin-bottom:4px}
+  .live-gate-theme{font-size:12px;color:var(--ink-soft);margin-bottom:10px}
+  .live-gate-meta{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px}
+  .live-meta-item{font-size:12px;color:var(--ink-soft)}
+  .live-meta-item strong{color:var(--ink);font-weight:700}
+  .transit-bar{height:5px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden;margin-bottom:5px}
+  .transit-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold-warm));border-radius:3px}
+  .transit-times{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);font-weight:700}
+  .sync-status{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;font-size:11px;font-weight:700;color:var(--ink-faint);letter-spacing:1px}
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .3s}
+  .sync-dot.synced{background:#3A7A3A}
+  .sync-dot.syncing{background:var(--gold-warm);animation:pulse 1s infinite}
+  .sync-dot.error{background:#A84040}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .settings-btn{position:absolute;top:16px;right:20px;background:none;border:1px solid var(--border);color:var(--ink-faint);font-size:11px;font-weight:700;padding:5px 12px;border-radius:3px;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px;transition:all .15s}
+  .settings-btn:hover{border-color:var(--green);color:var(--green)}
+  .cycle-row{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 16px}
+  .cycle-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--ink-faint);text-transform:uppercase}
+  .cycle-input{border:1px solid var(--border);background:var(--ivory);color:var(--ink);padding:8px 14px;border-radius:3px;font-size:13px;font-family:'Libre Baskerville',serif;font-weight:700;outline:none;cursor:pointer}
+  .cycle-input:focus{border-color:var(--green)}
+  .progress-wrap{max-width:360px;margin:0 auto 20px}
+  .progress-bar-bg{height:3px;background:var(--border-light);border-radius:2px;overflow:hidden;margin-bottom:6px}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold-warm));transition:width .4s}
+  .progress-label{font-size:11px;font-weight:700;color:var(--ink-faint);letter-spacing:1px}
+  .nav{display:flex;gap:6px;justify-content:center}
+  .nav-btn{background:none;border:1.5px solid var(--border);color:var(--ink-soft);padding:8px 22px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Libre Baskerville',serif;transition:all .15s}
+  .nav-btn:hover{border-color:var(--green);color:var(--green)}
+  .nav-btn.active{background:var(--green);border-color:var(--green);color:var(--white)}
+  .main{max-width:960px;margin:0 auto;padding:28px 20px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px;margin-bottom:28px}
+  .day-card{background:var(--white);border:1.5px solid var(--border-light);border-radius:7px;padding:14px 12px;cursor:pointer;text-align:left;transition:all .15s;position:relative;font-family:'Libre Baskerville',serif}
+  .day-card:hover:not(.future){border-color:var(--green-light);box-shadow:0 3px 14px rgba(45,80,22,.1);transform:translateY(-1px)}
+  .day-card.today{border-color:var(--green);border-width:2px;background:var(--green-pale)}
+  .day-card.future{opacity:.38;cursor:default}
+  .day-card.has-entry::after{content:'';position:absolute;top:10px;right:10px;width:7px;height:7px;border-radius:50%;background:var(--gold-warm)}
+  .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .card-moon{font-size:18px}
+  .card-day-num{font-size:10px;font-weight:700;color:var(--ink-faint);letter-spacing:1px}
+  .card-date{font-size:11px;font-weight:700;color:var(--ink-soft);margin-bottom:5px}
+  .card-gate{font-size:12px;color:var(--ink);font-weight:700;margin-bottom:3px}
+  .card-name{font-size:11px;line-height:1.35;color:var(--ink-soft)}
+  .card-today-tag{font-size:9px;font-weight:700;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-top:6px}
+  .card-energy-dot{position:absolute;bottom:10px;left:12px;width:7px;height:7px;border-radius:50%}
+  .legend{background:var(--white);border:1.5px solid var(--border-light);border-radius:7px;padding:18px 22px}
+  .legend-title{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--ink-faint);text-transform:uppercase;margin-bottom:13px}
+  .legend-items{display:flex;flex-wrap:wrap;gap:12px}
+  .legend-item{display:flex;align-items:center;gap:7px}
+  .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .legend-text{font-size:12px;font-weight:700;color:var(--ink-soft)}
+  .back-btn{background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:0 0 22px;display:flex;align-items:center;gap:6px;font-family:'Libre Baskerville',serif;transition:color .15s}
+  .back-btn:hover{color:var(--green)}
+  .gate-hero{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:26px 28px;margin-bottom:18px;position:relative;overflow:hidden}
+  .gate-hero::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--green),var(--gold-warm))}
+  .gate-moon-big{font-size:40px;margin-bottom:8px;display:block}
+  .gate-eyebrow{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--ink-faint);text-transform:uppercase;margin-bottom:10px}
+  .gate-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--green);margin-bottom:4px;line-height:1.2}
+  .gate-center{font-size:13px;font-weight:700;margin-bottom:10px}
+  .gate-theme{font-size:14px;color:var(--ink-mid);line-height:1.6;margin-bottom:16px}
+  .gate-transit-info{background:var(--ivory-mid);border-radius:5px;padding:12px 15px;font-size:12px;font-weight:700;color:var(--ink-soft);line-height:1.7}
+  .gate-transit-info strong{color:var(--ink)}
+  .reading-box{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 24px;margin-bottom:18px}
+  .reading-box-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:10px}
+  .reading-text{font-size:13px;color:var(--ink-mid);line-height:1.85}
+  .reflector-box{background:var(--gold-pale);border:1.5px solid #D8C080;border-radius:7px;padding:16px 20px;margin-bottom:20px}
+  .reflector-box-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+  .reflector-box-text{font-size:13px;color:var(--ink-mid);line-height:1.75}
+  .fields{display:flex;flex-direction:column;gap:16px}
+  .field-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--ink-faint);text-transform:uppercase;display:block;margin-bottom:8px}
+  .field-input,.field-textarea{width:100%;background:var(--white);border:1.5px solid var(--border);color:var(--ink);padding:11px 14px;border-radius:5px;font-size:14px;font-family:'Libre Baskerville',serif;outline:none;transition:border-color .15s}
+  .field-input:focus,.field-textarea:focus{border-color:var(--green)}
+  .field-textarea{resize:vertical;line-height:1.7}
+  .time-row{display:flex;gap:12px;align-items:center}
+  .time-hint{font-size:12px;color:var(--ink-faint);font-weight:700}
+  .time-input{width:130px}
+  .feeling-row{display:flex;gap:8px;flex-wrap:wrap}
+  .feeling-btn{background:var(--white);border:1.5px solid var(--border);color:var(--ink-soft);padding:8px 14px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:700;font-family:'Libre Baskerville',serif;transition:all .15s}
+  .feeling-btn:hover{border-color:var(--green);color:var(--green)}
+  .feeling-btn.selected{background:var(--green);border-color:var(--green);color:var(--white)}
+  .save-note{font-size:12px;font-weight:700;color:var(--ink-faint);padding:14px 0;border-top:1px solid var(--border-light);line-height:1.6}
+  .field-section{border-top:1.5px solid var(--border-light);padding-top:18px;margin-top:4px}
+  .field-section-title{font-size:10px;font-weight:700;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:16px}
+  .chip-row{display:flex;gap:7px;flex-wrap:wrap}
+  .chip-btn{background:var(--white);border:1.5px solid var(--border);color:var(--ink-soft);padding:7px 13px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;font-family:'Libre Baskerville',serif;transition:all .15s;white-space:nowrap}
+  .chip-btn:hover{border-color:var(--green);color:var(--green)}
+  .chip-btn.selected{border-color:transparent;color:var(--white)}
+  .decisions-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  .decisions-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green)}
+  .add-decision-btn{background:var(--green);border:none;color:white;padding:9px 18px;border-radius:5px;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;font-family:'Libre Baskerville',serif;transition:background .15s}
+  .add-decision-btn:hover{background:var(--green-mid)}
+  .decision-cards{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+  .decision-card{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;overflow:hidden}
+  .decision-card-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .15s}
+  .decision-card-header:hover{background:var(--ivory-mid)}
+  .decision-card-header.open{background:var(--green-pale);border-bottom:1.5px solid var(--border-light)}
+  .decision-card-name{font-size:15px;font-weight:700;color:var(--ink)}
+  .decision-card-meta{font-size:11px;color:var(--ink-faint);margin-top:2px}
+  .decision-card-chevron{font-size:12px;color:var(--ink-faint);transition:transform .2s}
+  .decision-card-chevron.open{transform:rotate(180deg)}
+  .decision-card-body{display:none}
+  .decision-card-body.open{display:block}
+  .decision-mini-bar{display:flex;gap:10px;padding:14px 20px;background:var(--ivory-mid);border-bottom:1px solid var(--border-light);flex-wrap:wrap}
+  .mini-count{text-align:center;min-width:40px}
+  .mini-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;line-height:1}
+  .mini-label{font-size:9px;font-weight:700;color:var(--ink-faint);letter-spacing:1px;margin-top:2px}
+  .mini-insight{flex:1;font-size:12px;color:var(--ink-mid);line-height:1.6;padding-left:16px;border-left:2px solid var(--border);min-width:160px;display:flex;align-items:center}
+  .decision-day-rows{display:flex;flex-direction:column}
+  .ddr{display:grid;grid-template-columns:36px 1fr 160px;gap:10px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--border-light)}
+  .ddr:last-child{border-bottom:none}
+  .ddr.future{opacity:.35}
+  .ddr-moon{text-align:center;font-size:16px}
+  .ddr-info{font-size:11px}
+  .ddr-gate{font-weight:700;color:var(--ink);margin-bottom:1px}
+  .ddr-date{color:var(--ink-faint)}
+  .ddr-select{background:var(--ivory);border:1.5px solid var(--border);color:var(--ink);padding:6px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'Libre Baskerville',serif;width:100%;cursor:pointer;outline:none}
+  .ddr-select:disabled{cursor:default;background:var(--border-light);color:var(--ink-faint)}
+  .ddr-select:focus{border-color:var(--green)}
+  .decision-delete{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:16px;padding:2px 6px;line-height:1;border-radius:3px;transition:color .15s}
+  .decision-delete:hover{color:#A84040}
+  .reflector-hint{background:var(--green-pale);border:1.5px solid #A8CF88;border-left:4px solid var(--green);border-radius:7px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--ink-mid);line-height:1.75}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .modal{background:var(--white);border-radius:10px;padding:28px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto}
+  .modal-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--green);margin-bottom:16px}
+  .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+  .modal-btn{padding:9px 20px;border-radius:5px;font-size:12px;font-weight:700;font-family:'Libre Baskerville',serif;cursor:pointer;transition:all .15s}
+  .modal-btn-cancel{background:none;border:1.5px solid var(--border);color:var(--ink-soft)}
+  .modal-btn-save{background:var(--green);border:none;color:white}
+  .modal-btn-save:hover{background:var(--green-mid)}
+  .setup-note{background:var(--ivory-mid);border-radius:5px;padding:12px 14px;font-size:12px;color:var(--ink-soft);line-height:1.7;margin-bottom:16px}
+  @media(max-width:600px){
+    .header{padding:24px 16px 20px}.title{font-size:30px}.main{padding:20px 14px}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+    .ddr{grid-template-columns:30px 1fr}.ddr .ddr-select{grid-column:1/-1}
+    .live-gate{padding:16px 18px}.decision-mini-bar{flex-direction:column}
+    .mini-insight{padding-left:0;border-left:none;border-top:1px solid var(--border);padding-top:10px}
+    .settings-btn{position:static;margin-bottom:12px}
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <button class="settings-btn" onclick="openSettings()">⚙ Sync Settings</button>
+  <div class="eyebrow">Lumina Holistic Arts</div>
+  <h1 class="title">Lunar Gate Tracker</h1>
+  <p class="subtitle">Reflector Decision Compass &nbsp;·&nbsp; 29-Day Lunar Cycle</p>
+  <div class="live-gate" id="liveGateBox">
+    <div class="live-badge">● Live</div>
+    <div class="live-gate-label">Moon is currently in</div>
+    <div class="live-gate-name" id="liveGateName">Calculating…</div>
+    <div class="live-gate-theme" id="liveGateTheme"></div>
+    <div class="live-gate-meta" id="liveGateMeta"></div>
+    <div class="transit-bar"><div class="transit-bar-fill" id="transitFill" style="width:0%"></div></div>
+    <div class="transit-times" id="transitTimes"></div>
+  </div>
+  <div class="sync-status"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">Not connected</span></div>
+  <div class="cycle-row">
+    <span class="cycle-label">Cycle begins</span>
+    <input type="date" id="cycleStart" class="cycle-input"/>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-label" id="progressLabel">0 of 29 days recorded</div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn active" id="navGrid" onclick="switchView('grid')">Monthly View</button>
+    <button class="nav-btn" id="navDecision" onclick="switchView('decision')">Decision Tracker</button>
+  </div>
+</div>
+<div class="main" id="mainContent"></div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsOverlay" style="display:none">
+  <div class="modal">
+    <div class="modal-title">Sync Settings</div>
+    <div class="setup-note">Your data syncs automatically via Supabase. No configuration needed — just close this and keep going. 🌿</div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-save" onclick="closeSettings()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Decision Modal -->
+<div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-title">New Decision</div>
+    <label class="field-label">What are you sitting with?</label>
+    <textarea class="field-textarea" id="modalInput" rows="4" placeholder="e.g. Should I commit to the Sunday clinic space? Is it time to launch the Etsy shop?…" style="margin-bottom:4px"></textarea>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-btn modal-btn-save" onclick="addDecision()">Add Decision</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── GATE DATA ─────────────────────────────────────────────────────────────
+const GATE_DEGREES=[[25,358.25,363.875],[17,3.875,9.5],[21,9.5,15.125],[51,15.125,20.75],[42,20.75,26.375],[3,26.375,32.0],[27,32.0,37.625],[24,37.625,43.25],[2,43.25,48.875],[23,48.875,54.5],[8,54.5,60.125],[20,60.125,65.75],[16,65.75,71.375],[35,71.375,77.0],[45,77.0,82.458],[12,82.625,88.25],[15,88.25,93.875],[52,93.875,99.5],[39,99.5,105.125],[53,105.125,110.75],[62,110.75,116.375],[56,116.375,122.0],[31,122.0,127.625],[33,127.625,133.25],[7,133.25,138.875],[4,138.875,144.5],[29,144.5,150.125],[59,150.125,155.75],[40,155.75,161.375],[64,161.375,167.0],[47,167.0,172.625],[6,172.625,178.25],[46,178.25,183.875],[18,183.875,189.5],[48,189.5,195.125],[57,195.125,200.75],[32,200.75,206.375],[50,206.375,212.0],[28,212.0,217.625],[44,217.625,223.25],[1,223.25,228.875],[43,228.875,234.5],[14,234.5,240.125],[34,240.125,245.75],[9,245.75,251.375],[5,251.375,257.0],[26,257.0,262.625],[11,262.625,268.25],[10,268.25,273.875],[58,273.875,279.5],[38,279.5,285.125],[54,285.125,290.75],[61,290.75,296.375],[60,296.375,302.0],[41,302.0,307.625],[19,307.625,313.25],[13,313.25,318.875],[49,318.875,324.5],[30,324.5,330.125],[55,330.125,335.75],[37,335.75,341.375],[63,341.375,347.0],[22,347.0,352.625],[36,352.625,358.25]];
+const GATES={1:{name:"The Creative",theme:"Creative contribution & authenticity",center:"G"},2:{name:"The Receptive",theme:"Direction & surrendering to flow",center:"G"},3:{name:"Difficulty at the Beginning",theme:"Mutation from chaos to clarity",center:"Sacral"},4:{name:"Youthful Folly",theme:"Mental answers & solutions",center:"Ajna"},5:{name:"Waiting",theme:"Rhythm, habit & universal timing",center:"Sacral"},6:{name:"Conflict",theme:"Intimacy, boundaries & emotional waves",center:"Solar Plexus"},7:{name:"The Army",theme:"Leadership through role",center:"G"},8:{name:"Holding Together",theme:"Contribution & individual expression",center:"Throat"},9:{name:"The Taming Power of the Small",theme:"Concentration & detail",center:"Sacral"},10:{name:"Treading",theme:"Self-love & behavior aligned with values",center:"G"},11:{name:"Peace",theme:"Ideas & the archive of imagination",center:"Ajna"},12:{name:"Standstill",theme:"Caution, articulation & transformation",center:"Throat"},13:{name:"Fellowship of Man",theme:"Listening, memory & narrative",center:"G"},14:{name:"Possession in Great Measure",theme:"Empowerment & energy stewardship",center:"Sacral"},15:{name:"Modesty",theme:"Rhythm of extremes & love of humanity",center:"G"},16:{name:"Enthusiasm",theme:"Skills, talent & timing",center:"Throat"},17:{name:"Following",theme:"Opinions & seeing the future",center:"Ajna"},18:{name:"Work on What Has Been Spoilt",theme:"Correction, judgment & perfectionism",center:"Spleen"},19:{name:"Approach",theme:"Sensitivity, need & attunement",center:"Root"},20:{name:"Contemplation",theme:"Presence & the now",center:"Throat"},21:{name:"Biting Through",theme:"Control & material mastery",center:"Ego/Heart"},22:{name:"Grace",theme:"Emotional openness & social grace",center:"Solar Plexus"},23:{name:"Splitting Apart",theme:"Assimilation & simplicity",center:"Throat"},24:{name:"Return",theme:"Rationalization & turning inward",center:"Ajna"},25:{name:"Innocence",theme:"Universal love & spirit of the self",center:"G"},26:{name:"The Taming Power of the Great",theme:"Integrity & the art of the ego",center:"Ego/Heart"},27:{name:"Nourishment",theme:"Caring, nurturing & responsibility",center:"Sacral"},28:{name:"Preponderance of the Great",theme:"Struggle, purpose & risk",center:"Spleen"},29:{name:"The Abysmal",theme:"Commitment & saying yes to life",center:"Sacral"},30:{name:"Clinging Fire",theme:"Desire, feelings & the future",center:"Solar Plexus"},31:{name:"Influence",theme:"Leadership & democratic voice",center:"Throat"},32:{name:"Duration",theme:"Continuity, instinct & what endures",center:"Spleen"},33:{name:"Retreat",theme:"Privacy, memory & withdrawal",center:"Throat"},34:{name:"The Power of the Great",theme:"Power, independence & manifestation",center:"Sacral"},35:{name:"Progress",theme:"Experience, adventure & change",center:"Throat"},36:{name:"Darkening of the Light",theme:"Crisis, emotional depth & experience",center:"Solar Plexus"},37:{name:"The Family",theme:"Friendship, bargaining & community",center:"Solar Plexus"},38:{name:"Opposition",theme:"Struggle & purpose through challenge",center:"Root"},39:{name:"Obstruction",theme:"Provocation & awakening spirit",center:"Root"},40:{name:"Deliverance",theme:"Aloneness, rest & renewal",center:"Ego/Heart"},41:{name:"Decrease",theme:"Fantasy, desire & new beginnings",center:"Root"},42:{name:"Increase",theme:"Growth, completion & finishing",center:"Sacral"},43:{name:"Breakthrough",theme:"Insight, knowing & inner truth",center:"Ajna"},44:{name:"Coming to Meet",theme:"Instinct about the past & patterns",center:"Spleen"},45:{name:"Gathering Together",theme:"Community, abundance & the king/queen",center:"Throat"},46:{name:"Pushing Upward",theme:"Love of body, luck & serendipity",center:"G"},47:{name:"Oppression",theme:"Realization & transforming the past",center:"Ajna"},48:{name:"The Well",theme:"Depth, wisdom & readiness",center:"Spleen"},49:{name:"Revolution",theme:"Principles, rejection & transformation",center:"Solar Plexus"},50:{name:"The Cauldron",theme:"Values, responsibility & the tribe",center:"Spleen"},51:{name:"The Arousing",theme:"Shock, initiation & competition",center:"Ego/Heart"},52:{name:"Keeping Still",theme:"Stillness, focus & restraint",center:"Root"},53:{name:"Development",theme:"Beginnings, pressure & cyclic starts",center:"Root"},54:{name:"The Marrying Maiden",theme:"Ambition, drive & transformation",center:"Root"},55:{name:"Abundance",theme:"Emotional richness & faith",center:"Solar Plexus"},56:{name:"The Wanderer",theme:"Storytelling, beliefs & stimulation",center:"Throat"},57:{name:"The Gentle",theme:"Intuition, clarity & survival instinct",center:"Spleen"},58:{name:"The Joyous",theme:"Vitality, joy & love of life",center:"Root"},59:{name:"Dispersion",theme:"Sexuality, intimacy & breaking barriers",center:"Sacral"},60:{name:"Limitation",theme:"Acceptance & transcending limits",center:"Root"},61:{name:"Inner Truth",theme:"Mystery, knowing & universal principles",center:"Head"},62:{name:"Preponderance of the Small",theme:"Detail, facts & precision",center:"Throat"},63:{name:"After Completion",theme:"Doubt, logic & questioning",center:"Head"},64:{name:"Before Completion",theme:"Confusion, inspiration & divine chaos",center:"Head"}};
+const CENTER_COLORS={"Head":"#6B5FA0","Ajna":"#4A7AAA","Throat":"#A86830","G":"#3A7A3A","Ego/Heart":"#A84040","Sacral":"#B08820","Solar Plexus":"#7858A8","Spleen":"#2A8868","Root":"#7A5830"};
+const MOON_PHASES=["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"];
+const ENERGY_COLORS={'High ✦':'#3A7A3A','Steady ○':'#B08820','Low ◌':'#7A5830','Scattered ~':'#9070B8','Tender ♡':'#A84070','Depleted ✗':'#A84040'};
+const BODY_STATES=['Grounded','Expansive','Tight','Tender','Spacious','Heavy','Light','Restless','Calm'];
+const MOOD_STATES=['Clear','Creative','Irritable','Inspired','Anxious','Joyful','Melancholic','Neutral','Overwhelmed','Peaceful'];
+
+// ── GATE READINGS (written for Gela, 4/6 Reflector) ───────────────────────
+const GATE_READINGS = {
+  1: "Gate 1 activates creative self-expression in the collective — today you're not being asked to produce, but to notice what feels authentically yours versus what you're performing for others. As a Reflector, you may feel a heightened pull toward making or expressing something, but it's borrowed momentum. The wise move is to observe what arises without forcing output — let the creative impulse move through you like weather, and note what remains when it passes.",
+  2: "Gate 2 carries a quiet, receptive quality — the collective is in a mode of receiving direction rather than generating it, and today asks for surrender over strategy. You may feel unusually still or directionless, which isn't a problem to solve. As a Reflector sampling this gate, your most useful practice is simply to follow your body's natural pull without overriding it with logic — where do you actually want to go today?",
+  3: "Gate 3 brings the energy of new beginnings that feel chaotic before they clarify — the collective is in mutation mode, and things may feel messy or uncertain in the environment around you. You'll likely feel this as a kind of ambient restlessness or creative friction in others. Don't mistake the chaos for your own; your job is to witness it. If something new is trying to emerge in your life, today confirms it's in process — not yet clear, but real.",
+  4: "Gate 4 activates mental solution-seeking in the collective — people around you may be particularly caught in their heads, looking for answers, formulating opinions. You'll absorb this as a buzzy, slightly anxious mental quality. Notice if you find yourself suddenly flooded with ideas or analysis that feels urgent; that's the gate, not your signal. The Ajna Center's gift here is conceptual — good for collecting insights, not for making final calls.",
+  5: "Gate 5 is about universal timing and the power of consistent rhythm — the collective is attuned to natural cycles today, and there's a steadiness available if you slow down enough to feel it. As a Reflector, this gate can feel like a settling, almost like your body wants to sync up with something larger than the day's demands. Honor any pull toward routine or ritual today — morning practice, regular meals, a walk at the same time. The rhythm is the medicine.",
+  6: "Gate 6 moves emotional wave energy through the Solar Plexus — the collective is processing intimacy, boundaries, and connection today, and you will feel this acutely. Emotional weather in your environment may be heightened: people more sensitive, conflict closer to the surface, or unexpected closeness emerging. This is a day to be gentle with yourself about emotional charge that arrives without obvious cause — you're sampling the collective's feeling body, not necessarily your own unresolved material.",
+  7: "Gate 7 activates leadership-through-role energy — there's a quality in the collective today of people stepping into (or struggling with) their designated function. You may find people around you are particularly focused on hierarchy, authority, or 'who's in charge here.' As a Reflector you don't have a fixed role, which can feel disorienting when this gate is lit. Let yourself be the observer of role dynamics today rather than feeling pressure to find yours.",
+  8: "Gate 8 is about individual contribution and the courage to express your unique voice into the group. The Throat Center is activated here, so communication, visibility, and putting oneself forward are themes moving through the collective. You may feel pulled to share something — a thought, a creative piece, an offering — or you may feel the weight of others wanting to be seen and heard. If you have something to say today, say it. The channel is open.",
+  9: "Gate 9 brings focused, concentrated energy — the collective is capable of deep detail work and sustained attention today. This is genuinely a good day to work with your hands, tend to specifics, or give careful attention to the small things you've been glossing over. As a Reflector you'll feel this as a pleasant kind of groundedness — a 'one thing at a time' quality that your open Sacral doesn't usually provide. Lean into it while it's available.",
+  10: "Gate 10 is one of the most personally significant gates for you — it lives in the G Center and speaks to self-love, authentic behavior, and living in alignment with your values. Today the collective is being asked: are you acting in accordance with who you actually are? For you as a Reflector sampling this gate, it may arrive as a quiet but clear moment of self-recognition — or a sharp awareness of where you've been performing rather than being. Treat any discomfort as useful data.",
+  11: "Gate 11 opens the archive of imagination — the Ajna Center fills with ideas, visions, and conceptual possibilities today. The collective is in a rich, generative mental space, and you may find your mind unusually busy with images, connections, and 'what ifs.' This is a beautiful gate to sit with as a Reflector because you can sample its creative overflow without needing to act on any of it. Keep a notes app nearby — let the ideas land without committing to them.",
+  12: "Gate 12 asks for caution and deliberate articulation — not everything that rises to the surface today needs to be spoken. The Throat Center is activated but in a mode of careful transformation, which means words have particular weight right now. You may feel a pull to communicate something significant, or you may feel others around you saying things they'll later wish they hadn't. If something important wants to be expressed, take your time with how you say it.",
+  13: "Gate 13 is the keeper of stories — today the collective is in a listening, memory-holding space, and people may be unusually forthcoming with their histories, wounds, and truths. As a Reflector you are a natural keeper of others' stories, and this gate amplifies that. You may find people confiding in you today without much prompting. Hold what comes with care, and notice whether the narratives in your environment feel like they're moving toward healing or staying stuck in repetition.",
+  14: "Gate 14 brings material force energy — the Sacral is lit with empowerment and resource stewardship today. The collective has access to real energy for building, earning, and sustaining. As a Reflector you'll feel this as a temporary boost — more fuel available than usual, more capacity to push through. This is a good day to work on something that requires sustained effort, but stay honest about when your borrowed energy starts to fade.",
+  15: "Gate 15 is one of the most community-oriented gates — it holds the rhythm of human extremes, the love of humanity in all its variation. Today you may feel a heightened sense of connection to the people around you, and an awareness of how different everyone's rhythms truly are. For a Reflector, this gate often arrives as a deep appreciation for difference — a softening toward the messy, varied, beautiful range of how people move through the world.",
+  16: "Gate 16 activates enthusiasm, skill, and timing — the Throat Center is lit with the energy of people stepping into their talents and sharing them with confidence. Today the collective is in a 'show your work' mode, and you may feel the ambient excitement of people leaning into what they're good at. If you have a skill you've been holding back, today's energy is favorable for bringing it forward. The timing feels right because the environment is ready to receive.",
+  17: "Gate 17 brings opinionated, forward-looking mental energy — the Ajna Center is generating perspectives and projections about the future, and you may find the people and conversations around you are particularly full of strong viewpoints. As a Reflector sampling this gate, you may temporarily feel unusually certain or opinionated yourself, which can be useful — but hold any strong mental conclusions lightly today. Wait to see if they persist beyond the transit.",
+  18: "Gate 18 is the energy of correction and judgment — the Spleen Center is attuned to what isn't working, what needs to be improved, what is off. Today the collective has a heightened sensitivity to flaws, imbalance, and the gap between how things are and how they could be. You'll feel this as a critical awareness that could easily tip into self-criticism or over-editing. Channel it toward something genuinely worth improving, and let the smaller imperfections go.",
+  19: "Gate 19 holds exquisite sensitivity to need — it's attuned to what people and creatures require to feel safe, nourished, and seen. Today the collective is tender in this way, and you may find yourself unusually attuned to the emotional and physical needs of those around you, including animals and the natural world. This is a beautiful gate for your reiki and healing work — your sensitivity as a Reflector is particularly well-matched to Gate 19's frequency.",
+  20: "Gate 20 is pure presence — 'I am now.' The Throat Center activates the energy of being completely in the moment, and today the collective is most alive when it stops planning and simply shows up for what is. You may feel a settling quality to today, a sense that the most important thing is just to be here. For your practice and your clients, this is a powerful day to drop into presence without agenda and let that quality do its work.",
+  21: "Gate 21 activates control and material mastery — the Ego/Heart Center is oriented toward managing resources, asserting authority, and getting things done. The collective may feel more competitive or willful today, with people more focused on their own domain and what they're responsible for. As a Reflector you may temporarily feel an unusual clarity about wanting to be in control of something specific. Notice it, take appropriate action, but don't overcommit to structures built today.",
+  22: "Gate 22 moves through the Solar Plexus as emotional grace — there's a quality of social elegance available today, an ability to meet others with warmth and openness even across difference. The collective is softer, more gracious when this gate is active. For you as a practitioner, this is a lovely day for client work, readings, or any space where you're holding emotional space for others. Your own emotional openness will feel natural rather than effortful.",
+  23: "Gate 23 brings the energy of assimilation and simplification — the Throat Center is in a mode of making the complex clear, distilling insight into something communicable. Today is good for any work that requires you to take a lot of information and find its essence. As a Reflector you may feel a kind of mental clarity today that allows you to explain something you've been circling — in your writing, your practice, or conversations. The translation instinct is sharp.",
+  24: "Gate 24 is the energy of returning, rationalizing, and turning inward — the Ajna Center is in a reflective mode, processing and making sense of what has been. The collective may feel more internally oriented today, less interested in new input and more focused on integrating what's already present. If you've been meaning to journal, review your notes from this cycle, or sit with something you haven't fully processed, today's energy supports that kind of inward turning.",
+  25: "Gate 25 holds universal love and the innocence of the spirit — this is a G Center gate about the pure, unconditioned self moving through the world without armor. Today the collective has access to a quality of openness and trust that is genuinely rare. As a Reflector, Gate 25 may feel like a brief window where your natural transparency is met with equal openness from the world. Don't fill it with busyness — let it be a spacious day if you can.",
+  26: "Gate 26 is the energy of the ego in its most skillful form — integrity, the art of persuasion, and using personal power with honesty. The Ego/Heart Center is oriented toward how we present ourselves and whether our outer story matches our inner truth. Today is a good day to notice where you're performing a version of yourself that isn't quite accurate, and to make small adjustments toward authenticity. In your business, this gate supports honest, compelling communication.",
+  27: "Gate 27 carries nourishing, caretaking energy — the Sacral is lit with the impulse to feed, tend, and take responsibility for others. Today the collective is in a caring mode, and you may feel this as warmth in your environment or as a pull toward nurturing those around you. As a Reflector, this is a day when your healing work feels natural and well-supported. Just watch that you don't over-give from a Sacral that was never designed to sustain you the way it sustains generators.",
+  28: "Gate 28 is one of the more intense gates — it carries the energy of struggle, risk, and the search for purpose that makes the struggle worthwhile. Today the collective is working through questions of meaning: is what I'm doing worth it? What am I willing to fight for? You may feel this as a heaviness or existential undercurrent in your environment. This is not a day to make major decisions, but it is a day to get honest about what truly matters to you.",
+  29: "Gate 29 is the energy of commitment — saying yes to life even when the outcome is uncertain. The Sacral is lit with follow-through energy today, and the collective is oriented toward honoring its agreements and showing up fully. If you've been wavering on a commitment, today's energy may clarify what you actually want to say yes to. For your decision tracking: a genuine yes on a Gate 29 day feels like wholeness, not pressure.",
+  30: "Gate 30 moves through the Solar Plexus as desire and longing — today the collective is in contact with its wants, its fantasies, and its feelings about the future. This is a rich, emotionally charged gate that can feel beautiful or overwhelming depending on your current emotional landscape. As a Reflector you'll absorb the desire-field of those around you quite directly. Notice which longings feel genuinely yours versus which ones arrived with the day.",
+  31: "Gate 31 activates democratic leadership — the Throat Center is in a mode of influence through authentic voice, the kind of leadership that comes from being chosen rather than appointed. Today the collective is attuned to who is speaking truth and who is performing authority. Your 4/6 profile means you have natural influence through your network, and on Gate 31 days that influence is particularly available. Speak from your actual experience — it lands.",
+  32: "Gate 32 holds the energy of continuity and instinct about what endures — the Spleen Center is evaluating what is sustainable versus what will collapse under pressure. Today the collective has a heightened sense of discernment about longevity: what structures, relationships, and commitments have real staying power? For your business decisions, this is a useful gate to sit with — Gate 32 instinct is quiet but clear, and it doesn't repeat itself.",
+  33: "Gate 33 is the energy of retreat, privacy, and memory — the Throat Center is in withdrawal mode today, and the collective is drawing inward. You may feel a collective pull toward solitude, nostalgia, or the desire to close doors and rest. Honor this energy rather than fighting it. As a Reflector, Gate 33 days are some of the most naturally restorative — the world gives you permission to step back, and the memories and stories that surface during retreat are worth attending to.",
+  34: "Gate 34 is pure power and independence — the Sacral is at its most forceful today, and the collective has access to significant generative energy. You may feel the environment buzzing with momentum, drive, and people acting on their own authority. As a Reflector, this gate can feel intoxicating — a temporary sense of your own power and capability. Use it, but stay honest about your natural rhythm: this is borrowed fuel, not a signal to restructure your whole life around productivity.",
+  35: "Gate 35 is the energy of progress through experience — the Throat Center is activated with the desire for adventure, change, and new input. Today the collective wants to move, try things, gather experiences. You may feel restless in a good way, pulled toward novelty or toward saying yes to something you'd normally hesitate around. For a 4/6 Reflector who learns through living, Gate 35 days often bring the experiences that become your most meaningful teaching material later.",
+  36: "Gate 36 moves through the Solar Plexus as emotional crisis and depth — today the collective is processing something raw, and the emotional field may feel heavy or turbulent. This is not a problem to fix. Gate 36 is about the experiences that break us open and teach us what we're made of. As a Reflector you'll feel this as ambient emotional weight in your environment. Take extra care of your nervous system today — salt bath, time in nature, anything that helps you discharge what you're absorbing.",
+  37: "Gate 37 holds the energy of community, family, and the bargains we make to belong — the Solar Plexus is oriented toward the agreements that sustain our closest bonds. Today the collective is feeling the warmth and the weight of its commitments to others. You may notice themes of fairness, reciprocity, and belonging surfacing in your relationships. For your practice: Gate 37 days are beautiful for work that strengthens community — circles, group offerings, anything relational.",
+  38: "Gate 38 is the energy of opposition and struggle in service of purpose — the Root Center is pressurized today with the determination to fight for what matters. The collective may feel a stubborn, resistant quality: people digging in, refusing to yield on things that feel essential. As a Reflector, you may temporarily feel unusually certain about what you will and won't accept. If something needs to be said or held firm, Gate 38 energy gives you the spine for it.",
+  39: "Gate 39 is the provocateur — it activates spirit through friction, waking up what has gone numb. The Root Center carries an edge today, and you may feel the collective is unusually triggering: conversations that poke, situations that irritate, moments that push buttons you didn't know you had. This is intentional at the archetypal level. Gate 39 asks: what do you actually care about? What gets you fired up? The answer is information.",
+  40: "Gate 40 is the energy of aloneness, rest, and renewal — the Ego/Heart Center asks today: have you given enough to yourself? The collective is, underneath its busyness, quite tired, and what people most need is genuine rest and the permission to step away from obligation. As a Reflector this gate may feel like a deep exhale. If you can create space to be alone today, do it. Your system regenerates in solitude in ways that are difficult to access in company.",
+  41: "Gate 41 is the gate of fantasy and new beginnings — the Root Center pressurizes desire and imagination into the start of something new. Today the collective is restless with possibility, and you may feel the ambient excitement of things about to begin. This is the gate that initiates the Human Design wheel, and there's a genuinely fertile quality to the day. For your business and creative work: what new cycle is trying to start? Gate 41 days are good for planting intentions.",
+  42: "Gate 42 brings the energy of completion and follow-through — the Sacral is oriented toward finishing what has been started, and the collective has unusual capacity for seeing things through today. If you've been leaving projects half-done, today offers real support for closure. As a Reflector you may feel a satisfying sense of momentum and accomplishment available to you. Use it for tasks that have been lingering — the energy for completion is genuinely here.",
+  43: "Gate 43 is breakthrough knowing — the Ajna Center carries individual insight today, the kind that arrives fully formed and can't quite be explained. The collective is having 'aha' moments, and you may feel the environment sparkling with realizations. As a Reflector you're an excellent conductor of Gate 43 energy — the insights that move through you today may be more for others than for yourself. If something lands clearly, share it; it may be exactly what someone needed to hear.",
+  44: "Gate 44 is the gate of instinct about the past — the Spleen Center is reading patterns today, sensing what has been and what is likely to repeat. The collective has a heightened awareness of history and whether current situations echo old ones. For your decision tracking, this is an especially relevant gate: if a decision feels familiar in an uncomfortable way, Gate 44 is asking you to look at the pattern before you proceed. Your spleen instinct about repetition is sharp today.",
+  45: "Gate 45 holds the energy of community leadership and material abundance — the Throat Center is in 'gathering together' mode, and the collective is oriented toward shared resources, group vision, and who holds the community's wealth. You may feel drawn toward your community today, or notice themes of money, ownership, and collective direction surfacing. For Lumina: Gate 45 days are particularly supportive of anything that positions you as a guide or anchor for your people.",
+  46: "Gate 46 is one of the most embodied gates — it's about love of the body, serendipity, and the luck that comes from showing up fully in physical form. The G Center is oriented toward the body as a vehicle for grace today. As a Reflector, Gate 46 days often bring unexpected serendipity — chance encounters, fortuitous timing, things falling into place without effort. Stay present in your body, move it, care for it. The body is the instrument today.",
+  47: "Gate 47 carries the energy of oppression and realization — the Ajna Center is in a mode of transforming the past into understanding. Today the collective is processing difficult experiences, looking for the meaning inside the struggle. This can feel heavy if you're in it, but Gate 47 is ultimately about breakthrough — the moment when pain becomes perspective. If something from your own recent history is asking to be understood differently today, sit with it. The realization is coming.",
+  48: "Gate 48 is the depth of the well — the Spleen Center carries ancient wisdom, readiness, and the nagging fear of inadequacy. Today the collective is both deeply resourced and acutely aware of what it doesn't know. You may feel this as a pull toward study, preparation, or going deeper into a skill before offering it. The fear of 'not being ready' that Gate 48 carries is almost never accurate. You are more prepared than you feel. What are you waiting for?",
+  49: "Gate 49 is revolution — the Solar Plexus carries the energy of transformation through principles, the willingness to reject what no longer aligns with your values. Today the collective is in a mode of drawing lines: this yes, that no. Change may feel sudden or necessary in your environment. For your own life, this is a day when clarity about what you will no longer accept can arrive cleanly. The revolution Gate 49 initiates is always in service of integrity.",
+  50: "Gate 50 holds the values of the tribe — the Spleen Center is oriented toward responsibility, the laws that protect the community, and what we owe to each other. Today the collective is feeling the weight and meaning of its shared agreements. You may feel a heightened sense of responsibility or an awareness of where standards are being upheld or violated. For your work as a practitioner, Gate 50 days often feel like your ethics are being asked to speak clearly.",
+  51: "Gate 51 is the energy of shock, initiation, and competition — the Ego/Heart Center is activated with the electric quality of disruption that wakes people up. The collective may feel startling today: unexpected events, abrupt shifts, moments that knock you sideways into presence. As a Reflector you feel shock events particularly acutely. If something jarring happens today, know that Gate 51 often initiates a new level of courage. The shock is in service of awakening.",
+  52: "Gate 52 is stillness and focused restraint — the Root Center is in a mode of non-action today, and the collective has access to a quality of quiet, concentrated presence. This is a day when doing less is actually doing more. As a Reflector this gate is a gift — the world is giving you permission to be still, and the pressure to act or produce is genuinely lower. Meditation, restorative practice, simply sitting — Gate 52 days are among the most naturally supportive of your design.",
+  53: "Gate 53 carries the pressure of new beginnings — the Root Center is pressurizing starts today, and the collective feels the urgency of cycles wanting to initiate. You may sense an ambient restlessness, people wanting to launch things, begin things, mark fresh starts. As a Reflector you'll feel this as a kind of background pressure that isn't quite yours. Notice it without acting from it. If something genuinely new is ready to begin in your life, it will feel spacious rather than pressured.",
+  54: "Gate 54 is ambition and the drive to rise — the Root Center carries material and spiritual aspiration today, the desire to improve one's position and transform one's circumstances. The collective is motivated, hungry, and oriented toward ascent. As a Reflector you may temporarily feel unusually ambitious or driven, which can be energizing or disorienting depending on where you are in your cycle. Use the clarity about what you want; hold the urgency lightly.",
+  55: "Gate 55 is emotional abundance and faith — the Solar Plexus carries the frequency of richness today, the sense that life is full and that mood itself is a kind of weather worth following. The collective may feel unusually alive to beauty, meaning, and emotional depth. For you as a Reflector, Gate 55 days often feel like your emotional sensitivity is met with equal depth from the world. This is one of the most fertile gates for your creative and intuitive work.",
+  56: "Gate 56 is the storyteller's gate — the Throat Center is activated with the energy of narrative, belief, and the stimulation of new input. The collective is in a mode of sharing stories, gathering experiences, and making meaning through words. For your work as a reader and teacher, this is a particularly alive day — your ability to translate experience into story is heightened. The readings you give today, the words you write, will carry unusual resonance.",
+  57: "Gate 57 is the gate of intuition, clarity, and survival instinct — and today you will feel this, not just work with it. The Spleen Center is active, which means gut-level knowing is sharp and immediate in the collective. For you as a Reflector, this is one of the most useful transits: you temporarily borrow Spleen clarity, and your reads on people, situations, and your own body are unusually accurate. Trust the first quiet signal. Don't override it with logic.",
+  58: "Gate 58 holds the energy of vitality, joy, and love of life — the Root Center is lit with aliveness today, and the collective has genuine access to the feeling that being here is good. You may notice people around you more energized, more playful, more willing to delight in simple things. As a Reflector this gate often arrives as a pleasant, buzzy quality — an ease in the body, a lightness in the day. Let it move through you. Joy is information too.",
+  59: "Gate 59 is intimacy, sexuality, and the breaking of barriers — the Sacral Center carries the energy of dissolution today, the willingness to let down walls and allow genuine connection. The collective is in a vulnerable, open mode. As a Reflector you may feel unusually permeable to others today — more easily moved, more easily touched. This is not a weakness. Your capacity for deep connection is at the heart of what makes your work powerful.",
+  60: "Gate 60 holds the energy of limitation and transcendence — the Root Center is pressing against boundaries today, and the collective is working with the tension between what is constrained and what wants to break through. This gate teaches that limitation is not the opposite of freedom; it's the container that makes transformation possible. If you're feeling hemmed in today, ask what the constraint is teaching you rather than simply trying to escape it.",
+  61: "Gate 61 is inner truth and the pressure of mystery — the Head Center carries inspiration and the haunting sense of something just beyond knowing. Today the collective is reaching toward universal principles, and you may feel an unusual quality of spiritual pressure — the sense that something important is trying to be understood. For your intuitive work and readings, Gate 61 days carry an oracular quality. What arises in your awareness today may be more significant than it appears.",
+  62: "Gate 62 brings the energy of precision and detail — the Throat Center is in a mode of careful, factual communication today. The collective is oriented toward getting things right, speaking accurately, attending to the particulars. For your nurse informaticist work, this gate is a natural ally. For your creative and intuitive work, it offers a useful counterbalance — the ability to ground your insights in concrete, communicable language rather than leaving them in the abstract.",
+  63: "Gate 63 carries doubt and logical questioning — the Head Center is pressing on everything with the question: but is it true? Does it hold up? Today the collective is skeptical, rigorous, and oriented toward verification. As a Reflector you may absorb this as a questioning of things you normally trust — your intuition, your decisions, your direction. Hold the doubt as a useful tool rather than a verdict. Gate 63's questions are meant to sharpen, not to stop you.",
+  64: "Gate 64 is divine confusion and the chaos before completion — the Head Center holds unresolved inspiration today, images and impressions that haven't yet found their meaning. The collective is full of input that hasn't integrated. You may feel mentally busy or creatively restless, like you're holding too much that hasn't organized itself yet. This is the gate right before completion, which means something is coalescing even if it doesn't feel that way. Trust the process. The picture is forming."
+};
+
+// ── MOON MATH ─────────────────────────────────────────────────────────────
+function getMoonEclipticLongitude(date){const D=(date-new Date(2000,0,1,12))/86400000,L=(218.316+13.176396*D)%360,M=(134.963+13.064993*D)%360,F=(93.272+13.229350*D)%360,Mr=M*Math.PI/180,Lr=L*Math.PI/180,sunM=(357.529+0.985600*D)*Math.PI/180;let lon=L+6.289*Math.sin(Mr)-1.274*Math.sin(2*Lr-Mr)+0.658*Math.sin(2*Lr)-0.186*Math.sin(sunM)-0.059*Math.sin(2*Mr)-0.057*Math.sin(2*Lr-2*Mr)+0.053*Math.sin(2*Lr+Mr)-0.035*Math.sin(Lr)-0.015*Math.sin(2*(F*Math.PI/180)-2*Lr);return((lon%360)+360)%360}
+function getGateFromDegree(deg){const d=((deg%360)+360)%360;if(d>=358.25||d<3.875)return 25;for(const[gate,start,end]of GATE_DEGREES){if(gate===25)continue;const s=((start%360)+360)%360,e=((end%360)+360)%360;if(s<e&&d>=s&&d<e)return gate}return 1}
+function getGateBounds(n){if(n===25)return{start:358.25,end:363.875,span:5.625};for(const[g,s,e]of GATE_DEGREES){if(g===n)return{start:s,end:e,span:e-s}}return null}
+function getMoonLine(deg,gn){const b=getGateBounds(gn);if(!b)return 1;let p=deg-b.start;if(gn===25&&deg<3.875)p=deg+(360-358.25);p=Math.max(0,Math.min(b.span-.001,p));return Math.min(6,Math.floor((p/b.span)*6)+1)}
+function getTransitTimes(gn,ref){const b=getGateBounds(gn);if(!b)return null;const spd=0.549,rd=getMoonEclipticLongitude(ref);let p=rd-b.start;if(gn===25&&rd<3.875)p=rd+(360-358.25);p=Math.max(0,Math.min(b.span,p));const entry=new Date(ref.getTime()-(p/spd)*3600000),exit=new Date(ref.getTime()+((b.span-p)/spd)*3600000);if(isNaN(entry.getTime())||isNaN(exit.getTime()))return null;return{entryTime:entry,exitTime:exit,pct:Math.min(98,Math.max(2,(p/b.span)*100))}}
+function fmtTime(d){if(!d||isNaN(d.getTime()))return'—';return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true})}
+function fmtDateTime(d){if(!d||isNaN(d.getTime()))return'—';return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+fmtTime(d)}
+
+// ── LIVE GATE ─────────────────────────────────────────────────────────────
+function updateLiveGate(){const now=new Date(),deg=getMoonEclipticLongitude(now),gn=getGateFromDegree(deg),gate=GATES[gn];if(!gate)return;const line=getMoonLine(deg,gn),transit=getTransitTimes(gn,now),cc=CENTER_COLORS[gate.center]||'#3A7A3A';document.getElementById('liveGateName').textContent=`Gate ${gn}.${line} — ${gate.name}`;document.getElementById('liveGateName').style.color=cc;document.getElementById('liveGateTheme').textContent=gate.theme;document.getElementById('liveGateMeta').innerHTML=`<div class="live-meta-item"><strong>${gate.center}</strong> Center</div><div class="live-meta-item">Moon at <strong>${deg.toFixed(2)}°</strong></div><div class="live-meta-item">Line <strong>${line}</strong></div>`;if(transit){document.getElementById('transitFill').style.width=transit.pct+'%';document.getElementById('transitTimes').innerHTML=`<span>Entered ${fmtDateTime(transit.entryTime)}</span><span>Exits ~${fmtDateTime(transit.exitTime)}</span>`}}
+
+// ── SUPABASE SYNC ─────────────────────────────────────────────────────────
+function isConnected(){return true} // always connected via Netlify function
+let syncDebounceTimers={};
+
+function setSyncStatus(state,msg){const dot=document.getElementById('syncDot'),lbl=document.getElementById('syncLabel');if(!dot)return;dot.className='sync-dot '+state;lbl.textContent=msg}
+
+async function db(action,table,data,match){
+  try{
+    const r=await fetch('/.netlify/functions/sheets',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,table,data,match})});
+    if(!r.ok){console.error('DB error',await r.text());return null}
+    return r.json();
+  }catch(e){console.error('DB error',e);return null}
+}
+
+async function pullFromDB(){
+  setSyncStatus('syncing','Syncing…');
+  try{
+    const[entries,decisions,decData]=await Promise.all([
+      db('select','entries'),
+      db('select','decisions'),
+      db('select','decision_data')
+    ]);
+    if(entries===null){setSyncStatus('error','Sync error');return}
+
+    // Rebuild entry cache
+    const cycleMap={};
+    (entries||[]).forEach(row=>{
+      const key='lumina_cycle_'+row.cycle_start;
+      if(!cycleMap[key])cycleMap[key]={};
+      cycleMap[key][row.day_index]={
+        card:row.card||'',entryTime:row.entry_time||'',feeling:row.feeling||'',
+        environment:row.environment||'',selfObs:row.self_obs||'',envObs:row.env_obs||'',
+        energy:row.energy||'',moods:row.moods?row.moods.split('|').filter(Boolean):[],
+        body:row.body?row.body.split('|').filter(Boolean):[],note:row.note||''
+      };
+    });
+    Object.entries(cycleMap).forEach(([k,d])=>{try{localStorage.setItem(k,JSON.stringify(d))}catch(e){}});
+
+    // Rebuild decisions
+    const decs=(decisions||[]).map(d=>({id:d.id,text:d.text,created:d.created}));
+    try{localStorage.setItem('lumina_decisions',JSON.stringify(decs))}catch(e){}
+
+    // Rebuild decision data
+    const ddMap={};
+    (decData||[]).forEach(row=>{
+      const key='lumina_cycle_'+row.cycle_start+'_dec_'+row.decision_id;
+      if(!ddMap[key])ddMap[key]={};
+      ddMap[key][row.day_index]=row.feeling;
+    });
+    Object.entries(ddMap).forEach(([k,d])=>{try{localStorage.setItem(k,JSON.stringify(d))}catch(e){}});
+
+    setSyncStatus('synced','Synced');updateProgress();render();
+  }catch(e){console.error('Pull error',e);setSyncStatus('error','Sync error')}
+}
+
+async function pushEntry(cycleStart,dayIndex,entry){
+  setSyncStatus('syncing','Saving…');
+  const row={cycle_start:cycleStart,day_index:dayIndex,card:entry.card||'',entry_time:entry.entryTime||'',feeling:entry.feeling||'',environment:entry.environment||'',self_obs:entry.selfObs||'',env_obs:entry.envObs||'',energy:entry.energy||'',moods:(entry.moods||[]).join('|'),body:(entry.body||[]).join('|'),note:entry.note||''};
+  const r=await db('upsert','entries',row);
+  if(r)setSyncStatus('synced','Synced');else setSyncStatus('error','Sync error');
+}
+async function pushDecision(dec){
+  await db('upsert','decisions',{id:dec.id,text:dec.text,created:dec.created});
+}
+async function pushDecisionEntry(decId,cycleStart,dayIndex,feeling){
+  await db('upsert','decision_data',{decision_id:decId,cycle_start:cycleStart,day_index:dayIndex,feeling});
+}
+async function deleteDecisionFromDB(decId){
+  await db('delete','decisions',null,{id:decId});
+  await db('delete','decision_data',null,{decision_id:decId});
+}
+
+// Settings — just shows connected state now
+function openSettings(){document.getElementById('settingsOverlay').style.display='flex'}
+function closeSettings(){document.getElementById('settingsOverlay').style.display='none'}
+function saveSettings(){closeSettings();pullFromDB()}
+
+// ── LOCAL STORAGE ─────────────────────────────────────────────────────────
+function getCycleStart(){return localStorage.getItem('lumina_cycle_start')||''}
+function getCycleKey(){return'lumina_cycle_'+getCycleStart()}
+function loadData(){try{return JSON.parse(localStorage.getItem(getCycleKey())||'{}')}catch(e){return{}}}
+function saveData(d){try{localStorage.setItem(getCycleKey(),JSON.stringify(d))}catch(e){}}
+function updateEntry(day,field,value){
+  const d=loadData();if(!d[day])d[day]={};d[day][field]=value;saveData(d);updateProgress();
+  clearTimeout(syncDebounceTimers['entry_'+day]);
+  syncDebounceTimers['entry_'+day]=setTimeout(()=>pushEntry(getCycleStart(),day,d[day]),1500);
+}
+function getEntry(day){return loadData()[day]||{}}
+function loadDecisions(){try{return JSON.parse(localStorage.getItem('lumina_decisions')||'[]').filter(d=>d.text!=='__DELETED__')}catch(e){return[]}}
+function saveDecisions(arr){try{localStorage.setItem('lumina_decisions',JSON.stringify(arr))}catch(e){}}
+function getDecisionKey(decId){return getCycleKey()+'_dec_'+decId}
+function loadDecisionData(decId){try{return JSON.parse(localStorage.getItem(getDecisionKey(decId))||'{}')}catch(e){return{}}}
+function saveDecisionData(decId,data){try{localStorage.setItem(getDecisionKey(decId),JSON.stringify(data))}catch(e){}}
+function updateDecisionEntry(decId,day,value){
+  const d=loadDecisionData(decId);d[day]=value;saveDecisionData(decId,d);
+  clearTimeout(syncDebounceTimers['dec_'+decId+'_'+day]);
+  syncDebounceTimers['dec_'+decId+'_'+day]=setTimeout(()=>pushDecisionEntry(decId,getCycleStart(),day,value),1500);
+}
+
+// ── BUILD DAYS ────────────────────────────────────────────────────────────
+function getMoonPhaseEmoji(i){return MOON_PHASES[Math.floor((i/29)*8)%8]}
+function buildDays(){
+  const sv=localStorage.getItem('lumina_cycle_start');
+  const startDate=sv?new Date(sv+'T12:00:00'):(function(){const d=new Date();d.setDate(d.getDate()-14);return d})();
+  const today=new Date();today.setHours(12,0,0,0);
+  return Array.from({length:29},(_,i)=>{
+    const date=new Date(startDate);date.setDate(startDate.getDate()+i);
+    const noon=new Date(date);noon.setHours(12,0,0,0);
+    const deg=getMoonEclipticLongitude(noon),gn=getGateFromDegree(deg),gate=GATES[gn],line=getMoonLine(deg,gn),transit=getTransitTimes(gn,noon);
+    return{date,gate,gateNum:gn,line,deg,transit,isToday:date.toDateString()===today.toDateString(),isPast:date<=today,dayNum:i+1,index:i};
+  });
+}
+function updateProgress(){const data=loadData(),filled=Object.keys(data).filter(k=>{const e=data[k];return e&&(e.card||e.note||e.feeling||e.energy||e.moods)}).length;document.getElementById('progressFill').style.width=(filled/29*100)+'%';document.getElementById('progressLabel').textContent=filled+' of 29 days recorded'}
+
+// ── VIEWS ─────────────────────────────────────────────────────────────────
+let currentView='grid',selectedDay=null;
+function switchView(v){currentView=v;selectedDay=null;document.getElementById('navGrid').classList.toggle('active',v==='grid');document.getElementById('navDecision').classList.toggle('active',v==='decision');render()}
+function render(){const el=document.getElementById('mainContent');if(selectedDay!==null){renderDetail(el);return}currentView==='grid'?renderGrid(el):renderDecision(el)}
+
+function renderGrid(el){
+  const days=buildDays(),data=loadData();
+  let html='<div class="grid">';
+  days.forEach((day,i)=>{
+    const entry=data[i]||{},hasEntry=entry.card||entry.note||entry.feeling||entry.energy||entry.moods;
+    const cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';
+    const cls=['day-card',day.isToday?'today':'',!day.isPast?'future':'',hasEntry?'has-entry':''].filter(Boolean).join(' ');
+    const ec=ENERGY_COLORS[entry.energy]||'';
+    html+=`<button class="${cls}" ${day.isPast?`onclick="openDay(${i})"`:''}>
+      <div class="card-top"><span class="card-moon">${getMoonPhaseEmoji(i)}</span><span class="card-day-num">Day ${day.dayNum}</span></div>
+      <div class="card-date">${day.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>
+      <div class="card-gate">Gate ${day.gateNum}.${day.line}</div>
+      <div class="card-name" style="color:${cc}">${day.gate.name}</div>
+      ${day.isToday?'<div class="card-today-tag">✦ Today</div>':''}
+      ${ec?`<div class="card-energy-dot" style="background:${ec}"></div>`:''}
+    </button>`;
+  });
+  html+='</div><div class="legend"><div class="legend-title">Energy Centers</div><div class="legend-items">';
+  Object.entries(CENTER_COLORS).forEach(([c,col])=>{html+=`<div class="legend-item"><div class="legend-dot" style="background:${col}"></div><span class="legend-text">${c}</span></div>`});
+  el.innerHTML=html+'</div></div>';
+}
+
+function openDay(i){selectedDay=i;render()}
+
+function renderDetail(el){
+  const days=buildDays(),day=days[selectedDay],entry=getEntry(selectedDay);
+  const cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';
+  const feelings=['Expansive ✦','Neutral ○','Contracted ✗','Unclear ~','Excited ◈'];
+  const transitHtml=day.transit?`<div class="gate-transit-info"><strong>Transit window:</strong> entered ~${fmtDateTime(day.transit.entryTime)} &nbsp;·&nbsp; exits ~${fmtDateTime(day.transit.exitTime)}<br>Moon at <strong>${day.deg.toFixed(2)}°</strong> &nbsp;·&nbsp; Line <strong>${day.line}</strong> of Gate ${day.gateNum}</div>`:'';
+  const reading=GATE_READINGS[day.gateNum]||'Reading not available for this gate.';
+  const energyChips=Object.entries(ENERGY_COLORS).map(([label,color])=>`<button class="chip-btn ${entry.energy===label?'selected':''}" style="${entry.energy===label?`background:${color};`:''}border-color:${color}" onclick="setChip('energy','${label}')">${label}</button>`).join('');
+  const moodChips=MOOD_STATES.map(m=>`<button class="chip-btn ${(entry.moods||[]).includes(m)?'selected':''}" style="${(entry.moods||[]).includes(m)?'background:var(--green);border-color:var(--green);':''}" onclick="toggleMood('${m}')">${m}</button>`).join('');
+  const bodyChips=BODY_STATES.map(b=>`<button class="chip-btn ${(entry.body||[]).includes(b)?'selected':''}" style="${(entry.body||[]).includes(b)?'background:var(--gold-warm);border-color:var(--gold-warm);':''}" onclick="toggleBody('${b}')">${b}</button>`).join('');
+  el.innerHTML=`
+    <button class="back-btn" onclick="backToGrid()">← Back to Monthly View</button>
+    <div class="gate-hero">
+      <span class="gate-moon-big">${getMoonPhaseEmoji(selectedDay)}</span>
+      <div class="gate-eyebrow">Day ${day.dayNum} &nbsp;·&nbsp; ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
+      <div class="gate-title">Gate ${day.gateNum}.${day.line} — ${day.gate.name}</div>
+      <div class="gate-center" style="color:${cc}">${day.gate.center} Center</div>
+      <div class="gate-theme">${day.gate.theme}</div>
+      ${transitHtml}
+    </div>
+    <div class="reading-box">
+      <div class="reading-box-label">✦ Your Daily Gate Reading</div>
+      <div class="reading-text">${escHtml(reading)}</div>
+    </div>
+    <div class="reflector-box">
+      <div class="reflector-box-label">✦ Reflector Lens</div>
+      <div class="reflector-box-text">How am I reflecting this gate's energy today? What's coming through me from my environment? Is this energy mine, or am I amplifying someone else's?</div>
+    </div>
+    <div class="fields">
+      <div class="field-section">
+        <div class="field-section-title">How I Am Today</div>
+        <div style="margin-bottom:16px"><label class="field-label">Overall Energy</label><div class="chip-row">${energyChips}</div></div>
+        <div style="margin-bottom:16px"><label class="field-label">Mood — select all that apply</label><div class="chip-row">${moodChips}</div></div>
+        <div><label class="field-label">Body — how does it feel physically</label><div class="chip-row">${bodyChips}</div></div>
+      </div>
+      <div class="field-section">
+        <div class="field-section-title">Gate Observations</div>
+        <div style="margin-bottom:16px"><label class="field-label">What I noticed in myself</label><textarea class="field-textarea" rows="3" placeholder="Patterns, reactions, impulses, surprises…" oninput="updateEntry(${selectedDay},'selfObs',this.value)">${escHtml(entry.selfObs||'')}</textarea></div>
+        <div><label class="field-label">What I noticed in others / my environment</label><textarea class="field-textarea" rows="3" placeholder="What energy came in from outside? Who activated you?" oninput="updateEntry(${selectedDay},'envObs',this.value)">${escHtml(entry.envObs||'')}</textarea></div>
+      </div>
+      <div class="field-section">
+        <div class="field-section-title">Decision Tracking</div>
+        <div style="margin-bottom:16px"><label class="field-label">How does the decision feel right now?</label><div class="feeling-row">${feelings.map(f=>`<button class="feeling-btn ${entry.feeling===f?'selected':''}" onclick="setFeeling('${f}')">${f}</button>`).join('')}</div></div>
+        <div><label class="field-label">Decision note</label><textarea class="field-textarea" rows="3" placeholder="Any clarity, resistance, or shift around your decision today…" oninput="updateEntry(${selectedDay},'note',this.value)">${escHtml(entry.note||'')}</textarea></div>
+      </div>
+      <div class="field-section">
+        <div class="field-section-title">Ritual & Practice</div>
+        <div style="margin-bottom:16px"><label class="field-label">Tarot / Lenormand Card Pulled</label><input class="field-input" value="${escHtml(entry.card||'')}" placeholder="e.g. The High Priestess, Bear + Moon…" oninput="updateEntry(${selectedDay},'card',this.value)"/></div>
+        <div style="margin-bottom:16px"><label class="field-label">Time of Entry</label><div class="time-row"><input class="field-input time-input" type="time" value="${escHtml(entry.entryTime||'')}" onchange="updateEntry(${selectedDay},'entryTime',this.value)"/><span class="time-hint">When did you sit with this gate?</span></div></div>
+        <div><label class="field-label">Environment & Who I Was Around</label><input class="field-input" value="${escHtml(entry.environment||'')}" placeholder="e.g. alone, busy clinic, out with partner…" oninput="updateEntry(${selectedDay},'environment',this.value)"/></div>
+      </div>
+      <div class="save-note">✦ Entries save automatically and sync to Google Sheets.</div>
+    </div>`;
+}
+
+// ── DECISION TRACKER ──────────────────────────────────────────────────────
+function renderDecision(el){
+  const days=buildDays(),decisions=loadDecisions();
+  let html=`<div class="decisions-header"><div class="decisions-title">My Decisions</div><button class="add-decision-btn" onclick="openModal()">+ Add Decision</button></div>
+    <div class="reflector-hint">Each decision is tracked across the full 29-day cycle. A clear "yes" that persists across multiple gates and emotional states is real signal.</div>`;
+  if(!decisions.length){html+='<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No decisions yet. Add one to begin tracking.</div>';}
+  else{
+    html+='<div class="decision-cards">';
+    decisions.forEach(dec=>{
+      const decData=loadDecisionData(dec.id),counts={yes:0,maybe:0,no:0,unclear:0};
+      days.forEach((_,i)=>{const v=decData[i]||'';if(v.startsWith('Expansive'))counts.yes++;else if(v.startsWith('Neutral'))counts.maybe++;else if(v.startsWith('Contracted'))counts.no++;else if(v.startsWith('Unclear'))counts.unclear++});
+      const total=counts.yes+counts.maybe+counts.no+counts.unclear;
+      let insight=total>=5?(counts.yes>total*.6?'Leaning <strong>yes</strong> — consistent expansion.':counts.no>total*.5?'Showing <strong>contraction</strong>. Pause and feel.':counts.unclear>total*.5?'<strong>Unclear</strong> — note which environments bring clarity.':'<strong>Mixed</strong> — note which gates brought clarity.'):total>0?`${total} day${total>1?'s':''} logged so far.`:'No days logged yet.';
+      const isOpen=localStorage.getItem('lumina_open_dec')===dec.id;
+      html+=`<div class="decision-card">
+        <div class="decision-card-header ${isOpen?'open':''}" onclick="toggleDecision('${dec.id}')">
+          <div><div class="decision-card-name">${escHtml(dec.text)}</div><div class="decision-card-meta">Added ${new Date(dec.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})} · ${total} days logged</div></div>
+          <div style="display:flex;align-items:center;gap:10px"><button class="decision-delete" onclick="deleteDecision(event,'${dec.id}')">×</button><span class="decision-card-chevron ${isOpen?'open':''}">▼</span></div>
+        </div>
+        <div class="decision-card-body ${isOpen?'open':''}">
+          <div class="decision-mini-bar">
+            <div class="mini-count"><div class="mini-num" style="color:#3A7A3A">${counts.yes}</div><div class="mini-label">Expansive</div></div>
+            <div class="mini-count"><div class="mini-num" style="color:#B08820">${counts.maybe}</div><div class="mini-label">Neutral</div></div>
+            <div class="mini-count"><div class="mini-num" style="color:#A84040">${counts.no}</div><div class="mini-label">Contracted</div></div>
+            <div class="mini-count"><div class="mini-num" style="color:#888870">${counts.unclear}</div><div class="mini-label">Unclear</div></div>
+            <div class="mini-insight">${insight}</div>
+          </div>
+          <div class="decision-day-rows">${days.map((day,i)=>{
+            const fv=decData[i]||'',isFuture=!day.isPast,cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';
+            return`<div class="ddr ${isFuture?'future':''}"><div class="ddr-moon">${getMoonPhaseEmoji(i)}</div><div class="ddr-info"><div class="ddr-gate" style="color:${cc}">Gate ${day.gateNum}.${day.line} · ${day.gate.name}</div><div class="ddr-date">${day.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})}${day.transit?' · exits ~'+fmtTime(day.transit.exitTime):''}</div></div>
+            <select class="ddr-select" ${isFuture?'disabled':''} onchange="saveDecisionEntry('${dec.id}',${i},this.value)"><option value="">— feel? —</option><option value="Expansive ✦" ${fv.startsWith('Expansive')?'selected':''}>✦ Expansive</option><option value="Neutral ○" ${fv.startsWith('Neutral')?'selected':''}>○ Neutral</option><option value="Contracted ✗" ${fv.startsWith('Contracted')?'selected':''}>✗ Contracted</option><option value="Unclear ~" ${fv.startsWith('Unclear')?'selected':''}>~ Unclear</option><option value="Excited ◈" ${fv.startsWith('Excited')?'selected':''}>◈ Excited</option></select></div>`;
+          }).join('')}</div>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  }
+  el.innerHTML=html;
+}
+
+function toggleDecision(id){const c=localStorage.getItem('lumina_open_dec');localStorage.setItem('lumina_open_dec',c===id?'':id);render()}
+function saveDecisionEntry(decId,day,value){updateDecisionEntry(decId,day,value);render()}
+function deleteDecision(e,id){e.stopPropagation();if(!confirm('Delete this decision?'))return;saveDecisions(loadDecisions().filter(d=>d.id!==id));localStorage.removeItem(getDecisionKey(id));if(localStorage.getItem('lumina_open_dec')===id)localStorage.removeItem('lumina_open_dec');deleteDecisionFromDB(id);render()}
+function openModal(){document.getElementById('modalOverlay').style.display='flex';document.getElementById('modalInput').value='';setTimeout(()=>document.getElementById('modalInput').focus(),100)}
+function closeModal(e){if(e&&e.target!==document.getElementById('modalOverlay'))return;document.getElementById('modalOverlay').style.display='none'}
+function addDecision(){
+  const text=document.getElementById('modalInput').value.trim();if(!text)return;
+  const decisions=loadDecisions(),dec={id:Date.now().toString(),text,created:new Date().toISOString()};
+  decisions.push(dec);saveDecisions(decisions);localStorage.setItem('lumina_open_dec',dec.id);
+  document.getElementById('modalOverlay').style.display='none';pushDecision(dec);render();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function setFeeling(f){updateEntry(selectedDay,'feeling',f);render()}
+function setChip(field,val){const e=getEntry(selectedDay);updateEntry(selectedDay,field,e[field]===val?'':val);render()}
+function toggleMood(val){const e=getEntry(selectedDay),m=e.moods?[...e.moods]:[];const i=m.indexOf(val);if(i>-1)m.splice(i,1);else m.push(val);updateEntry(selectedDay,'moods',m);render()}
+function toggleBody(val){const e=getEntry(selectedDay),b=e.body?[...e.body]:[];const i=b.indexOf(val);if(i>-1)b.splice(i,1);else b.push(val);updateEntry(selectedDay,'body',b);render()}
+function backToGrid(){selectedDay=null;render()}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+(async function init(){
+  const saved=localStorage.getItem('lumina_cycle_start'),input=document.getElementById('cycleStart');
+  if(saved){input.value=saved}else{const d=new Date();d.setDate(d.getDate()-14);const iso=d.toISOString().split('T')[0];localStorage.setItem('lumina_cycle_start',iso);input.value=iso}
+  input.addEventListener('change',e=>{localStorage.setItem('lumina_cycle_start',e.target.value);updateProgress();render()});
+  updateLiveGate();setInterval(updateLiveGate,60000);
+  updateProgress();
+  document.getElementById('mainContent').innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--ink-faint);font-size:13px;font-weight:700;letter-spacing:1px">Syncing your data…</div>';
+  await pullFromDB();
+  updateProgress();render();
+})();
+</script>
+</body>
+</html>
