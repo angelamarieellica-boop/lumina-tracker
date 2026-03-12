@@ -853,9 +853,10 @@ ${moments.map(m=>`"${m.text}" (Gate ${m.gateNum}, felt: ${m.bodyFeel||'—'}). N
 Write a warm, direct, insightful summary of this cycle. Use plain prose, no bullet points, no headers. 4-6 paragraphs. Cover: what the energy and mood data suggests about how this cycle felt in the body, which centers were most prominent and what that means for a Reflector, what the decision data is showing (patterns, clarity, resistance), any notable observations from the gate journal entries, and a closing reflection on what this cycle seems to be asking of her. Be specific to her actual data. Don't pad with generic HD theory. Speak to her directly.`;
 
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const resp=await fetch('/.netlify/functions/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
     const data2=await resp.json();
-    const text=data2.content?.[0]?.text||'Unable to generate summary.';
+    if(data2.error)throw new Error(data2.error);
+    const text=data2.text||'Unable to generate summary.';
     result.innerHTML=`<div class="insights-text">${escHtml(text)}</div>`;
 
     // Save summary
