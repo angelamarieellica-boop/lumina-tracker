@@ -134,8 +134,43 @@
   .ddr-select{background:var(--ivory);border:1.5px solid var(--border);color:var(--ink);padding:6px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'Libre Baskerville',serif;width:100%;cursor:pointer;outline:none}
   .ddr-select:disabled{cursor:default;background:var(--border-light);color:var(--ink-faint)}
   .ddr-select:focus{border-color:var(--green)}
-  .decision-delete{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:16px;padding:2px 6px;line-height:1;border-radius:3px;transition:color .15s}
-  .decision-delete:hover{color:#A84040}
+  .decision-comment{width:100%;background:var(--ivory);border:1px solid var(--border-light);color:var(--ink);padding:7px 10px;border-radius:4px;font-size:12px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.5;margin-top:6px;transition:border-color .15s}
+  .decision-comment:focus{border-color:var(--green)}
+  .ddr{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start;padding:12px 20px;border-bottom:1px solid var(--border-light)}
+  .ddr:last-child{border-bottom:none}
+  .ddr.future{opacity:.35}
+  .ddr-right{display:flex;flex-direction:column;gap:6px}
+  .ddr-moon{text-align:center;font-size:16px;padding-top:2px}
+  .ddr-info{font-size:11px}
+  .ddr-gate{font-weight:700;color:var(--ink);margin-bottom:1px}
+  .ddr-date{color:var(--ink-faint)}
+  .ddr-select{background:var(--ivory);border:1.5px solid var(--border);color:var(--ink);padding:6px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'Libre Baskerville',serif;width:100%;cursor:pointer;outline:none}
+  .ddr-select:disabled{cursor:default;background:var(--border-light);color:var(--ink-faint)}
+  .ddr-select:focus{border-color:var(--green)}
+  .dec-tabs{display:flex;gap:0;margin-bottom:20px;border:1.5px solid var(--border);border-radius:5px;overflow:hidden}
+  .dec-tab{flex:1;padding:10px;background:none;border:none;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Libre Baskerville',serif;color:var(--ink-soft);transition:all .15s}
+  .dec-tab.active{background:var(--green);color:var(--white)}
+  .moment-list{display:flex;flex-direction:column;gap:10px}
+  .moment-card{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;padding:16px 20px}
+  .moment-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+  .moment-card-text{font-size:14px;font-weight:700;color:var(--ink);line-height:1.4;flex:1}
+  .moment-card-meta{font-size:11px;color:var(--ink-faint);margin-bottom:6px}
+  .moment-card-note{font-size:12px;color:var(--ink-soft);line-height:1.6;margin-bottom:8px}
+  .moment-outcome{width:100%;background:var(--ivory-mid);border:1.5px solid var(--border);color:var(--ink);padding:8px 12px;border-radius:4px;font-size:12px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.5;transition:border-color .15s}
+  .moment-outcome:focus{border-color:var(--green)}
+  .moment-outcome-label{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--ink-faint);text-transform:uppercase;margin-bottom:5px}
+  .insights-box{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:18px}
+  .insights-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--green);margin-bottom:6px}
+  .insights-meta{font-size:11px;color:var(--ink-faint);font-weight:700;letter-spacing:1px;margin-bottom:16px}
+  .insights-text{font-size:13px;color:var(--ink-mid);line-height:1.9;white-space:pre-wrap}
+  .generate-btn{background:var(--green);border:none;color:white;padding:12px 28px;border-radius:5px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Libre Baskerville',serif;transition:background .15s;display:flex;align-items:center;gap:8px}
+  .generate-btn:hover{background:var(--green-mid)}
+  .generate-btn:disabled{background:var(--border);cursor:default}
+  .past-summaries{display:flex;flex-direction:column;gap:10px}
+  .past-summary-card{background:var(--white);border:1.5px solid var(--border-light);border-radius:7px;padding:16px 20px;cursor:pointer}
+  .past-summary-card:hover{border-color:var(--green)}
+  .past-summary-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+  .past-summary-preview{font-size:12px;color:var(--ink-faint);line-height:1.5}
   .reflector-hint{background:var(--green-pale);border:1.5px solid #A8CF88;border-left:4px solid var(--green);border-radius:7px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--ink-mid);line-height:1.75}
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
   .modal{background:var(--white);border-radius:10px;padding:28px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto}
@@ -181,8 +216,9 @@
     <div class="progress-label" id="progressLabel">0 of 29 days recorded</div>
   </div>
   <div class="nav">
-    <button class="nav-btn active" id="navGrid" onclick="switchView('grid')">Monthly View</button>
-    <button class="nav-btn" id="navDecision" onclick="switchView('decision')">Decision Tracker</button>
+    <button class="nav-btn active" id="navGrid" onclick="switchView('grid')">Monthly</button>
+    <button class="nav-btn" id="navDecision" onclick="switchView('decision')">Decisions</button>
+    <button class="nav-btn" id="navInsights" onclick="switchView('insights')">Insights</button>
   </div>
 </div>
 <div class="main" id="mainContent"></div>
@@ -198,15 +234,40 @@
   </div>
 </div>
 
-<!-- Add Decision Modal -->
+<!-- Add Lunar Decision Modal -->
 <div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModal(event)">
   <div class="modal">
-    <div class="modal-title">New Decision</div>
+    <div class="modal-title">New Lunar Decision</div>
+    <div class="setup-note">This will be tracked across the full 29-day cycle. Use this for big decisions that deserve the full lunar container.</div>
     <label class="field-label">What are you sitting with?</label>
     <textarea class="field-textarea" id="modalInput" rows="4" placeholder="e.g. Should I commit to the Sunday clinic space? Is it time to launch the Etsy shop?…" style="margin-bottom:4px"></textarea>
     <div class="modal-btns">
       <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Cancel</button>
       <button class="modal-btn modal-btn-save" onclick="addDecision()">Add Decision</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Moment Decision Modal -->
+<div class="modal-overlay" id="momentModalOverlay" style="display:none" onclick="closeMomentModal(event)">
+  <div class="modal">
+    <div class="modal-title">Moment Decision</div>
+    <div class="setup-note">For decisions made in the moment — quick calls, intuitive moves, things that didn't need a full cycle. Log it now and optionally return later to note how it turned out.</div>
+    <div style="margin-bottom:14px">
+      <label class="field-label">What did you decide?</label>
+      <textarea class="field-textarea" id="momentDecisionText" rows="3" placeholder="e.g. Said yes to the pop-up vendor spot. Declined the collaboration offer.…"></textarea>
+    </div>
+    <div style="margin-bottom:14px">
+      <label class="field-label">How did it feel in your body?</label>
+      <div class="chip-row" id="momentBodyChips"></div>
+    </div>
+    <div style="margin-bottom:4px">
+      <label class="field-label">Note</label>
+      <textarea class="field-textarea" id="momentDecisionNote" rows="2" placeholder="What made you decide this? Any hesitation?"></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeMomentModal()">Cancel</button>
+      <button class="modal-btn modal-btn-save" onclick="addMomentDecision()">Log Decision</button>
     </div>
   </div>
 </div>
@@ -318,10 +379,12 @@ async function db(action,table,data,match){
 async function pullFromDB(){
   setSyncStatus('syncing','Syncing…');
   try{
-    const[entries,decisions,decData]=await Promise.all([
+    const[entries,decisions,decData,momentDecs,summaries]=await Promise.all([
       db('select','entries'),
       db('select','decisions'),
-      db('select','decision_data')
+      db('select','decision_data'),
+      db('select','moment_decisions'),
+      db('select','cycle_summaries')
     ]);
     if(entries===null){setSyncStatus('error','Sync error');return}
 
@@ -344,14 +407,20 @@ async function pullFromDB(){
     const decs=(decisions||[]).map(d=>({id:d.id,text:d.text,created:d.created}));
     try{localStorage.setItem('lumina_decisions',JSON.stringify(decs))}catch(e){}
 
-    // Rebuild decision data
+    // Rebuild decision data (with comments)
     const ddMap={};
     (decData||[]).forEach(row=>{
       const key='lumina_cycle_'+row.cycle_start+'_dec_'+row.decision_id;
       if(!ddMap[key])ddMap[key]={};
-      ddMap[key][row.day_index]=row.feeling;
+      ddMap[key][row.day_index]={feeling:row.feeling||'',comment:row.comment||''};
     });
     Object.entries(ddMap).forEach(([k,d])=>{try{localStorage.setItem(k,JSON.stringify(d))}catch(e){}});
+
+    // Rebuild moment decisions
+    try{localStorage.setItem('lumina_moment_decisions',JSON.stringify(momentDecs||[]))}catch(e){}
+
+    // Rebuild summaries
+    try{localStorage.setItem('lumina_summaries',JSON.stringify(summaries||[]))}catch(e){}
 
     setSyncStatus('synced','Synced');updateProgress();render();
   }catch(e){console.error('Pull error',e);setSyncStatus('error','Sync error')}
@@ -366,8 +435,14 @@ async function pushEntry(cycleStart,dayIndex,entry){
 async function pushDecision(dec){
   await db('upsert','decisions',{id:dec.id,text:dec.text,created:dec.created});
 }
-async function pushDecisionEntry(decId,cycleStart,dayIndex,feeling){
-  await db('upsert','decision_data',{decision_id:decId,cycle_start:cycleStart,day_index:dayIndex,feeling});
+async function pushDecisionEntry(decId,cycleStart,dayIndex,feeling,comment){
+  await db('upsert','decision_data',{decision_id:decId,cycle_start:cycleStart,day_index:dayIndex,feeling,comment:comment||''});
+}
+async function pushMomentDecision(md){
+  await db('upsert','moment_decisions',md);
+}
+async function pushSummary(summary){
+  await db('upsert','cycle_summaries',summary);
 }
 async function deleteDecisionFromDB(decId){
   await db('delete','decisions',null,{id:decId});
@@ -395,11 +470,18 @@ function saveDecisions(arr){try{localStorage.setItem('lumina_decisions',JSON.str
 function getDecisionKey(decId){return getCycleKey()+'_dec_'+decId}
 function loadDecisionData(decId){try{return JSON.parse(localStorage.getItem(getDecisionKey(decId))||'{}')}catch(e){return{}}}
 function saveDecisionData(decId,data){try{localStorage.setItem(getDecisionKey(decId),JSON.stringify(data))}catch(e){}}
-function updateDecisionEntry(decId,day,value){
-  const d=loadDecisionData(decId);d[day]=value;saveDecisionData(decId,d);
+function updateDecisionEntry(decId,day,feeling,comment){
+  const d=loadDecisionData(decId);
+  if(!d[day])d[day]={};
+  if(feeling!==undefined)d[day].feeling=feeling;
+  if(comment!==undefined)d[day].comment=comment;
+  saveDecisionData(decId,d);
   clearTimeout(syncDebounceTimers['dec_'+decId+'_'+day]);
-  syncDebounceTimers['dec_'+decId+'_'+day]=setTimeout(()=>pushDecisionEntry(decId,getCycleStart(),day,value),1500);
+  syncDebounceTimers['dec_'+decId+'_'+day]=setTimeout(()=>pushDecisionEntry(decId,getCycleStart(),day,d[day].feeling,d[day].comment),1500);
 }
+function loadMomentDecisions(){try{return JSON.parse(localStorage.getItem('lumina_moment_decisions')||'[]')}catch(e){return[]}}
+function saveMomentDecisions(arr){try{localStorage.setItem('lumina_moment_decisions',JSON.stringify(arr))}catch(e){}}
+function loadSummaries(){try{return JSON.parse(localStorage.getItem('lumina_summaries')||'[]')}catch(e){return[]}}
 
 // ── NEW MOON DATES (Eastern Time, NASA-sourced) ───────────────────────────
 const NEW_MOONS_2026=[
@@ -472,9 +554,17 @@ function buildDays(){
 function updateProgress(){const data=loadData(),filled=Object.keys(data).filter(k=>{const e=data[k];return e&&(e.card||e.note||e.feeling||e.energy||e.moods)}).length;document.getElementById('progressFill').style.width=(filled/29*100)+'%';document.getElementById('progressLabel').textContent=filled+' of 29 days recorded'}
 
 // ── VIEWS ─────────────────────────────────────────────────────────────────
-let currentView='grid',selectedDay=null;
-function switchView(v){currentView=v;selectedDay=null;document.getElementById('navGrid').classList.toggle('active',v==='grid');document.getElementById('navDecision').classList.toggle('active',v==='decision');render()}
-function render(){const el=document.getElementById('mainContent');if(selectedDay!==null){renderDetail(el);return}currentView==='grid'?renderGrid(el):renderDecision(el)}
+let currentView='grid',selectedDay=null,decisionSubTab='lunar';
+function switchView(v){currentView=v;selectedDay=null;
+  document.getElementById('navGrid').classList.toggle('active',v==='grid');
+  document.getElementById('navDecision').classList.toggle('active',v==='decision');
+  document.getElementById('navInsights').classList.toggle('active',v==='insights');
+  render()}
+function render(){const el=document.getElementById('mainContent');if(selectedDay!==null){renderDetail(el);return}
+  if(currentView==='grid')renderGrid(el);
+  else if(currentView==='decision')renderDecision(el);
+  else renderInsights(el);
+}
 
 function renderGrid(el){
   const days=buildDays(),data=loadData();
@@ -582,37 +672,112 @@ function renderDetail(el){
 
 // ── DECISION TRACKER ──────────────────────────────────────────────────────
 function renderDecision(el){
+  let html=`<div class="dec-tabs">
+    <button class="dec-tab ${decisionSubTab==='lunar'?'active':''}" onclick="setDecTab('lunar')">Lunar Decisions</button>
+    <button class="dec-tab ${decisionSubTab==='moment'?'active':''}" onclick="setDecTab('moment')">Moment Decisions</button>
+  </div>`;
+  if(decisionSubTab==='lunar')html+=renderLunarDecisions();
+  else html+=renderMomentDecisions();
+  el.innerHTML=html;
+}
+
+function setDecTab(tab){decisionSubTab=tab;render()}
+
+function renderLunarDecisions(){
   const days=buildDays(),decisions=loadDecisions();
-  let html=`<div class="decisions-header"><div class="decisions-title">My Decisions</div><button class="add-decision-btn" onclick="openModal()">+ Add Decision</button></div>
-    <div class="reflector-hint">Each decision is tracked across the full 29-day cycle. A clear "yes" that persists across multiple gates and emotional states is real signal.</div>`;
-  if(!decisions.length){html+='<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No decisions yet. Add one to begin tracking.</div>';}
-  else{
-    html+='<div class="decision-cards">';
-    decisions.forEach(dec=>{
-      const decData=loadDecisionData(dec.id),counts={yes:0,maybe:0,no:0,unclear:0};
-      days.forEach((_,i)=>{const v=decData[i]||'';if(v.startsWith('Expansive'))counts.yes++;else if(v.startsWith('Neutral'))counts.maybe++;else if(v.startsWith('Contracted'))counts.no++;else if(v.startsWith('Unclear'))counts.unclear++});
-      const total=counts.yes+counts.maybe+counts.no+counts.unclear;
-      let insight=total>=5?(counts.yes>total*.6?'Leaning <strong>yes</strong> — consistent expansion.':counts.no>total*.5?'Showing <strong>contraction</strong>. Pause and feel.':counts.unclear>total*.5?'<strong>Unclear</strong> — note which environments bring clarity.':'<strong>Mixed</strong> — note which gates brought clarity.'):total>0?`${total} day${total>1?'s':''} logged so far.`:'No days logged yet.';
-      const isOpen=localStorage.getItem('lumina_open_dec')===dec.id;
-      html+=`<div class="decision-card">
-        <div class="decision-card-header ${isOpen?'open':''}" onclick="toggleDecision('${dec.id}')">
-          <div><div class="decision-card-name">${escHtml(dec.text)}</div><div class="decision-card-meta">Added ${new Date(dec.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})} · ${total} days logged</div></div>
-          <div style="display:flex;align-items:center;gap:10px"><button class="decision-delete" onclick="deleteDecision(event,'${dec.id}')">×</button><span class="decision-card-chevron ${isOpen?'open':''}">▼</span></div>
+  let html=`<div class="decisions-header"><div class="decisions-title">Lunar Decisions</div><button class="add-decision-btn" onclick="openModal()">+ Add Decision</button></div>
+    <div class="reflector-hint">These are your big ones — tracked across the full 29-day cycle. A clear "yes" that persists across multiple gates and emotional states is real signal.</div>`;
+  if(!decisions.length)return html+'<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No lunar decisions yet. Add one to begin tracking.</div>';
+  html+='<div class="decision-cards">';
+  decisions.forEach(dec=>{
+    const decData=loadDecisionData(dec.id),counts={yes:0,maybe:0,no:0,unclear:0};
+    days.forEach((_,i)=>{const v=(decData[i]||{}).feeling||'';if(v.startsWith('Expansive'))counts.yes++;else if(v.startsWith('Neutral'))counts.maybe++;else if(v.startsWith('Contracted'))counts.no++;else if(v.startsWith('Unclear'))counts.unclear++});
+    const total=counts.yes+counts.maybe+counts.no+counts.unclear;
+    let insight=total>=5?(counts.yes>total*.6?'Leaning <strong>yes</strong> — consistent expansion.':counts.no>total*.5?'Showing <strong>contraction</strong>. Pause and feel.':counts.unclear>total*.5?'<strong>Unclear</strong> — note which environments bring clarity.':'<strong>Mixed</strong> — note which gates brought clarity.'):total>0?`${total} day${total>1?'s':''} logged so far.`:'No days logged yet.';
+    const isOpen=localStorage.getItem('lumina_open_dec')===dec.id;
+    html+=`<div class="decision-card">
+      <div class="decision-card-header ${isOpen?'open':''}" onclick="toggleDecision('${dec.id}')">
+        <div><div class="decision-card-name">${escHtml(dec.text)}</div><div class="decision-card-meta">Added ${new Date(dec.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})} · ${total} days logged</div></div>
+        <div style="display:flex;align-items:center;gap:10px"><button class="decision-delete" onclick="deleteDecision(event,'${dec.id}')">×</button><span class="decision-card-chevron ${isOpen?'open':''}">▼</span></div>
+      </div>
+      <div class="decision-card-body ${isOpen?'open':''}">
+        <div class="decision-mini-bar">
+          <div class="mini-count"><div class="mini-num" style="color:#3A7A3A">${counts.yes}</div><div class="mini-label">Expansive</div></div>
+          <div class="mini-count"><div class="mini-num" style="color:#B08820">${counts.maybe}</div><div class="mini-label">Neutral</div></div>
+          <div class="mini-count"><div class="mini-num" style="color:#A84040">${counts.no}</div><div class="mini-label">Contracted</div></div>
+          <div class="mini-count"><div class="mini-num" style="color:#888870">${counts.unclear}</div><div class="mini-label">Unclear</div></div>
+          <div class="mini-insight">${insight}</div>
         </div>
-        <div class="decision-card-body ${isOpen?'open':''}">
-          <div class="decision-mini-bar">
-            <div class="mini-count"><div class="mini-num" style="color:#3A7A3A">${counts.yes}</div><div class="mini-label">Expansive</div></div>
-            <div class="mini-count"><div class="mini-num" style="color:#B08820">${counts.maybe}</div><div class="mini-label">Neutral</div></div>
-            <div class="mini-count"><div class="mini-num" style="color:#A84040">${counts.no}</div><div class="mini-label">Contracted</div></div>
-            <div class="mini-count"><div class="mini-num" style="color:#888870">${counts.unclear}</div><div class="mini-label">Unclear</div></div>
-            <div class="mini-insight">${insight}</div>
-          </div>
-          <div class="decision-day-rows">${days.map((day,i)=>{
-            const fv=decData[i]||'',isFuture=!day.isPast,cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';
-            return`<div class="ddr ${isFuture?'future':''}"><div class="ddr-moon">${getMoonPhaseEmoji(i)}</div><div class="ddr-info"><div class="ddr-gate" style="color:${cc}">Gate ${day.gateNum}.${day.line} · ${day.gate.name}</div><div class="ddr-date">${day.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})}${day.transit?' · exits ~'+fmtTime(day.transit.exitTime):''}</div></div>
-            <select class="ddr-select" ${isFuture?'disabled':''} onchange="saveDecisionEntry('${dec.id}',${i},this.value)"><option value="">— feel? —</option><option value="Expansive ✦" ${fv.startsWith('Expansive')?'selected':''}>✦ Expansive</option><option value="Neutral ○" ${fv.startsWith('Neutral')?'selected':''}>○ Neutral</option><option value="Contracted ✗" ${fv.startsWith('Contracted')?'selected':''}>✗ Contracted</option><option value="Unclear ~" ${fv.startsWith('Unclear')?'selected':''}>~ Unclear</option><option value="Excited ◈" ${fv.startsWith('Excited')?'selected':''}>◈ Excited</option></select></div>`;
-          }).join('')}</div>
-        </div>
+        <div class="decision-day-rows">${days.map((day,i)=>{
+          const dayData=decData[i]||{},fv=dayData.feeling||'',fc=dayData.comment||'',isFuture=!day.isPast,cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';
+          return`<div class="ddr ${isFuture?'future':''}">
+            <div class="ddr-moon">${getMoonPhaseEmoji(i)}</div>
+            <div class="ddr-right">
+              <div class="ddr-info"><div class="ddr-gate" style="color:${cc}">Gate ${day.gateNum}.${day.line} · ${day.gate.name}</div><div class="ddr-date">${day.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div></div>
+              <select class="ddr-select" ${isFuture?'disabled':''} onchange="saveDecisionFeeling('${dec.id}',${i},this.value)">
+                <option value="">— feel? —</option>
+                <option value="Expansive ✦" ${fv.startsWith('Expansive')?'selected':''}>✦ Expansive</option>
+                <option value="Neutral ○" ${fv.startsWith('Neutral')?'selected':''}>○ Neutral</option>
+                <option value="Contracted ✗" ${fv.startsWith('Contracted')?'selected':''}>✗ Contracted</option>
+                <option value="Unclear ~" ${fv.startsWith('Unclear')?'selected':''}>~ Unclear</option>
+                <option value="Excited ◈" ${fv.startsWith('Excited')?'selected':''}>◈ Excited</option>
+              </select>
+              ${!isFuture?`<textarea class="decision-comment" rows="2" placeholder="Notes on this day…" onchange="saveDecisionComment('${dec.id}',${i},this.value)">${escHtml(fc)}</textarea>`:''}
+            </div>
+          </div>`;
+        }).join('')}</div>
+      </div>
+    </div>`;
+  });
+  return html+'</div>';
+}
+
+function renderMomentDecisions(){
+  const moments=loadMomentDecisions();
+  const now=new Date(),deg=getMoonEclipticLongitude(now),gn=getGateFromDegree(deg),line=getMoonLine(deg,gn);
+  let html=`<div class="decisions-header"><div class="decisions-title">Moment Decisions</div><button class="add-decision-btn" onclick="openMomentModal()">+ Log Decision</button></div>
+    <div class="reflector-hint">Quick calls, intuitive moves, in-the-moment choices. Log them here and return later to note how they turned out.</div>`;
+  if(!moments.length)return html+'<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No moment decisions logged yet.</div>';
+  html+='<div class="moment-list">';
+  [...moments].reverse().forEach(md=>{
+    const mdate=new Date(md.created);
+    const gateInfo=GATES[md.gateNum]||{};
+    const cc=CENTER_COLORS[gateInfo.center]||'#3A7A3A';
+    html+=`<div class="moment-card">
+      <div class="moment-card-top">
+        <div class="moment-card-text">${escHtml(md.text)}</div>
+        <button class="decision-delete" onclick="deleteMomentDecision('${md.id}')">×</button>
+      </div>
+      <div class="moment-card-meta">${mdate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})} · <span style="color:${cc};font-weight:700">Gate ${md.gateNum}.${md.line} ${gateInfo.name||''}</span> · ${md.bodyFeel||''}</div>
+      ${md.note?`<div class="moment-card-note">${escHtml(md.note)}</div>`:''}
+      <div class="moment-outcome-label">How did it turn out?</div>
+      <textarea class="moment-outcome" rows="2" placeholder="Return here later to note the outcome…" onchange="saveMomentOutcome('${md.id}',this.value)">${escHtml(md.outcome||'')}</textarea>
+    </div>`;
+  });
+  return html+'</div>';
+}
+
+// ── INSIGHTS ──────────────────────────────────────────────────────────────
+function renderInsights(el){
+  const summaries=loadSummaries();
+  const nm=getCurrentNewMoon();
+  const nmDate=new Date(nm+'T12:00:00');
+  const sign=getNewMoonSign(nm);
+  let html=`<div class="insights-box">
+    <div class="insights-title">Cycle Insights</div>
+    <div class="insights-meta">New Moon in ${sign} · Started ${nmDate.toLocaleDateString('en-US',{month:'long',day:'numeric'})}</div>
+    <p style="font-size:13px;color:var(--ink-soft);line-height:1.7;margin-bottom:18px">Generate an AI summary of your current cycle's data — gate patterns, energy trends, decision signals, and reflections on what the cycle is showing you.</p>
+    <button class="generate-btn" id="generateBtn" onclick="generateInsights()">✦ Generate Cycle Summary</button>
+    <div id="insightResult" style="margin-top:20px"></div>
+  </div>`;
+  if(summaries.length){
+    html+=`<div style="margin-bottom:12px;font-size:10px;font-weight:700;letter-spacing:3px;color:var(--ink-faint);text-transform:uppercase">Past Cycle Summaries</div>
+    <div class="past-summaries">`;
+    [...summaries].reverse().forEach(s=>{
+      const isOpen=localStorage.getItem('lumina_open_summary')===s.id;
+      html+=`<div class="past-summary-card" onclick="toggleSummary('${s.id}')">
+        <div class="past-summary-title">New Moon in ${s.sign||'—'} · ${s.cycle_start}</div>
+        ${isOpen?`<div class="insights-text" style="margin-top:12px;font-size:12px">${escHtml(s.summary)}</div>`:`<div class="past-summary-preview">${escHtml((s.summary||'').substring(0,120))}…</div>`}
       </div>`;
     });
     html+='</div>';
@@ -620,8 +785,94 @@ function renderDecision(el){
   el.innerHTML=html;
 }
 
+function toggleSummary(id){const c=localStorage.getItem('lumina_open_summary');localStorage.setItem('lumina_open_summary',c===id?'':id);render()}
+
+async function generateInsights(){
+  const btn=document.getElementById('generateBtn');
+  const result=document.getElementById('insightResult');
+  if(!btn||!result)return;
+  btn.disabled=true;btn.textContent='Generating…';
+  result.innerHTML='<div style="color:var(--ink-faint);font-size:13px;padding:12px 0">Pulling your data and generating insights…</div>';
+
+  const nm=getCurrentNewMoon(),days=buildDays(),data=loadData(),decisions=loadDecisions(),moments=loadMomentDecisions();
+  const sign=getNewMoonSign(nm);
+
+  // Build data summary for Claude
+  const entryCount=Object.keys(data).length;
+  const energySummary={};const moodSummary={};const centerSummary={};
+  days.forEach((day,i)=>{
+    const e=data[i]||{};
+    if(e.energy)energySummary[e.energy]=(energySummary[e.energy]||0)+1;
+    (e.moods||[]).forEach(m=>moodSummary[m]=(moodSummary[m]||0)+1);
+    if(e.energy||e.moods){const c=day.gate.center;centerSummary[c]=(centerSummary[c]||0)+1;}
+  });
+
+  const decisionSummaries=decisions.map(dec=>{
+    const dd=loadDecisionData(dec.id);
+    const counts={expansive:0,neutral:0,contracted:0,unclear:0};
+    const dayNotes=[];
+    days.forEach((_,i)=>{
+      const v=(dd[i]||{});
+      if((v.feeling||'').startsWith('Expansive'))counts.expansive++;
+      else if((v.feeling||'').startsWith('Neutral'))counts.neutral++;
+      else if((v.feeling||'').startsWith('Contracted'))counts.contracted++;
+      else if((v.feeling||'').startsWith('Unclear'))counts.unclear++;
+      if(v.comment)dayNotes.push(`Day ${i+1}: ${v.comment}`);
+    });
+    return{text:dec.text,counts,dayNotes};
+  });
+
+  const observations=days.map((day,i)=>{
+    const e=data[i]||{};
+    if(!e.selfObs&&!e.envObs&&!e.reflectorLens)return null;
+    return{day:i+1,gate:`${day.gateNum} ${day.gate.name}`,selfObs:e.selfObs,envObs:e.envObs,reflectorLens:e.reflectorLens};
+  }).filter(Boolean);
+
+  const prompt=`You are generating a personalized cycle summary for Gela, a 4/6 Reflector in Human Design. She is a nurse informaticist and holistic practitioner (reiki, tarot, calligraphy). Her natal chart: Sag Sun 6th house, Pisces Moon 9th house, Gemini Rising, Jupiter in Cancer 1st house (exalted), Saturn in Capricorn 7th house. She is in a first house profection year with a Jupiter return.
+
+Current lunar cycle: New Moon in ${sign}, started ${nm}. ${entryCount} of 29 days logged.
+
+ENERGY DATA:
+${Object.entries(energySummary).map(([k,v])=>`${k}: ${v} days`).join(', ')||'No energy data logged'}
+
+MOOD PATTERNS:
+${Object.entries(moodSummary).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k}: ${v} days`).join(', ')||'No mood data logged'}
+
+MOST ACTIVATED CENTERS:
+${Object.entries(centerSummary).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k}: ${v} days`).join(', ')||'No center data'}
+
+GATE OBSERVATIONS (selected days):
+${observations.map(o=>`Gate ${o.gate} (Day ${o.day}): Self: ${o.selfObs||'—'} | Environment: ${o.envObs||'—'} | Reflector lens: ${o.reflectorLens||'—'}`).join('\n')||'No observations logged'}
+
+LUNAR DECISIONS:
+${decisionSummaries.map(d=>`"${d.text}": Expansive ${d.counts.expansive}x, Neutral ${d.counts.neutral}x, Contracted ${d.counts.contracted}x, Unclear ${d.counts.unclear}x. Notes: ${d.dayNotes.join(' | ')||'none'}`).join('\n')||'No lunar decisions tracked'}
+
+MOMENT DECISIONS:
+${moments.map(m=>`"${m.text}" (Gate ${m.gateNum}, felt: ${m.bodyFeel||'—'}). Note: ${m.note||'—'}. Outcome: ${m.outcome||'not yet noted'}`).join('\n')||'None logged'}
+
+Write a warm, direct, insightful summary of this cycle. Use plain prose, no bullet points, no headers. 4-6 paragraphs. Cover: what the energy and mood data suggests about how this cycle felt in the body, which centers were most prominent and what that means for a Reflector, what the decision data is showing (patterns, clarity, resistance), any notable observations from the gate journal entries, and a closing reflection on what this cycle seems to be asking of her. Be specific to her actual data. Don't pad with generic HD theory. Speak to her directly.`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data2=await resp.json();
+    const text=data2.content?.[0]?.text||'Unable to generate summary.';
+    result.innerHTML=`<div class="insights-text">${escHtml(text)}</div>`;
+
+    // Save summary
+    const summary={id:Date.now().toString(),cycle_start:nm,sign,summary:text,created:new Date().toISOString()};
+    const existing=loadSummaries().filter(s=>s.cycle_start!==nm);
+    existing.push(summary);
+    localStorage.setItem('lumina_summaries',JSON.stringify(existing));
+    await pushSummary(summary);
+  }catch(e){
+    result.innerHTML='<div style="color:#A84040;font-size:13px">Error generating summary. Please try again.</div>';
+  }
+  btn.disabled=false;btn.innerHTML='✦ Generate Cycle Summary';
+}
+
 function toggleDecision(id){const c=localStorage.getItem('lumina_open_dec');localStorage.setItem('lumina_open_dec',c===id?'':id);render()}
-function saveDecisionEntry(decId,day,value){updateDecisionEntry(decId,day,value);render()}
+function saveDecisionFeeling(decId,day,value){updateDecisionEntry(decId,day,value,undefined);render()}
+function saveDecisionComment(decId,day,value){updateDecisionEntry(decId,day,undefined,value)}
 function deleteDecision(e,id){e.stopPropagation();if(!confirm('Delete this decision?'))return;saveDecisions(loadDecisions().filter(d=>d.id!==id));localStorage.removeItem(getDecisionKey(id));if(localStorage.getItem('lumina_open_dec')===id)localStorage.removeItem('lumina_open_dec');deleteDecisionFromDB(id);render()}
 function openModal(){document.getElementById('modalOverlay').style.display='flex';document.getElementById('modalInput').value='';setTimeout(()=>document.getElementById('modalInput').focus(),100)}
 function closeModal(e){if(e&&e.target!==document.getElementById('modalOverlay'))return;document.getElementById('modalOverlay').style.display='none'}
@@ -630,6 +881,39 @@ function addDecision(){
   const decisions=loadDecisions(),dec={id:Date.now().toString(),text,created:new Date().toISOString()};
   decisions.push(dec);saveDecisions(decisions);localStorage.setItem('lumina_open_dec',dec.id);
   document.getElementById('modalOverlay').style.display='none';pushDecision(dec);render();
+}
+
+// Moment decisions
+let momentBodyFeel='';
+function openMomentModal(){
+  momentBodyFeel='';
+  document.getElementById('momentDecisionText').value='';
+  document.getElementById('momentDecisionNote').value='';
+  const chips=document.getElementById('momentBodyChips');
+  if(chips)chips.innerHTML=BODY_STATES.map(b=>`<button class="chip-btn" onclick="setMomentBodyFeel('${b}',this)">${b}</button>`).join('');
+  document.getElementById('momentModalOverlay').style.display='flex';
+  setTimeout(()=>document.getElementById('momentDecisionText').focus(),100);
+}
+function setMomentBodyFeel(val,btn){
+  momentBodyFeel=val;
+  document.querySelectorAll('#momentBodyChips .chip-btn').forEach(b=>{b.classList.remove('selected');b.style.background='';b.style.borderColor='';});
+  btn.classList.add('selected');btn.style.background='var(--gold-warm)';btn.style.borderColor='var(--gold-warm)';btn.style.color='white';
+}
+function closeMomentModal(e){if(e&&e.target!==document.getElementById('momentModalOverlay'))return;document.getElementById('momentModalOverlay').style.display='none'}
+function addMomentDecision(){
+  const text=document.getElementById('momentDecisionText').value.trim();if(!text)return;
+  const now=new Date(),deg=getMoonEclipticLongitude(now),gn=getGateFromDegree(deg),line=getMoonLine(deg,gn);
+  const md={id:Date.now().toString(),text,note:document.getElementById('momentDecisionNote').value.trim(),bodyFeel:momentBodyFeel,gateNum:gn,line,created:now.toISOString(),outcome:''};
+  const moments=loadMomentDecisions();moments.push(md);saveMomentDecisions(moments);
+  document.getElementById('momentModalOverlay').style.display='none';
+  pushMomentDecision(md);render();
+}
+function deleteMomentDecision(id){if(!confirm('Delete this decision?'))return;saveMomentDecisions(loadMomentDecisions().filter(m=>m.id!==id));db('delete','moment_decisions',null,{id});render()}
+function saveMomentOutcome(id,outcome){
+  const moments=loadMomentDecisions(),idx=moments.findIndex(m=>m.id===id);
+  if(idx<0)return;moments[idx].outcome=outcome;saveMomentDecisions(moments);
+  clearTimeout(syncDebounceTimers['moment_'+id]);
+  syncDebounceTimers['moment_'+id]=setTimeout(()=>pushMomentDecision(moments[idx]),1500);
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────
