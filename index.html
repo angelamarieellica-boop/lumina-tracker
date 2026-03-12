@@ -173,8 +173,8 @@
   </div>
   <div class="sync-status"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">Not connected</span></div>
   <div class="cycle-row">
-    <span class="cycle-label">Cycle begins</span>
-    <input type="date" id="cycleStart" class="cycle-input"/>
+    <span class="cycle-label">Current Cycle</span>
+    <span id="cycleDisplay" class="cycle-input" style="cursor:default;background:var(--ivory-mid)"></span>
   </div>
   <div class="progress-wrap">
     <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
@@ -380,7 +380,7 @@ function closeSettings(){document.getElementById('settingsOverlay').style.displa
 function saveSettings(){closeSettings();pullFromDB()}
 
 // ── LOCAL STORAGE ─────────────────────────────────────────────────────────
-function getCycleStart(){return localStorage.getItem('lumina_cycle_start')||''}
+function getCycleStart(){return getCurrentNewMoon()}
 function getCycleKey(){return'lumina_cycle_'+getCycleStart()}
 function loadData(){try{return JSON.parse(localStorage.getItem(getCycleKey())||'{}')}catch(e){return{}}}
 function saveData(d){try{localStorage.setItem(getCycleKey(),JSON.stringify(d))}catch(e){}}
@@ -399,6 +399,31 @@ function updateDecisionEntry(decId,day,value){
   const d=loadDecisionData(decId);d[day]=value;saveDecisionData(decId,d);
   clearTimeout(syncDebounceTimers['dec_'+decId+'_'+day]);
   syncDebounceTimers['dec_'+decId+'_'+day]=setTimeout(()=>pushDecisionEntry(decId,getCycleStart(),day,value),1500);
+}
+
+// ── NEW MOON DATES (Eastern Time, NASA-sourced) ───────────────────────────
+const NEW_MOONS_2026=[
+  '2026-01-18','2026-02-17','2026-03-18','2026-04-17',
+  '2026-05-16','2026-06-14','2026-07-14','2026-08-12',
+  '2026-09-10','2026-10-10','2026-11-09','2026-12-08'
+];
+
+function getCurrentNewMoon(){
+  const today=new Date();today.setHours(0,0,0,0);
+  let current=NEW_MOONS_2026[0];
+  for(const nm of NEW_MOONS_2026){
+    const d=new Date(nm+'T00:00:00');
+    if(d<=today)current=nm;else break;
+  }
+  return current;
+}
+
+function getNewMoonSign(dateStr){
+  const signs={'2026-01-18':'Capricorn','2026-02-17':'Aquarius','2026-03-18':'Pisces',
+    '2026-04-17':'Aries','2026-05-16':'Taurus','2026-06-14':'Gemini',
+    '2026-07-14':'Cancer','2026-08-12':'Leo','2026-09-10':'Virgo',
+    '2026-10-10':'Libra','2026-11-09':'Scorpio','2026-12-08':'Sagittarius'};
+  return signs[dateStr]||'';
 }
 
 // ── BUILD DAYS ────────────────────────────────────────────────────────────
@@ -433,8 +458,8 @@ function getWakingGates(date){
 }
 
 function buildDays(){
-  const sv=localStorage.getItem('lumina_cycle_start');
-  const startDate=sv?new Date(sv+'T12:00:00'):(function(){const d=new Date();d.setDate(d.getDate()-14);return d})();
+  const cycleStart=getCurrentNewMoon();
+  const startDate=new Date(cycleStart+'T12:00:00');
   const today=new Date();today.setHours(12,0,0,0);
   return Array.from({length:29},(_,i)=>{
     const date=new Date(startDate);date.setDate(startDate.getDate()+i);
@@ -617,9 +642,16 @@ function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 (async function init(){
-  const saved=localStorage.getItem('lumina_cycle_start'),input=document.getElementById('cycleStart');
-  if(saved){input.value=saved}else{const d=new Date();d.setDate(d.getDate()-14);const iso=d.toISOString().split('T')[0];localStorage.setItem('lumina_cycle_start',iso);input.value=iso}
-  input.addEventListener('change',e=>{localStorage.setItem('lumina_cycle_start',e.target.value);updateProgress();render()});
+  // Auto-set cycle from new moon calendar
+  const nm=getCurrentNewMoon();
+  const nmDate=new Date(nm+'T12:00:00');
+  const nextNm=NEW_MOONS_2026.find(d=>new Date(d+'T00:00:00')>new Date());
+  const display=document.getElementById('cycleDisplay');
+  if(display){
+    const start=nmDate.toLocaleDateString('en-US',{month:'long',day:'numeric'});
+    const sign=getNewMoonSign(nm);
+    display.textContent=`New Moon in ${sign} · ${start}`;
+  }
   updateLiveGate();setInterval(updateLiveGate,60000);
   updateProgress();
   document.getElementById('mainContent').innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--ink-faint);font-size:13px;font-weight:700;letter-spacing:1px">Syncing your data…</div>';
