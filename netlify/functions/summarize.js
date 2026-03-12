@@ -13,7 +13,7 @@ exports.handler = async function(event) {
     return { statusCode: 405, headers: CORS, body: 'Method not allowed' };
   }
 
-  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+  const ANTHROPIC_KEY = process.env.Anthropic_API_Key;
   if (!ANTHROPIC_KEY) {
     return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'Anthropic API key not configured' }) };
   }
