@@ -39,13 +39,17 @@ exports.handler = async function(event) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         messages: [{ role: 'user', content: prompt }]
       })
     });
 
     const data = await response.json();
+    if (!response.ok) {
+      console.error('Anthropic API error:', JSON.stringify(data));
+      throw new Error(data.error?.message || `API returned ${response.status}`);
+    }
     const text = data.content?.[0]?.text || 'Unable to generate summary.';
 
     return {
