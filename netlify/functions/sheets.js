@@ -36,6 +36,14 @@ exports.handler = async function(event) {
     'Prefer': 'resolution=merge-duplicates,return=representation'
   };
 
+  const conflictCols = {
+    entries: 'cycle_start,day_index',
+    decisions: 'id',
+    decision_data: 'decision_id,cycle_start,day_index',
+    moment_decisions: 'id',
+    cycle_summaries: 'id'
+  };
+
   try {
     let url = `${SUPABASE_URL}/rest/v1/${table}`;
     let method = 'GET';
@@ -43,12 +51,13 @@ exports.handler = async function(event) {
 
     if (action === 'upsert') {
       method = 'POST';
+      const onConflict = conflictCols[table];
+      if (onConflict) url += `?on_conflict=${onConflict}`;
       reqBody = JSON.stringify(Array.isArray(data) ? data : [data]);
     } else if (action === 'select') {
       const params = new URLSearchParams();
       if (match) Object.entries(match).forEach(([k,v]) => params.append(k, `eq.${v}`));
-      if (url.includes('?')) url += '&' + params.toString();
-      else if (params.toString()) url += '?' + params.toString();
+      if (params.toString()) url += '?' + params.toString();
       method = 'GET';
     } else if (action === 'delete') {
       const params = new URLSearchParams();
@@ -59,6 +68,11 @@ exports.handler = async function(event) {
 
     const response = await fetch(url, { method, headers, body: reqBody });
     const text = await response.text();
+
+    if (!response.ok) {
+      console.error(`Supabase error on ${action} ${table}:`, text);
+    }
+
     const result = text ? JSON.parse(text) : [];
 
     return {
