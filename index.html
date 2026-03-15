@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Lumina · Lunar Gate Tracker</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+<script src="/cardData.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{--ivory:#FAF8F3;--ivory-mid:#F0EBE0;--green:#2D5016;--green-mid:#3D6B20;--green-light:#5A8A35;--green-pale:#E4EFD8;--gold:#96690A;--gold-warm:#B8860B;--gold-pale:#F8F0D8;--ink:#1A1A10;--ink-mid:#323222;--ink-soft:#525240;--ink-faint:#7A7A60;--border:#C8C0A8;--border-light:#DDD8CC;--white:#FFFFFF}
@@ -189,7 +190,33 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .past-summary-card:hover{border-color:var(--green)}
 .past-summary-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
 .past-summary-preview{font-size:12px;color:var(--ink-faint);line-height:1.5}
-/* Modals */
+/* Card reading */
+.reading-section{border-top:1.5px solid var(--border-light);padding-top:18px;margin-top:4px}
+.reading-section-title{font-size:10px;font-weight:700;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:16px}
+.card-slots{display:flex;flex-direction:column;gap:14px;margin-bottom:12px}
+.card-slot{background:var(--ivory-mid);border:1.5px solid var(--border-light);border-radius:8px;padding:16px 18px}
+.card-slot-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.card-slot-label{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
+.card-slot-delete{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:15px;padding:0 4px;line-height:1}
+.card-slot-delete:hover{color:#A84040}
+.card-type-toggle{display:flex;gap:0;border:1.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.card-type-btn{flex:1;padding:6px 10px;background:none;border:none;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;font-family:'Libre Baskerville',serif;color:var(--ink-soft);transition:all .15s}
+.card-type-btn.active{background:var(--green);color:white}
+.card-selectors{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.card-select{width:100%;background:var(--white);border:1.5px solid var(--border);color:var(--ink);padding:8px 12px;border-radius:5px;font-size:13px;font-family:'Libre Baskerville',serif;outline:none;cursor:pointer}
+.card-select:focus{border-color:var(--green)}
+.orientation-toggle{display:flex;gap:8px;margin-bottom:10px}
+.orientation-btn{flex:1;padding:7px;background:var(--white);border:1.5px solid var(--border);color:var(--ink-soft);border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;transition:all .15s;text-align:center}
+.orientation-btn.active.upright{background:#3A7A3A;border-color:#3A7A3A;color:white}
+.orientation-btn.active.reversed{background:#7A5830;border-color:#7A5830;color:white}
+.card-meaning-box{background:var(--white);border:1.5px solid var(--border-light);border-radius:6px;padding:12px 14px;margin-bottom:10px}
+.card-meaning-keywords{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;letter-spacing:.5px}
+.card-meaning-text{font-size:12px;color:var(--ink-mid);line-height:1.75}
+.card-notes-input{width:100%;background:var(--white);border:1.5px solid var(--border-light);color:var(--ink);padding:8px 12px;border-radius:5px;font-size:13px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.6;transition:border-color .15s}
+.card-notes-input:focus{border-color:var(--green)}
+.add-card-btn{background:none;border:1.5px dashed var(--gold);color:var(--gold);padding:9px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;width:100%;text-align:center;transition:all .15s}
+.add-card-btn:hover{background:var(--gold-pale)}
+
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
 .modal{background:var(--white);border-radius:10px;padding:28px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto}
 .modal-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green);margin-bottom:16px}
@@ -548,9 +575,8 @@ function renderDetail(el){
           <div class="sub-field"><label class="sub-field-label">In My Environment</label><textarea class="field-textarea" rows="2" placeholder="Quality of spaces, situations, energy fields…" oninput="updateEntryField(${selectedDay},'${e.id}','obsEnv',this.value)">${escHtml(e.obsEnv||'')}</textarea></div>
         </div>
         <div class="field-section" style="padding-top:14px">
-          <div class="field-section-title">Cards & Themes</div>
-          <div style="margin-bottom:12px"><label class="field-label">Card Pulled</label><input class="field-input" value="${escHtml(e.card||'')}" placeholder="e.g. The High Priestess, Bear + Moon…" oninput="updateEntryField(${selectedDay},'${e.id}','card',this.value)"/></div>
-          <label class="field-label">Themes & Connections</label><textarea class="field-textarea" rows="2" placeholder="What does this card say in conversation with today's gate?" oninput="updateEntryField(${selectedDay},'${e.id}','cardThemes',this.value)">${escHtml(e.cardThemes||'')}</textarea>
+          <div class="field-section-title">Cards & Reading</div>
+          ${renderCardSlots(selectedDay, e.id)}
         </div>
       </div>
     </div>`}).join('')}</div>`;
@@ -795,7 +821,121 @@ function saveMomentOutcome(id,outcome){
   clearTimeout(syncDebounceTimers['moment_'+id]);
   syncDebounceTimers['moment_'+id]=setTimeout(()=>pushMomentDecision(moments[idx]),1500)}
 
-// ── HELPERS ───────────────────────────────────────────────────────────────
+// ── CARD READING ───────────────────────────────────────────────────────────
+function getCardSlots(day, entryId){
+  const dd=getDayData(day);
+  const idx=dd.entries.findIndex(e=>e.id===entryId);
+  if(idx<0)return[];
+  return dd.entries[idx].cardSlots||[];
+}
+function saveCardSlots(day, entryId, slots){
+  const dd=getDayData(day);
+  const idx=dd.entries.findIndex(e=>e.id===entryId);
+  if(idx<0)return;
+  dd.entries[idx].cardSlots=slots;
+  saveDayData(day,dd);
+}
+function addCardSlot(day, entryId){
+  const slots=getCardSlots(day,entryId);
+  if(slots.length>=3)return;
+  slots.push({id:Date.now().toString(),type:'tarot',deck:'',suit:'',cardName:'',orientation:'upright',notes:''});
+  saveCardSlots(day,entryId,slots);
+  render();
+}
+function removeCardSlot(day, entryId, slotId){
+  const slots=getCardSlots(day,entryId).filter(s=>s.id!==slotId);
+  saveCardSlots(day,entryId,slots);
+  render();
+}
+function updateCardSlot(day, entryId, slotId, field, value){
+  const slots=getCardSlots(day,entryId);
+  const idx=slots.findIndex(s=>s.id===slotId);
+  if(idx<0)return;
+  slots[idx][field]=value;
+  // Reset card name when type/deck/suit changes
+  if(field==='type'||field==='deck'||field==='suit')slots[idx].cardName='';
+  saveCardSlots(day,entryId,slots);
+  render();
+}
+
+function renderCardSlots(day, entryId){
+  const slots=getCardSlots(day,entryId);
+  const labels=['First Card','Second Card','Third Card'];
+  let html='<div class="card-slots">';
+  slots.forEach((slot,si)=>{
+    const tarotSuits=['Major Arcana','Cups','Pentacles','Swords','Wands'];
+    const filteredTarot=slot.suit?TAROT_CARDS.filter(c=>c.suit===slot.suit||c.suit.includes(slot.suit)):TAROT_CARDS;
+    const selectedTarot=TAROT_CARDS.find(c=>c.name===slot.cardName);
+    const filteredOracle=slot.deck?ORACLE_CARDS.filter(c=>c.deck===slot.deck):ORACLE_CARDS;
+    const selectedOracle=ORACLE_CARDS.find(c=>c.name===slot.cardName&&(!slot.deck||c.deck===slot.deck));
+
+    const meaningHtml=()=>{
+      if(!slot.cardName)return'';
+      if(slot.type==='tarot'&&selectedTarot){
+        const kw=slot.orientation==='reversed'?selectedTarot.keywords_rev:selectedTarot.keywords_up;
+        const mn=slot.orientation==='reversed'?selectedTarot.meaning_rev:selectedTarot.meaning_up;
+        return`<div class="card-meaning-box">
+          ${kw?`<div class="card-meaning-keywords">${escHtml(kw)}</div>`:''}
+          ${mn?`<div class="card-meaning-text">${escHtml(mn)}</div>`:''}
+        </div>`;
+      }
+      if(slot.type==='oracle'&&selectedOracle){
+        const msg=selectedOracle.core_message||selectedOracle.meaning||'';
+        return`<div class="card-meaning-box">
+          ${selectedOracle.theme?`<div class="card-meaning-keywords">${escHtml(selectedOracle.theme)}</div>`:''}
+          ${msg?`<div class="card-meaning-text">${escHtml(msg)}</div>`:''}
+        </div>`;
+      }
+      return'';
+    };
+
+    html+=`<div class="card-slot">
+      <div class="card-slot-header">
+        <span class="card-slot-label">${labels[si]||'Card '+(si+1)}</span>
+        <button class="card-slot-delete" onclick="removeCardSlot(${day},'${entryId}','${slot.id}')">×</button>
+      </div>
+      <div class="card-type-toggle">
+        <button class="card-type-btn ${slot.type==='tarot'?'active':''}" onclick="updateCardSlot(${day},'${entryId}','${slot.id}','type','tarot')">Tarot</button>
+        <button class="card-type-btn ${slot.type==='oracle'?'active':''}" onclick="updateCardSlot(${day},'${entryId}','${slot.id}','type','oracle')">Oracle</button>
+      </div>
+      <div class="card-selectors">
+        ${slot.type==='tarot'?`
+          <select class="card-select" onchange="updateCardSlot(${day},'${entryId}','${slot.id}','suit',this.value)">
+            <option value="">All suits</option>
+            ${tarotSuits.map(s=>`<option value="${s}" ${slot.suit===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+          <select class="card-select" onchange="updateCardSlot(${day},'${entryId}','${slot.id}','cardName',this.value)">
+            <option value="">Select card…</option>
+            ${filteredTarot.map(c=>`<option value="${escHtml(c.name)}" ${slot.cardName===c.name?'selected':''}>${escHtml(c.name)}</option>`).join('')}
+          </select>
+        `:`
+          <select class="card-select" onchange="updateCardSlot(${day},'${entryId}','${slot.id}','deck',this.value)">
+            <option value="">All decks</option>
+            ${ORACLE_DECKS.map(d=>`<option value="${escHtml(d)}" ${slot.deck===d?'selected':''}>${escHtml(d)}</option>`).join('')}
+          </select>
+          <select class="card-select" onchange="updateCardSlot(${day},'${entryId}','${slot.id}','cardName',this.value)">
+            <option value="">Select card…</option>
+            ${filteredOracle.map(c=>`<option value="${escHtml(c.name)}" ${slot.cardName===c.name?'selected':''}>${escHtml(c.name)} — ${escHtml(c.deck)}</option>`).join('')}
+          </select>
+        `}
+      </div>
+      ${slot.type==='tarot'&&slot.cardName?`
+        <div class="orientation-toggle">
+          <button class="orientation-btn upright ${slot.orientation==='upright'?'active':''}" onclick="updateCardSlot(${day},'${entryId}','${slot.id}','orientation','upright')">↑ Upright</button>
+          <button class="orientation-btn reversed ${slot.orientation==='reversed'?'active':''}" onclick="updateCardSlot(${day},'${entryId}','${slot.id}','orientation','reversed')">↓ Reversed</button>
+        </div>
+      `:''}
+      ${meaningHtml()}
+      <textarea class="card-notes-input" rows="2" placeholder="Your interpretive layer — what does this card mean to you right now?" onchange="updateCardSlot(${day},'${entryId}','${slot.id}','notes',this.value)">${escHtml(slot.notes||'')}</textarea>
+    </div>`;
+  });
+  html+='</div>';
+  if(slots.length<3){
+    html+=`<button class="add-card-btn" onclick="addCardSlot(${day},'${entryId}')">+ Add Card</button>`;
+  }
+  return html;
+}
+
 function backToGrid(){selectedDay=null;render()}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
