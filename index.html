@@ -874,9 +874,16 @@ function renderCardSlots(day, entryId){
       if(slot.type==='tarot'&&selectedTarot){
         const kw=slot.orientation==='reversed'?selectedTarot.keywords_rev:selectedTarot.keywords_up;
         const mn=slot.orientation==='reversed'?selectedTarot.meaning_rev:selectedTarot.meaning_up;
+        const extras=slot.orientation==='upright'?[
+          selectedTarot.career?`<div style="margin-top:10px"><div class="card-meaning-keywords">Career & Work</div><div class="card-meaning-text">${escHtml(selectedTarot.career)}</div></div>`:'',
+          selectedTarot.relationships?`<div style="margin-top:10px"><div class="card-meaning-keywords">Relationships & Love</div><div class="card-meaning-text">${escHtml(selectedTarot.relationships)}</div></div>`:'',
+          selectedTarot.spirituality?`<div style="margin-top:10px"><div class="card-meaning-keywords">Spirituality</div><div class="card-meaning-text">${escHtml(selectedTarot.spirituality)}</div></div>`:'',
+          selectedTarot.journaling?`<div style="margin-top:10px"><div class="card-meaning-keywords">Journal Prompts</div><div class="card-meaning-text">${escHtml(selectedTarot.journaling)}</div></div>`:''
+        ].filter(Boolean).join(''):[];
         return`<div class="card-meaning-box">
           ${kw?`<div class="card-meaning-keywords">${escHtml(kw)}</div>`:''}
           ${mn?`<div class="card-meaning-text">${escHtml(mn)}</div>`:''}
+          ${extras}
         </div>`;
       }
       if(slot.type==='oracle'&&selectedOracle){
