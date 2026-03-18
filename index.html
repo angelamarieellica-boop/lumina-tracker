@@ -227,6 +227,63 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .modal-btn-cancel:hover{border-color:var(--green);color:var(--green)}
 .modal-btn-save{background:var(--green);border:1.5px solid var(--green);color:white}
 .modal-btn-save:hover{background:var(--green-mid)}
+/* Spellwork */
+.spell-list{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+.spell-card{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;overflow:hidden}
+.spell-card-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;transition:background .15s}
+.spell-card-header:hover{background:var(--ivory-mid)}
+.spell-card-header.open{background:linear-gradient(135deg,var(--green-pale),var(--gold-pale));border-bottom:1.5px solid var(--border-light)}
+.spell-card-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.spell-card-meta{font-size:11px;color:var(--ink-faint)}
+.spell-card-body{display:none;padding:20px}
+.spell-card-body.open{display:block}
+.spell-section{margin-bottom:20px}
+.spell-section-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:10px}
+.spell-type-chip{background:var(--green-pale);border:1.5px solid var(--green-light);color:var(--green);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;transition:all .15s}
+.spell-type-chip.selected{background:var(--green);border-color:var(--green);color:white}
+.material-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center}
+.material-input{background:var(--white);border:1.5px solid var(--border);color:var(--ink);padding:8px 10px;border-radius:5px;font-size:13px;font-family:'Libre Baskerville',serif;outline:none;width:100%;transition:border-color .15s}
+.material-input:focus{border-color:var(--green)}
+.material-del{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:18px;padding:0 6px;line-height:1}
+.material-del:hover{color:#A84040}
+.step-row{display:grid;grid-template-columns:24px 1fr auto;gap:8px;margin-bottom:8px;align-items:start}
+.step-num{font-size:12px;font-weight:700;color:var(--gold);padding-top:10px;text-align:center}
+.step-del{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:16px;padding:4px 6px;line-height:1}
+.step-del:hover{color:#A84040}
+.add-row-btn{background:none;border:1.5px dashed var(--border);color:var(--ink-faint);padding:7px 14px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;transition:all .15s;margin-top:4px}
+.add-row-btn:hover{border-color:var(--green);color:var(--green)}
+.followup-row{background:var(--ivory-mid);border-radius:6px;padding:12px 14px;margin-bottom:8px}
+.followup-row-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.followup-date{font-size:11px;font-weight:700;color:var(--ink-faint)}
+.status-select{background:var(--white);border:1.5px solid var(--border);color:var(--ink);padding:5px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'Libre Baskerville',serif;outline:none}
+.status-select:focus{border-color:var(--green)}
+/* Execute mode */
+.exec-header{text-align:center;padding:32px 0 24px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:32px}
+.exec-spell-name{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:white;margin-bottom:6px}
+.exec-meta{font-size:12px;color:rgba(255,255,255,.5);letter-spacing:1px;margin-bottom:4px}
+.exec-phase{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--gold-warm);text-transform:uppercase;margin-bottom:28px;text-align:center}
+.exec-checklist-title{font-size:10px;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:14px}
+.exec-material-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.exec-material-check{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.3);cursor:pointer;flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:12px}
+.exec-material-check.checked{background:var(--gold-warm);border-color:var(--gold-warm)}
+.exec-material-name{font-size:14px;color:white;flex:1}
+.exec-material-purpose{font-size:11px;color:rgba(255,255,255,.4)}
+.exec-step-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:28px;margin-bottom:24px;text-align:center}
+.exec-step-counter{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--gold-warm);text-transform:uppercase;margin-bottom:16px}
+.exec-step-text{font-size:18px;color:white;line-height:1.7;margin-bottom:24px}
+.exec-incantation{background:rgba(184,134,11,.1);border:1px solid rgba(184,134,11,.3);border-radius:8px;padding:20px;margin-bottom:24px;font-size:16px;color:var(--gold-warm);line-height:1.9;font-style:italic;text-align:center;white-space:pre-wrap}
+.exec-nav-btns{display:flex;gap:12px;justify-content:center}
+.exec-btn{padding:12px 28px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Libre Baskerville',serif;transition:all .15s;border:none}
+.exec-btn-prev{background:rgba(255,255,255,.08);color:rgba(255,255,255,.6)}
+.exec-btn-next{background:var(--gold-warm);color:white}
+.exec-btn-done{background:var(--green);color:white}
+.exec-timer{text-align:center;margin-bottom:20px}
+.exec-timer-display{font-family:'Cormorant Garamond',serif;font-size:48px;color:white;margin-bottom:12px}
+.exec-timer-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:8px 20px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px;margin:0 4px}
+.exec-notes-label{font-size:10px;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:10px}
+.exec-notes-input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:white;padding:12px;border-radius:6px;font-size:14px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.7}
+.exec-notes-input::placeholder{color:rgba(255,255,255,.3)}
+.exec-close{position:fixed;top:20px;right:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:8px 16px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px;z-index:2001}
 </style>
 </head>
 <body>
@@ -256,10 +313,16 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
   <div class="nav">
     <button class="nav-btn active" id="navGrid" onclick="switchView('grid')">Monthly</button>
     <button class="nav-btn" id="navDecision" onclick="switchView('decision')">Decisions</button>
+    <button class="nav-btn" id="navSpellwork" onclick="switchView('spellwork')">Spellwork</button>
     <button class="nav-btn" id="navInsights" onclick="switchView('insights')">Insights</button>
   </div>
 </div>
 <div class="main" id="mainContent"></div>
+
+<!-- Execute Mode Full Screen -->
+<div id="executeOverlay" style="display:none;position:fixed;inset:0;background:var(--ink);z-index:2000;overflow-y:auto;padding:0">
+  <div id="executeContent" style="max-width:600px;margin:0 auto;padding:32px 24px 80px"></div>
+</div>
 
 <!-- Settings Modal -->
 <div class="modal-overlay" id="settingsOverlay" style="display:none">
@@ -345,9 +408,9 @@ async function db(action,table,data,match){
 async function pullFromDB(){
   setSyncStatus('syncing','Syncing…');
   try{
-    const[entries,decisions,decData,momentDecs,summaries]=await Promise.all([
+    const[entries,decisions,decData,momentDecs,summaries,spellsDb]=await Promise.all([
       db('select','entries'),db('select','decisions'),db('select','decision_data'),
-      db('select','moment_decisions'),db('select','cycle_summaries')
+      db('select','moment_decisions'),db('select','cycle_summaries'),db('select','spells')
     ]);
     if(entries===null){setSyncStatus('error','Sync error');return}
     const cycleMap={};
@@ -372,6 +435,9 @@ async function pullFromDB(){
     Object.entries(ddMap).forEach(([k,d])=>{try{localStorage.setItem(k,JSON.stringify(d))}catch(e){}});
     try{localStorage.setItem('lumina_moment_decisions',JSON.stringify(momentDecs||[]))}catch(e){}
     try{localStorage.setItem('lumina_summaries',JSON.stringify(summaries||[]))}catch(e){}
+    // Rebuild spells
+    const spellsParsed=(spellsDb||[]).map(r=>{try{return JSON.parse(r.data)}catch(e){return null}}).filter(Boolean);
+    if(spellsParsed.length)try{localStorage.setItem('lumina_spells',JSON.stringify(spellsParsed))}catch(e){}
     setSyncStatus('synced','Synced');updateProgress();render();
   }catch(e){console.error('Pull error',e);setSyncStatus('error','Sync error')}
 }
@@ -479,12 +545,14 @@ let currentView='grid',selectedDay=null,decisionSubTab='lunar',decisionViewMode=
 function switchView(v){currentView=v;selectedDay=null;
   document.getElementById('navGrid').classList.toggle('active',v==='grid');
   document.getElementById('navDecision').classList.toggle('active',v==='decision');
+  document.getElementById('navSpellwork').classList.toggle('active',v==='spellwork');
   document.getElementById('navInsights').classList.toggle('active',v==='insights');
   render()}
 function render(){const el=document.getElementById('mainContent');
   if(selectedDay!==null){renderDetail(el);return}
   if(currentView==='grid')renderGrid(el);
   else if(currentView==='decision')renderDecision(el);
+  else if(currentView==='spellwork')renderSpellwork(el);
   else renderInsights(el)}
 
 // ── GRID ───────────────────────────────────────────────────────────────────
@@ -942,6 +1010,293 @@ function renderCardSlots(day, entryId){
   }
   return html;
 }
+
+// ── SPELLWORK ──────────────────────────────────────────────────────────────
+const SPELL_TYPES=['Candle Magic','Jar/Bottle Spell','Spell Bag/Sachet','Herbal Working','Crystal Work','Ritual Bath','Moon Water','Charging/Consecration','Card Reading','Dream Work','Smoke Cleansing','Anointing','Oil Blending','Altar Work','Cord/Knot Magic','Written Spell/Petition','Tea/Infusion','Full Ritual'];
+const SPELL_STATUSES=['Unfolding','Partial Signs','Aligned','Manifested','Redirected','Released'];
+const STATUS_COLORS={'Unfolding':'#7858A8','Partial Signs':'#B08820','Aligned':'#3A7A3A','Manifested':'#2D5016','Redirected':'#A86830','Released':'#7A7A60'};
+
+function loadSpells(){try{return JSON.parse(localStorage.getItem('lumina_spells')||'[]')}catch(e){return[]}}
+function saveSpells(arr){try{localStorage.setItem('lumina_spells',JSON.stringify(arr))}catch(e){}}
+function loadMaterials(){try{return JSON.parse(localStorage.getItem('lumina_materials')||'[]')}catch(e){return[]}}
+function saveMaterials(arr){try{localStorage.setItem('lumina_materials',JSON.stringify(arr))}catch(e){}}
+
+function getSpellOccasion(){
+  const now=new Date(),nm=getCurrentNewMoon(),nmDate=new Date(nm+'T00:00:00');
+  const today=new Date();today.setHours(0,0,0,0);
+  const diff=Math.round((today-nmDate)/(1000*60*60*24));
+  if(diff===0)return`New Moon in ${getNewMoonSign(nm)}`;
+  if(diff>=13&&diff<=15)return`Full Moon`;
+  const pct=(diff/29)*100;
+  if(pct<25)return`Waxing Crescent`;
+  if(pct<50)return`Waxing Gibbous`;
+  if(pct<75)return`Waning Gibbous`;
+  return`Waning Crescent`;}
+
+function createSpell(){
+  const now=new Date(),deg=getMoonEclipticLongitude(now),gn=getGateFromDegree(deg),ln=getMoonLine(deg,gn);
+  const spell={id:Date.now().toString(),name:'',types:[],occasion:getSpellOccasion(),gateNum:gn,gateLine:ln,intention:'',materials:[],steps:[],incantation:'',castingNotes:'',created:now.toISOString(),followups:[]};
+  const spells=loadSpells();spells.unshift(spell);saveSpells(spells);
+  localStorage.setItem('lumina_open_spell',spell.id);
+  return spell.id;}
+
+function updateSpellField(spellId,field,value){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  spells[idx][field]=value;saveSpells(spells);
+  clearTimeout(syncDebounceTimers['spell_'+spellId]);
+  syncDebounceTimers['spell_'+spellId]=setTimeout(()=>pushSpell(spells[idx]),1500);}
+
+function toggleSpellType(spellId,type){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  const types=[...(spells[idx].types||[])];const i=types.indexOf(type);if(i>-1)types.splice(i,1);else types.push(type);
+  spells[idx].types=types;saveSpells(spells);render();}
+
+function addMaterialRow(spellId){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  spells[idx].materials.push({id:Date.now().toString(),item:'',purpose:''});saveSpells(spells);render();}
+function updateMaterial(spellId,matId,field,value){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  const mi=spells[idx].materials.findIndex(m=>m.id===matId);if(mi<0)return;
+  spells[idx].materials[mi][field]=value;saveSpells(spells);
+  if(field==='item'&&value){const known=loadMaterials();if(!known.includes(value)){known.push(value);saveMaterials(known);}}}
+function removeMaterial(spellId,matId){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  spells[idx].materials=spells[idx].materials.filter(m=>m.id!==matId);saveSpells(spells);render();}
+
+function addStepRow(spellId){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  spells[idx].steps.push({id:Date.now().toString(),text:'',hasTimer:false,timerMins:5,isIncantation:false});
+  saveSpells(spells);render();}
+function updateStep(spellId,stepId,field,value){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  const si=spells[idx].steps.findIndex(s=>s.id===stepId);if(si<0)return;
+  spells[idx].steps[si][field]=value;saveSpells(spells);}
+function removeStep(spellId,stepId){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  spells[idx].steps=spells[idx].steps.filter(s=>s.id!==stepId);saveSpells(spells);render();}
+
+function addFollowup(spellId){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  spells[idx].followups.push({id:Date.now().toString(),date:new Date().toISOString(),status:'Unfolding',note:''});
+  saveSpells(spells);render();}
+function updateFollowup(spellId,fupId,field,value){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  const fi=spells[idx].followups.findIndex(f=>f.id===fupId);if(fi<0)return;
+  spells[idx].followups[fi][field]=value;saveSpells(spells);}
+function deleteSpell(spellId){
+  if(!confirm('Delete this spell?'))return;saveSpells(loadSpells().filter(s=>s.id!==spellId));render();}
+
+async function pushSpell(spell){await db('upsert','spells',{id:spell.id,data:JSON.stringify(spell)})}
+
+function renderSpellwork(el){
+  const spells=loadSpells();
+  const now=new Date(),deg=getMoonEclipticLongitude(now),gn=getGateFromDegree(deg),ln=getMoonLine(deg,gn);
+  const gateInfo=GATES[gn]||{},cc=CENTER_COLORS[gateInfo.center]||'var(--gold-warm)';
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green)">Spellwork</div>
+    <button class="add-decision-btn" onclick="newSpell()">+ New Spell</button>
+  </div>
+  <div class="reflector-hint" style="margin-bottom:20px">
+    <strong>Now:</strong> ${getSpellOccasion()} &nbsp;·&nbsp; <span style="color:${cc}">Gate ${gn}.${ln} ${gateInfo.name||''}</span> &nbsp;·&nbsp; ${now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
+  </div>`;
+  if(!spells.length){html+='<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No spells yet. Add one to begin tracking your practice.</div>';}
+  else{
+    html+='<div class="spell-list">';
+    spells.forEach(spell=>{
+      const isOpen=localStorage.getItem('lumina_open_spell')===spell.id;
+      const latest=spell.followups&&spell.followups.length?spell.followups[spell.followups.length-1].status:'';
+      const sc=STATUS_COLORS[latest]||'';
+      const typeStr=(spell.types||[]).join(', ')||'—';
+      const castDate=new Date(spell.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      html+=`<div class="spell-card">
+        <div class="spell-card-header ${isOpen?'open':''}" onclick="toggleSpell('${spell.id}')">
+          <div style="flex:1">
+            <div class="spell-card-title">${spell.name?escHtml(spell.name):'<em style="color:var(--ink-faint)">Untitled Spell</em>'}</div>
+            <div class="spell-card-meta">${castDate} · ${escHtml(spell.occasion||'—')} · ${escHtml(typeStr)}</div>
+            ${latest?`<div style="display:inline-block;margin-top:5px;padding:2px 10px;border-radius:10px;background:${sc}22;border:1px solid ${sc}55;font-size:10px;font-weight:700;color:${sc}">${latest}</div>`:''}
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+            ${spell.steps&&spell.steps.length?`<button style="background:var(--gold-warm);border:none;color:white;padding:7px 14px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px" onclick="event.stopPropagation();launchExecute('${spell.id}')">▶ Execute</button>`:''}
+            <button class="decision-delete" onclick="event.stopPropagation();deleteSpell('${spell.id}')">×</button>
+          </div>
+        </div>
+        <div class="spell-card-body ${isOpen?'open':''}">${renderSpellForm(spell)}</div>
+      </div>`});
+    html+='</div>';}
+  el.innerHTML=html;}
+
+function renderSpellForm(spell){
+  const known=loadMaterials();
+  return`<datalist id="mat_list_${spell.id}">${known.map(m=>`<option value="${escHtml(m)}">`).join('')}</datalist>
+  <div class="spell-section">
+    <div class="spell-section-label">Spell Name</div>
+    <input class="field-input" value="${escHtml(spell.name||'')}" placeholder="e.g. New Moon Money Bowl" oninput="updateSpellField('${spell.id}','name',this.value)"/>
+  </div>
+  <div class="spell-section">
+    <div class="spell-section-label">Type — select all that apply</div>
+    <div class="chip-row">${SPELL_TYPES.map(t=>`<button class="spell-type-chip ${(spell.types||[]).includes(t)?'selected':''}" onclick="toggleSpellType('${spell.id}','${t}')">${t}</button>`).join('')}</div>
+  </div>
+  <div class="spell-section">
+    <div class="spell-section-label">Occasion & Moon Phase</div>
+    <input class="field-input" value="${escHtml(spell.occasion||'')}" placeholder="e.g. New Moon in Pisces" oninput="updateSpellField('${spell.id}','occasion',this.value)"/>
+  </div>
+  <div class="spell-section">
+    <div class="spell-section-label">Intention</div>
+    <textarea class="field-textarea" rows="3" placeholder="What are you calling in, releasing, or transforming?" oninput="updateSpellField('${spell.id}','intention',this.value)">${escHtml(spell.intention||'')}</textarea>
+  </div>
+  <div class="spell-section">
+    <div class="spell-section-label">Materials</div>
+    ${(spell.materials||[]).map(m=>`<div class="material-row">
+      <input class="material-input" list="mat_list_${spell.id}" value="${escHtml(m.item||'')}" placeholder="Item (e.g. green candle)" onchange="updateMaterial('${spell.id}','${m.id}','item',this.value)"/>
+      <input class="material-input" value="${escHtml(m.purpose||'')}" placeholder="Purpose (e.g. prosperity)" onchange="updateMaterial('${spell.id}','${m.id}','purpose',this.value)"/>
+      <button class="material-del" onclick="removeMaterial('${spell.id}','${m.id}')">×</button>
+    </div>`).join('')}
+    <button class="add-row-btn" onclick="addMaterialRow('${spell.id}')">+ Add Material</button>
+  </div>
+  <div class="spell-section">
+    <div class="spell-section-label">Steps / Process</div>
+    ${(spell.steps||[]).map((s,si)=>`<div class="step-row">
+      <div class="step-num">${si+1}</div>
+      <div style="flex:1">
+        <textarea class="field-textarea" rows="2" style="margin-bottom:6px" placeholder="Describe this step…" oninput="updateStep('${spell.id}','${s.id}','text',this.value)">${escHtml(s.text||'')}</textarea>
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+          <label style="font-size:11px;color:var(--ink-faint);display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" ${s.hasTimer?'checked':''} onchange="updateStep('${spell.id}','${s.id}','hasTimer',this.checked);render()"/> Timer</label>
+          ${s.hasTimer?`<input type="number" min="1" max="120" value="${s.timerMins||5}" style="width:60px;padding:4px 8px;border:1.5px solid var(--border);border-radius:4px;font-size:12px;font-family:'Libre Baskerville',serif" onchange="updateStep('${spell.id}','${s.id}','timerMins',parseInt(this.value)||5)"/> <span style="font-size:11px;color:var(--ink-faint)">mins</span>`:''}
+          <label style="font-size:11px;color:var(--ink-faint);display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" ${s.isIncantation?'checked':''} onchange="updateStep('${spell.id}','${s.id}','isIncantation',this.checked)"/> Show incantation at this step</label>
+        </div>
+      </div>
+      <button class="step-del" onclick="removeStep('${spell.id}','${s.id}')">×</button>
+    </div>`).join('')}
+    <button class="add-row-btn" onclick="addStepRow('${spell.id}')">+ Add Step</button>
+  </div>
+  <div class="spell-section">
+    <div class="spell-section-label">Incantation / Chant / Invocation</div>
+    <textarea class="field-textarea" rows="5" placeholder="Words, chants, or invocations. Will display prominently during execution." oninput="updateSpellField('${spell.id}','incantation',this.value)">${escHtml(spell.incantation||'')}</textarea>
+  </div>
+  <div class="spell-section">
+    <div class="spell-section-label">Casting Notes</div>
+    <textarea class="field-textarea" rows="3" placeholder="What actually happened? Signs, sensations, deviations from the plan…" oninput="updateSpellField('${spell.id}','castingNotes',this.value)">${escHtml(spell.castingNotes||'')}</textarea>
+  </div>
+  <div class="spell-section">
+    <div class="spell-section-label">Follow-up Log</div>
+    ${(spell.followups||[]).map(f=>{const sc=STATUS_COLORS[f.status]||'var(--ink-faint)';return`<div class="followup-row">
+      <div class="followup-row-top">
+        <span class="followup-date">${new Date(f.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
+        <select class="status-select" style="color:${sc}" onchange="updateFollowup('${spell.id}','${f.id}','status',this.value);render()">
+          ${SPELL_STATUSES.map(s=>`<option value="${s}" ${f.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <textarea class="field-textarea" rows="2" placeholder="Signs, synchronicities, results noticed…" onchange="updateFollowup('${spell.id}','${f.id}','note',this.value)">${escHtml(f.note||'')}</textarea>
+    </div>`}).join('')}
+    <button class="add-row-btn" onclick="addFollowup('${spell.id}')">+ Add Follow-up Entry</button>
+  </div>
+  ${spell.steps&&spell.steps.length?`<div style="padding-top:16px;border-top:1.5px solid var(--border-light)">
+    <button class="add-decision-btn" style="width:100%;padding:14px;font-size:13px" onclick="launchExecute('${spell.id}')">▶ Begin Execution Mode</button>
+  </div>`:''}`}
+
+function newSpell(){createSpell();render()}
+function toggleSpell(id){const c=localStorage.getItem('lumina_open_spell');localStorage.setItem('lumina_open_spell',c===id?'':id);render()}
+
+// ── EXECUTE MODE ───────────────────────────────────────────────────────────
+let execState={spellId:null,phase:'materials',stepIndex:0,checkedMaterials:{},timerInterval:null,timerSecs:0,timerRunning:false};
+
+function launchExecute(spellId){
+  clearInterval(execState.timerInterval);
+  execState={spellId,phase:'materials',stepIndex:0,checkedMaterials:{},timerInterval:null,timerSecs:0,timerRunning:false};
+  document.getElementById('executeOverlay').style.display='block';
+  document.body.style.overflow='hidden';
+  renderExecute();}
+
+function closeExecute(){
+  clearInterval(execState.timerInterval);
+  document.getElementById('executeOverlay').style.display='none';
+  document.body.style.overflow='';
+  execState.spellId=null;}
+
+function renderExecute(){
+  const spells=loadSpells(),spell=spells.find(s=>s.id===execState.spellId);if(!spell)return;
+  const el=document.getElementById('executeContent');
+  const gateInfo=GATES[spell.gateNum]||{},cc=CENTER_COLORS[gateInfo.center]||'var(--gold-warm)';
+  let html=`<button class="exec-close" onclick="closeExecute()">✕ Close</button>
+  <div class="exec-header">
+    <div class="exec-spell-name">${escHtml(spell.name||'Spell Working')}</div>
+    <div class="exec-meta">${escHtml(spell.occasion||'')}</div>
+    <div class="exec-meta" style="color:${cc};margin-top:3px">Gate ${spell.gateNum}.${spell.gateLine} — ${gateInfo.name||''}</div>
+  </div>`;
+
+  if(execState.phase==='materials'){
+    html+=`<div class="exec-phase">✦ Gather Your Materials</div>`;
+    if(spell.materials&&spell.materials.length){
+      html+=`<div class="exec-checklist-title">Check off as you gather</div>`;
+      spell.materials.forEach(m=>{
+        const checked=!!execState.checkedMaterials[m.id];
+        html+=`<div class="exec-material-item" onclick="toggleExecMaterial('${m.id}')">
+          <div class="exec-material-check ${checked?'checked':''}">${checked?'✓':''}</div>
+          <div>
+            <div class="exec-material-name" style="${checked?'opacity:.4;text-decoration:line-through':''}">${escHtml(m.item)}</div>
+            ${m.purpose?`<div class="exec-material-purpose">${escHtml(m.purpose)}</div>`:''}
+          </div>
+        </div>`});
+    } else {html+=`<p style="color:rgba(255,255,255,.4);font-size:14px;text-align:center;padding:20px 0">No materials listed — proceed when ready.</p>`;}
+    html+=`<div class="exec-nav-btns" style="margin-top:32px"><button class="exec-btn exec-btn-next" onclick="execNextPhase()">Begin Working →</button></div>`;
+
+  } else if(execState.phase==='steps'){
+    const steps=spell.steps||[];
+    if(!steps.length){execNextPhase();return;}
+    const step=steps[execState.stepIndex],isLast=execState.stepIndex>=steps.length-1;
+    html+=`<div class="exec-phase">Step ${execState.stepIndex+1} of ${steps.length}</div>
+    <div class="exec-step-box">
+      <div class="exec-step-counter">Step ${execState.stepIndex+1} of ${steps.length}</div>
+      <div class="exec-step-text">${escHtml(step.text)}</div>
+      ${step.isIncantation&&spell.incantation?`<div class="exec-incantation">${escHtml(spell.incantation)}</div>`:''}
+      ${step.hasTimer?`<div class="exec-timer">
+        <div class="exec-timer-display">${String(Math.floor((execState.timerSecs||step.timerMins*60)/60)).padStart(2,'0')}:${String((execState.timerSecs||step.timerMins*60)%60).padStart(2,'0')}</div>
+        <button class="exec-timer-btn" onclick="execTimerToggle(${step.timerMins*60})">${execState.timerRunning?'⏸ Pause':'▶ Start'}</button>
+        <button class="exec-timer-btn" onclick="execTimerReset(${step.timerMins*60})">↺ Reset</button>
+      </div>`:''}
+    </div>
+    <div class="exec-nav-btns">
+      ${execState.stepIndex>0?`<button class="exec-btn exec-btn-prev" onclick="execPrevStep()">← Back</button>`:''}
+      ${isLast?`<button class="exec-btn exec-btn-done" onclick="execNextPhase()">Complete ✦</button>`:`<button class="exec-btn exec-btn-next" onclick="execNextStep()">Next Step →</button>`}
+    </div>`;
+
+  } else {
+    html+=`<div class="exec-phase">✦ Working Complete</div>
+    <div style="text-align:center;padding:32px 0;color:white">
+      <div style="font-size:48px;margin-bottom:16px">🌙</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:26px;margin-bottom:8px">It is done.</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:32px">The work has been released. Trust the timing.</div>
+    </div>
+    <div class="exec-notes">
+      <div class="exec-notes-label">Casting Notes</div>
+      <textarea class="exec-notes-input" rows="5" placeholder="What did you notice during the working? Signs, sensations, deviations from the plan…" onchange="updateSpellField('${spell.id}','castingNotes',this.value)">${escHtml(spell.castingNotes||'')}</textarea>
+    </div>
+    <div class="exec-nav-btns" style="margin-top:28px">
+      <button class="exec-btn exec-btn-done" onclick="closeExecute();addFollowup('${spell.id}');switchView('spellwork')">Log Follow-up →</button>
+    </div>`;}
+  el.innerHTML=html;}
+
+function toggleExecMaterial(id){execState.checkedMaterials[id]=!execState.checkedMaterials[id];renderExecute()}
+function execNextPhase(){
+  clearInterval(execState.timerInterval);execState.timerInterval=null;execState.timerRunning=false;execState.timerSecs=0;
+  if(execState.phase==='materials')execState.phase='steps';else execState.phase='complete';renderExecute();}
+function execNextStep(){
+  clearInterval(execState.timerInterval);execState.timerInterval=null;execState.timerRunning=false;execState.timerSecs=0;
+  execState.stepIndex++;renderExecute();}
+function execPrevStep(){
+  clearInterval(execState.timerInterval);execState.timerInterval=null;execState.timerRunning=false;execState.timerSecs=0;
+  execState.stepIndex--;renderExecute();}
+function execTimerToggle(total){
+  if(execState.timerRunning){clearInterval(execState.timerInterval);execState.timerRunning=false;}
+  else{
+    if(!execState.timerSecs)execState.timerSecs=total;
+    execState.timerRunning=true;
+    execState.timerInterval=setInterval(()=>{
+      execState.timerSecs--;
+      if(execState.timerSecs<=0){clearInterval(execState.timerInterval);execState.timerRunning=false;execState.timerSecs=0;}
+      renderExecute();},1000);}
+  renderExecute();}
+function execTimerReset(total){clearInterval(execState.timerInterval);execState.timerRunning=false;execState.timerSecs=total;renderExecute()}
 
 function backToGrid(){selectedDay=null;render()}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
