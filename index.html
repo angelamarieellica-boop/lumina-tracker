@@ -408,10 +408,11 @@ async function db(action,table,data,match){
 async function pullFromDB(){
   setSyncStatus('syncing','Syncing…');
   try{
-    const[entries,decisions,decData,momentDecs,summaries,spellsDb]=await Promise.all([
+    const[entries,decisions,decData,momentDecs,summaries]=await Promise.all([
       db('select','entries'),db('select','decisions'),db('select','decision_data'),
-      db('select','moment_decisions'),db('select','cycle_summaries'),db('select','spells')
+      db('select','moment_decisions'),db('select','cycle_summaries')
     ]);
+    const spellsDb=await db('select','spells').catch(()=>null);
     if(entries===null){setSyncStatus('error','Sync error');return}
     const cycleMap={};
     (entries||[]).forEach(row=>{
@@ -436,7 +437,7 @@ async function pullFromDB(){
     try{localStorage.setItem('lumina_moment_decisions',JSON.stringify(momentDecs||[]))}catch(e){}
     try{localStorage.setItem('lumina_summaries',JSON.stringify(summaries||[]))}catch(e){}
     // Rebuild spells
-    const spellsParsed=(spellsDb||[]).map(r=>{try{return JSON.parse(r.data)}catch(e){return null}}).filter(Boolean);
+    const spellsParsed=Array.isArray(spellsDb)?(spellsDb).map(r=>{try{return JSON.parse(r.data)}catch(e){return null}}).filter(Boolean):[];
     if(spellsParsed.length)try{localStorage.setItem('lumina_spells',JSON.stringify(spellsParsed))}catch(e){}
     setSyncStatus('synced','Synced');updateProgress();render();
   }catch(e){console.error('Pull error',e);setSyncStatus('error','Sync error')}
@@ -905,7 +906,7 @@ function saveCardSlots(day, entryId, slots){
 }
 function addCardSlot(day, entryId){
   const slots=getCardSlots(day,entryId);
-  if(slots.length>=3)return;
+  if(slots.length>=9)return;
   slots.push({id:Date.now().toString(),type:'tarot',deck:'',suit:'',cardName:'',orientation:'upright',notes:''});
   saveCardSlots(day,entryId,slots);
   render();
@@ -928,7 +929,7 @@ function updateCardSlot(day, entryId, slotId, field, value){
 
 function renderCardSlots(day, entryId){
   const slots=getCardSlots(day,entryId);
-  const labels=['First Card','Second Card','Third Card'];
+  const labels=['First Card','Second Card','Third Card','Fourth Card','Fifth Card','Sixth Card','Seventh Card','Eighth Card','Ninth Card'];
   let html='<div class="card-slots">';
   slots.forEach((slot,si)=>{
     const tarotSuits=['Major Arcana','Cups','Pentacles','Swords','Wands'];
@@ -1005,7 +1006,7 @@ function renderCardSlots(day, entryId){
     </div>`;
   });
   html+='</div>';
-  if(slots.length<3){
+  if(slots.length<9){
     html+=`<button class="add-card-btn" onclick="addCardSlot(${day},'${entryId}')">+ Add Card</button>`;
   }
   return html;
