@@ -284,6 +284,23 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .exec-notes-input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:white;padding:12px;border-radius:6px;font-size:14px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.7}
 .exec-notes-input::placeholder{color:rgba(255,255,255,.3)}
 .exec-close{position:fixed;top:20px;right:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:8px 16px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px;z-index:2001}
+/* Daily digest */
+.day-digest{background:linear-gradient(135deg,var(--ink) 0%,#1a1a2e 100%);border-radius:10px;padding:22px 26px;margin-bottom:18px;color:white;position:relative;overflow:hidden}
+.day-digest::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold-warm),var(--green),var(--gold-warm))}
+.day-digest-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--gold-warm);text-transform:uppercase;margin-bottom:14px}
+.day-digest-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.day-digest-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:white;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700}
+.day-digest-chip.energy{background:rgba(58,122,58,.3);border-color:rgba(58,122,58,.5)}
+.day-digest-chip.card{background:rgba(184,134,11,.2);border-color:rgba(184,134,11,.4);color:var(--gold-warm)}
+.day-digest-chip.spell{background:rgba(120,88,168,.3);border-color:rgba(120,88,168,.5)}
+.day-digest-section{margin-bottom:10px}
+.day-digest-section-label{font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:5px}
+.day-digest-text{font-size:12px;color:rgba(255,255,255,.75);line-height:1.7}
+.day-digest-ai{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1)}
+.day-digest-ai-text{font-size:13px;color:white;line-height:1.85;white-space:pre-wrap}
+.day-digest-ai-btn{background:rgba(184,134,11,.2);border:1px solid rgba(184,134,11,.4);color:var(--gold-warm);padding:8px 18px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px;transition:all .15s;margin-top:4px}
+.day-digest-ai-btn:hover{background:rgba(184,134,11,.35)}
+.day-digest-ai-btn:disabled{opacity:.5;cursor:default}
 </style>
 </head>
 <body>
@@ -650,8 +667,12 @@ function renderDetail(el){
       </div>
     </div>`}).join('')}</div>`;
 
+  // Build auto-digest
+  const digestHtml=buildDayDigest(selectedDay,day,dd,displayGates);
+
   el.innerHTML=`
     <button class="back-btn" onclick="backToGrid()">← Back to Monthly View</button>
+    ${digestHtml}
     ${gateBlocksHtml}
     <div class="fields">
       <div class="field-section">
@@ -665,6 +686,158 @@ function renderDetail(el){
       <button class="add-entry-btn" onclick="addNewEntry(${selectedDay})">+ Log Entry for This Gate</button>
       <div class="save-note">✦ Each entry captures the gate active at that moment. Entries save automatically.</div>
       </div>`}`}
+
+// ── DAILY DIGEST ───────────────────────────────────────────────────────────
+function buildDayDigest(dayIdx,day,dd,displayGates){
+  // Only show if there's something to summarize
+  const hasEntries=dd.entries&&dd.entries.length>0;
+  const hasPlan=(dd.planningTags&&dd.planningTags.length)||(dd.planningNote&&dd.planningNote.trim());
+  const isFuture=!day.isPast&&!day.isToday;
+
+  // For future days with planning notes only — show a simple planning digest
+  if(isFuture&&hasPlan){
+    return`<div class="day-digest">
+      <div class="day-digest-label">✦ Day ${day.dayNum} · ${getSpellOccasion()}</div>
+      ${dd.planningTags&&dd.planningTags.length?`<div class="day-digest-section">
+        <div class="day-digest-section-label">Planned for</div>
+        <div class="day-digest-row">${dd.planningTags.map(t=>`<span class="day-digest-chip spell">${t}</span>`).join('')}</div>
+      </div>`:''}
+      ${dd.planningNote?`<div class="day-digest-section">
+        <div class="day-digest-section-label">Intention</div>
+        <div class="day-digest-text">${escHtml(dd.planningNote)}</div>
+      </div>`:''}
+      <div class="day-digest-section" style="margin-top:10px">
+        <div class="day-digest-section-label">Gates</div>
+        <div class="day-digest-row">${displayGates.map(g=>`<span class="day-digest-chip">Gate ${g.gateNum} ${g.gate.name}</span>`).join('')}</div>
+      </div>
+    </div>`;}
+
+  if(!hasEntries)return'';
+
+  // Gather all data across entries
+  const allEnergy=[...new Set(dd.entries.map(e=>e.energy).filter(Boolean))];
+  const allMoods=[...new Set(dd.entries.flatMap(e=>e.moods||[]))];
+  const allBody=[...new Set(dd.entries.flatMap(e=>e.body||[]))];
+  const allCards=dd.entries.flatMap(e=>(e.cardSlots||[]).filter(s=>s.cardName).map(s=>{
+    const isRev=s.orientation==='reversed';
+    return s.type==='tarot'?`${s.cardName}${isRev?' (R)':''}`:`${s.cardName} — ${s.deck||'Oracle'}`;
+  }));
+  const allObs=dd.entries.flatMap(e=>[e.obsPatterns,e.obsReactions,e.obsImpulses,e.obsSurprises,e.obsOthers,e.obsEnv,e.reflectorLens].filter(Boolean));
+
+  // Check for spellwork on this day
+  const spells=loadSpells().filter(s=>{
+    const sd=new Date(s.created);sd.setHours(0,0,0,0);
+    const dd2=new Date(day.date);dd2.setHours(0,0,0,0);
+    return sd.getTime()===dd2.getTime();});
+
+  // Stored AI summary for this day
+  const storedAI=localStorage.getItem(`lumina_day_ai_${getCycleStart()}_${dayIdx}`)||'';
+
+  return`<div class="day-digest">
+    <div class="day-digest-label">✦ Day ${day.dayNum} Snapshot</div>
+    ${allEnergy.length?`<div class="day-digest-row">${allEnergy.map(e=>`<span class="day-digest-chip energy">${e}</span>`).join('')}${allMoods.map(m=>`<span class="day-digest-chip">${m}</span>`).join('')}${allBody.map(b=>`<span class="day-digest-chip">${b}</span>`).join('')}</div>`:''}
+    ${displayGates.length?`<div class="day-digest-section">
+      <div class="day-digest-section-label">Gates Active</div>
+      <div class="day-digest-row">${displayGates.map(g=>{const cc=CENTER_COLORS[g.gate.center]||'#3A7A3A';return`<span class="day-digest-chip" style="border-color:${cc}55;color:white">Gate ${g.gateNum} ${g.gate.name} · <span style="color:${cc}">${g.gate.center}</span></span>`}).join('')}</div>
+    </div>`:''}
+    ${allCards.length?`<div class="day-digest-section">
+      <div class="day-digest-section-label">Cards Pulled</div>
+      <div class="day-digest-row">${allCards.map(c=>`<span class="day-digest-chip card">${escHtml(c)}</span>`).join('')}</div>
+    </div>`:''}
+    ${spells.length?`<div class="day-digest-section">
+      <div class="day-digest-section-label">Spellwork</div>
+      <div class="day-digest-row">${spells.map(s=>`<span class="day-digest-chip spell">✦ ${escHtml(s.name||'Spell')}</span>`).join('')}</div>
+    </div>`:''}
+    ${dd.planningTags&&dd.planningTags.length?`<div class="day-digest-section">
+      <div class="day-digest-section-label">Intentions</div>
+      <div class="day-digest-row">${dd.planningTags.map(t=>`<span class="day-digest-chip spell">${t}</span>`).join('')}</div>
+    </div>`:''}
+    ${allObs.length?`<div class="day-digest-section">
+      <div class="day-digest-section-label">Key Observations</div>
+      <div class="day-digest-text">${allObs.slice(0,3).map(o=>escHtml(o.substring(0,120)+(o.length>120?'…':''))).join(' &nbsp;·&nbsp; ')}</div>
+    </div>`:''}
+    <div class="day-digest-ai">
+      ${storedAI?`<div class="day-digest-ai-text" id="dayAiText_${dayIdx}">${escHtml(storedAI)}</div><button class="day-digest-ai-btn" id="dayAiBtn_${dayIdx}" onclick="generateDayInsight(${dayIdx})" style="margin-top:10px">↺ Regenerate</button>`:`<button class="day-digest-ai-btn" id="dayAiBtn_${dayIdx}" onclick="generateDayInsight(${dayIdx})">✦ Synthesize This Day</button>`}
+      <div id="dayAiResult_${dayIdx}"></div>
+    </div>
+  </div>`;}
+
+async function generateDayInsight(dayIdx){
+  const btn=document.getElementById(`dayAiBtn_${dayIdx}`);
+  const result=document.getElementById(`dayAiResult_${dayIdx}`);
+  if(btn)btn.disabled=true;
+  if(result)result.innerHTML='<div style="color:rgba(255,255,255,.4);font-size:12px;padding:10px 0">Synthesizing…</div>';
+
+  const days=buildDays(),day=days[dayIdx],dd=getDayData(dayIdx);
+  const wg=day.wakingGates||[];
+  const displayGates=wg.length>0?wg:[{gateNum:day.gateNum,gate:day.gate,line:day.line}];
+  const nm=getCurrentNewMoon(),sign=getNewMoonSign(nm);
+
+  const allEnergy=dd.entries.map(e=>e.energy).filter(Boolean);
+  const allMoods=dd.entries.flatMap(e=>e.moods||[]);
+  const allBody=dd.entries.flatMap(e=>e.body||[]);
+  const allObs=dd.entries.flatMap(e=>([
+    e.obsPatterns&&`Patterns: ${e.obsPatterns}`,
+    e.obsReactions&&`Reactions: ${e.obsReactions}`,
+    e.obsImpulses&&`Impulses: ${e.obsImpulses}`,
+    e.obsSurprises&&`Surprises: ${e.obsSurprises}`,
+    e.obsOthers&&`In others: ${e.obsOthers}`,
+    e.obsEnv&&`Environment: ${e.obsEnv}`,
+    e.reflectorLens&&`Reflector lens: ${e.reflectorLens}`
+  ].filter(Boolean)));
+
+  const allCards=dd.entries.flatMap(e=>(e.cardSlots||[]).filter(s=>s.cardName).map(s=>{
+    if(s.type==='tarot'){
+      const card=TAROT_CARDS&&TAROT_CARDS.find(c=>c.name===s.cardName);
+      const kw=s.orientation==='reversed'?(card?.keywords_rev||''):(card?.keywords_up||'');
+      return`${s.cardName} (${s.orientation}) — ${kw}${s.notes?` | Your note: ${s.notes}`:''}`;
+    } else {
+      const card=ORACLE_CARDS&&ORACLE_CARDS.find(c=>c.name===s.cardName);
+      return`${s.cardName} (${s.deck||'Oracle'}) — ${card?.core_message||''}${s.notes?` | Your note: ${s.notes}`:''}`;
+    }}));
+
+  const spells=loadSpells().filter(s=>{
+    const sd=new Date(s.created);sd.setHours(0,0,0,0);
+    const dd2=new Date(day.date);dd2.setHours(0,0,0,0);
+    return sd.getTime()===dd2.getTime();});
+
+  const prompt=`You are synthesizing a single day's data for Gela, a 4/6 Reflector in Human Design. She is a nurse informaticist and holistic practitioner (reiki, tarot, calligraphy). Sag Sun, Pisces Moon, Gemini Rising.
+
+DATE: ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}
+CYCLE: Day ${day.dayNum} of 29 · New Moon in ${sign}
+MOON PHASE: ${getSpellOccasion()}
+
+GATES ACTIVE TODAY:
+${displayGates.map(g=>`Gate ${g.gateNum}.${g.line||''} ${g.gate.name} (${g.gate.center} Center) — ${g.gate.theme}`).join('\n')}
+
+ENERGY: ${allEnergy.join(', ')||'not logged'}
+MOODS: ${allMoods.join(', ')||'not logged'}
+BODY: ${allBody.join(', ')||'not logged'}
+
+CARDS PULLED:
+${allCards.join('\n')||'None'}
+
+OBSERVATIONS:
+${allObs.join('\n')||'None logged'}
+
+PLANNING INTENTIONS: ${(dd.planningTags||[]).join(', ')||'none'} ${dd.planningNote||''}
+
+SPELLWORK TODAY:
+${spells.map(s=>`${s.name||'Unnamed spell'} — ${(s.types||[]).join(', ')} — Intention: ${s.intention||'not recorded'}`).join('\n')||'None'}
+
+Write a concise synthesis of this day — 3-4 sentences maximum. Focus on: what themes are showing up across the gate energy, cards, and observations; what the interplay between the card pulls and the active gate(s) suggests; anything surprising or worth tracking. Be specific to the actual data. Speak directly to Gela. Plain prose, no bullet points, no headers. Write as if you're a wise mirror reflecting what the day's data is showing.`;
+
+  try{
+    const resp=await fetch('/.netlify/functions/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+    const data=await resp.json();if(data.error)throw new Error(data.error);
+    const text=data.text||'Unable to synthesize.';
+    // Store it
+    localStorage.setItem(`lumina_day_ai_${getCycleStart()}_${dayIdx}`,text);
+    if(result)result.innerHTML=`<div class="day-digest-ai-text" style="margin-top:10px">${escHtml(text)}</div>`;
+    if(btn){btn.disabled=false;btn.textContent='↺ Regenerate';}
+  }catch(e){
+    if(result)result.innerHTML='<div style="color:#A84040;font-size:12px;padding:8px 0">Error. Please try again.</div>';
+    if(btn)btn.disabled=false;}}
 
 function toggleEntryOpen(id){const c=localStorage.getItem('lumina_open_entry');localStorage.setItem('lumina_open_entry',c===id?'':id);render()}
 function addNewEntry(day){const id=addEntryToDay(day);localStorage.setItem('lumina_open_entry',id);render()}
