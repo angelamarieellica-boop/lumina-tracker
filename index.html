@@ -255,6 +255,13 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .reorder-btn:disabled{opacity:.2;cursor:default}
 .spell-action-btn{background:none;border:1.5px solid var(--border);color:var(--ink-soft);padding:5px 10px;border-radius:4px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:.5px;transition:all .15s}
 .spell-action-btn:hover{border-color:var(--green);color:var(--green)}
+.spell-action-btn.archive{border-color:var(--border);color:var(--ink-faint)}
+.spell-action-btn.archive:hover{border-color:var(--gold);color:var(--gold)}
+.spell-action-btn.unarchive{border-color:var(--gold);color:var(--gold)}
+.spell-action-btn.unarchive:hover{border-color:var(--green);color:var(--green)}
+.archive-section-toggle{background:none;border:1.5px solid var(--border-light);color:var(--ink-faint);padding:10px 18px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;width:100%;text-align:left;transition:all .15s;margin-top:8px;display:flex;justify-content:space-between;align-items:center}
+.archive-section-toggle:hover{border-color:var(--border);color:var(--ink-soft)}
+.archived-spell-card{opacity:.75}
 .step-incantation-toggle{font-size:11px;color:var(--gold);font-weight:700;cursor:pointer;background:none;border:none;padding:4px 0;font-family:'Libre Baskerville',serif;display:flex;align-items:center;gap:5px}
 .step-incantation-toggle:hover{color:var(--gold-warm)}
 .step-row{display:grid;grid-template-columns:24px 1fr auto;gap:8px;margin-bottom:8px;align-items:start}
@@ -1279,11 +1286,13 @@ function toggleSpellType(spellId,type){
 
 function reorderSpell(spellId, dir){
   const spells=loadSpells();
-  const idx=spells.findIndex(s=>s.id===spellId);
-  if(idx<0)return;
-  const newIdx=idx+dir;
-  if(newIdx<0||newIdx>=spells.length)return;
-  [spells[idx],spells[newIdx]]=[spells[newIdx],spells[idx]];
+  const activeIds=spells.filter(s=>!s.archived).map(s=>s.id);
+  const ai=activeIds.indexOf(spellId);if(ai<0)return;
+  const newAi=ai+dir;if(newAi<0||newAi>=activeIds.length)return;
+  // Swap in full array
+  const i1=spells.findIndex(s=>s.id===activeIds[ai]);
+  const i2=spells.findIndex(s=>s.id===activeIds[newAi]);
+  [spells[i1],spells[i2]]=[spells[i2],spells[i1]];
   saveSpells(spells);render();}
 
 function duplicateSpell(spellId){
@@ -1360,14 +1369,29 @@ function updateFollowup(spellId,fupId,field,value){
   const fi=spells[idx].followups.findIndex(f=>f.id===fupId);if(fi<0)return;
   spells[idx].followups[fi][field]=value;saveSpells(spells);}
 function deleteSpell(spellId){
-  if(!confirm('Delete this spell?'))return;saveSpells(loadSpells().filter(s=>s.id!==spellId));render();}
+  if(!confirm('Delete this spell? This cannot be undone.'))return;
+  saveSpells(loadSpells().filter(s=>s.id!==spellId));render();}
+
+function archiveSpell(spellId){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  spells[idx].archived=true;saveSpells(spells);
+  pushSpell(spells[idx]);render();}
+
+function unarchiveSpell(spellId){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  spells[idx].archived=false;saveSpells(spells);
+  pushSpell(spells[idx]);render();}
 
 async function pushSpell(spell){await db('upsert','spells',{id:spell.id,data:JSON.stringify(spell)})}
 
 function renderSpellwork(el){
-  const spells=loadSpells();
+  const allSpells=loadSpells();
+  const activeSpells=allSpells.filter(s=>!s.archived);
+  const archivedSpells=allSpells.filter(s=>s.archived);
   const now=new Date(),deg=getMoonEclipticLongitude(now),gn=getGateFromDegree(deg),ln=getMoonLine(deg,gn);
   const gateInfo=GATES[gn]||{},cc=CENTER_COLORS[gateInfo.center]||'var(--gold-warm)';
+  const archiveOpen=localStorage.getItem('lumina_archive_open')==='1';
+
   let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
     <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green)">Spellwork</div>
     <button class="add-decision-btn" onclick="newSpell()">+ New Spell</button>
@@ -1375,36 +1399,66 @@ function renderSpellwork(el){
   <div class="reflector-hint" style="margin-bottom:20px">
     <strong>Now:</strong> ${getSpellOccasion()} &nbsp;·&nbsp; <span style="color:${cc}">Gate ${gn}.${ln} ${gateInfo.name||''}</span> &nbsp;·&nbsp; ${now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
   </div>`;
-  if(!spells.length){html+='<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No spells yet. Add one to begin tracking your practice.</div>';}
-  else{
-    html+='<div class="spell-list">';
-    spells.forEach((spell,si)=>{
-      const isOpen=localStorage.getItem('lumina_open_spell')===spell.id;
-      const latest=spell.followups&&spell.followups.length?spell.followups[spell.followups.length-1].status:'';
-      const sc=STATUS_COLORS[latest]||'';
-      const typeStr=(spell.types||[]).join(', ')||'—';
-      const castDate=new Date(spell.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-      html+=`<div class="spell-card">
-        <div class="spell-card-header ${isOpen?'open':''}" onclick="toggleSpell('${spell.id}')">
-          <div style="flex:1">
-            <div class="spell-card-title">${spell.name?escHtml(spell.name):'<em style="color:var(--ink-faint)">Untitled Spell</em>'}</div>
-            <div class="spell-card-meta">${castDate} · ${escHtml(spell.occasion||'—')} · ${escHtml(typeStr)}</div>
-            ${latest?`<div style="display:inline-block;margin-top:5px;padding:2px 10px;border-radius:10px;background:${sc}22;border:1px solid ${sc}55;font-size:10px;font-weight:700;color:${sc}">${latest}</div>`:''}
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0" onclick="event.stopPropagation()">
-            <div class="reorder-btns">
-              <button class="reorder-btn" onclick="reorderSpell('${spell.id}',-1)" ${si===0?'disabled':''}>▲</button>
-              <button class="reorder-btn" onclick="reorderSpell('${spell.id}',1)" ${si===spells.length-1?'disabled':''}>▼</button>
-            </div>
-            <button class="spell-action-btn" onclick="duplicateSpell('${spell.id}')">⧉ Copy</button>
-            ${spell.steps&&spell.steps.length?`<button style="background:var(--gold-warm);border:none;color:white;padding:7px 14px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px" onclick="launchExecute('${spell.id}')">▶ Execute</button>`:''}
-            <button class="decision-delete" onclick="deleteSpell('${spell.id}')">×</button>
-          </div>
-        </div>
-        <div class="spell-card-body ${isOpen?'open':''}">${renderSpellForm(spell)}</div>
-      </div>`});
-    html+='</div>';}
+
+  if(!activeSpells.length&&!archivedSpells.length){
+    html+='<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No spells yet. Add one to begin tracking your practice.</div>';
+  } else {
+    // Active spells
+    if(activeSpells.length){
+      html+='<div class="spell-list">';
+      activeSpells.forEach((spell,si)=>{
+        html+=renderSpellCard(spell,si,activeSpells.length,false);});
+      html+='</div>';
+    } else {
+      html+='<div style="text-align:center;padding:24px 20px;color:var(--ink-faint);font-size:13px">No active spells. Add one above or restore from archive.</div>';
+    }
+
+    // Archive section
+    if(archivedSpells.length){
+      html+=`<button class="archive-section-toggle" onclick="toggleArchiveSection()">
+        <span>✦ Archive (${archivedSpells.length} spell${archivedSpells.length>1?'s':''})</span>
+        <span>${archiveOpen?'▾':'▸'}</span>
+      </button>`;
+      if(archiveOpen){
+        html+='<div class="spell-list" style="margin-top:10px">';
+        archivedSpells.forEach((spell,si)=>{
+          html+=renderSpellCard(spell,si,archivedSpells.length,true);});
+        html+='</div>';
+      }
+    }
+  }
   el.innerHTML=html;}
+
+function toggleArchiveSection(){
+  localStorage.setItem('lumina_archive_open',localStorage.getItem('lumina_archive_open')==='1'?'':'1');render();}
+
+function renderSpellCard(spell,si,total,isArchived){
+  const isOpen=localStorage.getItem('lumina_open_spell')===spell.id;
+  const latest=spell.followups&&spell.followups.length?spell.followups[spell.followups.length-1].status:'';
+  const sc=STATUS_COLORS[latest]||'';
+  const typeStr=(spell.types||[]).join(', ')||'—';
+  const castDate=new Date(spell.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const castTime=new Date(spell.created).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+  return`<div class="spell-card ${isArchived?'archived-spell-card':''}">
+    <div class="spell-card-header ${isOpen?'open':''}" onclick="toggleSpell('${spell.id}')">
+      <div style="flex:1">
+        <div class="spell-card-title">${spell.name?escHtml(spell.name):'<em style="color:var(--ink-faint)">Untitled Spell</em>'}</div>
+        <div class="spell-card-meta">${castDate} · ${castTime} · ${escHtml(spell.occasion||'—')} · ${escHtml(typeStr)}</div>
+        ${latest?`<div style="display:inline-block;margin-top:5px;padding:2px 10px;border-radius:10px;background:${sc}22;border:1px solid ${sc}55;font-size:10px;font-weight:700;color:${sc}">${latest}</div>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0" onclick="event.stopPropagation()">
+        ${!isArchived?`<div class="reorder-btns">
+          <button class="reorder-btn" onclick="reorderSpell('${spell.id}',-1)" ${si===0?'disabled':''}>▲</button>
+          <button class="reorder-btn" onclick="reorderSpell('${spell.id}',1)" ${si===total-1?'disabled':''}>▼</button>
+        </div>`:''}
+        <button class="spell-action-btn" onclick="duplicateSpell('${spell.id}')">⧉ Copy</button>
+        ${!isArchived?`<button class="spell-action-btn archive" onclick="archiveSpell('${spell.id}')">↓ Archive</button>`:`<button class="spell-action-btn unarchive" onclick="unarchiveSpell('${spell.id}')">↑ Restore</button>`}
+        ${!isArchived&&spell.steps&&spell.steps.length?`<button style="background:var(--gold-warm);border:none;color:white;padding:7px 14px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px" onclick="launchExecute('${spell.id}')">▶ Execute</button>`:''}
+        <button class="decision-delete" onclick="deleteSpell('${spell.id}')">×</button>
+      </div>
+    </div>
+    <div class="spell-card-body ${isOpen?'open':''}">${renderSpellForm(spell)}</div>
+  </div>`}
 
 function renderSpellForm(spell){
   const known=loadMaterials();
