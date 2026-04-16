@@ -1327,8 +1327,9 @@ function toggleStepIncantation(spellId, stepId){
   const key=`lumina_step_inc_${spellId}_${stepId}`;
   localStorage.setItem(key,localStorage.getItem(key)==='1'?'':'1');render();}
 
+function addMaterialRow(spellId){
   const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
-  spells[idx].materials.push({id:Date.now().toString(),item:'',purpose:''});saveSpells(spells);render();}
+  spells[idx].materials.push({id:Date.now().toString(),item:'',purpose:'',visualize:''});saveSpells(spells);render();}
 function updateMaterial(spellId,matId,field,value){
   const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
   const mi=spells[idx].materials.findIndex(m=>m.id===matId);if(mi<0)return;
