@@ -37,7 +37,10 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .settings-btn:hover{border-color:var(--green);color:var(--green)}
 .cycle-row{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 16px}
 .cycle-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--ink-faint);text-transform:uppercase}
-.cycle-input{border:1px solid var(--border);background:var(--ivory);color:var(--ink);padding:8px 14px;border-radius:3px;font-size:13px;font-family:'Libre Baskerville',serif;font-weight:700;outline:none;cursor:default;background:var(--ivory-mid)}
+.cycle-nav-btn{background:none;border:1.5px solid var(--border);color:var(--ink-soft);width:30px;height:30px;border-radius:4px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1;padding:0}
+.cycle-nav-btn:hover{border-color:var(--green);color:var(--green)}
+.cycle-nav-btn:disabled{opacity:.3;cursor:default}
+.viewing-future{background:var(--gold-pale);border:1.5px solid #D8C080;border-radius:5px;padding:5px 14px;font-size:11px;font-weight:700;color:var(--gold);text-align:center;margin-bottom:10px;letter-spacing:1px}
 .progress-wrap{max-width:360px;margin:0 auto 20px}
 .progress-bar-bg{height:3px;background:var(--border-light);border-radius:2px;overflow:hidden;margin-bottom:6px}
 .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold-warm));transition:width .4s}
@@ -320,8 +323,10 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
   </div>
   <div class="sync-status"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">Not connected</span></div>
   <div class="cycle-row">
-    <span class="cycle-label">Current Cycle</span>
+    <span class="cycle-label">Cycle</span>
+    <button class="cycle-nav-btn" onclick="shiftCycle(-1)" id="cyclePrev">‹</button>
     <span id="cycleDisplay" class="cycle-input"></span>
+    <button class="cycle-nav-btn" onclick="shiftCycle(1)" id="cycleNext">›</button>
   </div>
   <div class="progress-wrap">
     <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
@@ -482,8 +487,38 @@ function openSettings(){document.getElementById('settingsOverlay').style.display
 function closeSettings(){document.getElementById('settingsOverlay').style.display='none'}
 
 // ── LOCAL STORAGE ─────────────────────────────────────────────────────────
-function getCycleStart(){return getCurrentNewMoon()}
+let viewingCycleOffset=0; // 0 = current, 1 = next, -1 = previous, etc.
+
+function getViewingCycleStart(){
+  const currentIdx=NEW_MOONS_2026.indexOf(getCurrentNewMoon());
+  const targetIdx=Math.max(0,Math.min(NEW_MOONS_2026.length-1,currentIdx+viewingCycleOffset));
+  return NEW_MOONS_2026[targetIdx];
+}
+function getCycleStart(){return getViewingCycleStart()}
 function getCycleKey(){return'lumina_cycle_'+getCycleStart()}
+
+function shiftCycle(dir){
+  const currentIdx=NEW_MOONS_2026.indexOf(getCurrentNewMoon());
+  const newOffset=viewingCycleOffset+dir;
+  const targetIdx=currentIdx+newOffset;
+  if(targetIdx<0||targetIdx>=NEW_MOONS_2026.length)return;
+  viewingCycleOffset=newOffset;
+  selectedDay=null;
+  updateCycleDisplay();
+  updateProgress();
+  render();
+}
+
+function updateCycleDisplay(){
+  const nm=getCycleStart(),sign=getNewMoonSign(nm),nmDate=new Date(nm+'T12:00:00');
+  const display=document.getElementById('cycleDisplay');
+  if(display)display.textContent=`New Moon in ${sign} · ${nmDate.toLocaleDateString('en-US',{month:'long',day:'numeric'})}`;
+  const prevBtn=document.getElementById('cyclePrev');
+  const nextBtn=document.getElementById('cycleNext');
+  const currentIdx=NEW_MOONS_2026.indexOf(getCurrentNewMoon());
+  if(prevBtn)prevBtn.disabled=(currentIdx+viewingCycleOffset<=0);
+  if(nextBtn)nextBtn.disabled=(currentIdx+viewingCycleOffset>=NEW_MOONS_2026.length-1);
+}
 function loadData(){try{return JSON.parse(localStorage.getItem(getCycleKey())||'{}')}catch(e){return{}}}
 function saveData(d){try{localStorage.setItem(getCycleKey(),JSON.stringify(d))}catch(e){}}
 function getDayData(day){const d=loadData();const dd=d[day]||{};if(!dd.entries)dd.entries=[];if(!dd.planningTags)dd.planningTags=[];if(dd.planningNote===undefined)dd.planningNote='';return dd}
@@ -547,12 +582,15 @@ function getWakingGates(date){
       gates.push({gateNum:gn,gate:GATES[gn],line,startTime:transitionTime,deg});lastGate=gn;}}
   return gates}
 function buildDays(){
-  const cycleStart=getCurrentNewMoon(),startDate=new Date(cycleStart+'T12:00:00'),today=new Date();today.setHours(12,0,0,0);
+  const cycleStart=getCycleStart(),startDate=new Date(cycleStart+'T12:00:00'),today=new Date();today.setHours(12,0,0,0);
+  const isFutureCycle=viewingCycleOffset>0;
   return Array.from({length:29},(_,i)=>{
     const date=new Date(startDate);date.setDate(startDate.getDate()+i);
     const noon=new Date(date);noon.setHours(12,0,0,0);
     const deg=getMoonEclipticLongitude(noon),gn=getGateFromDegree(deg),gate=GATES[gn],line=getMoonLine(deg,gn),transit=getTransitTimes(gn,noon),wakingGates=getWakingGates(date);
-    return{date,gate,gateNum:gn,line,deg,transit,wakingGates,isToday:date.toDateString()===today.toDateString(),isPast:date<=today,dayNum:i+1,index:i}})}
+    const isToday=!isFutureCycle&&date.toDateString()===today.toDateString();
+    const isPast=!isFutureCycle&&date<=today;
+    return{date,gate,gateNum:gn,line,deg,transit,wakingGates,isToday,isPast,isFutureCycle,dayNum:i+1,index:i}})}
 function updateProgress(){
   const data=loadData(),filled=Object.keys(data).filter(k=>{const e=data[k];return e&&(e.entries&&e.entries.length>0)}).length;
   document.getElementById('progressFill').style.width=(filled/29*100)+'%';
@@ -576,7 +614,13 @@ function render(){const el=document.getElementById('mainContent');
 // ── GRID ───────────────────────────────────────────────────────────────────
 function renderGrid(el){
   const days=buildDays(),data=loadData();
-  let html='<div class="grid">';
+  const nm=getCycleStart(),sign=getNewMoonSign(nm);
+  let html='';
+  if(viewingCycleOffset>0){
+    html+=`<div class="viewing-future">✦ Planning view · New Moon in ${sign} · ${new Date(nm+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric'})} — All days available for planning</div>`;}
+  if(viewingCycleOffset<0){
+    html+=`<div class="viewing-future" style="background:var(--ivory-mid);border-color:var(--border);color:var(--ink-faint)">Viewing past cycle · New Moon in ${sign}</div>`;}
+  html+='<div class="grid">';
   days.forEach((day,i)=>{
     const dd=data[i]||{},hasEntry=dd.entries&&dd.entries.length>0;
     const cls=['day-card',day.isToday?'today':'',!day.isPast&&!day.isToday?'future':'',hasEntry?'has-entry':''].filter(Boolean).join(' ');
@@ -1477,9 +1521,7 @@ function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 (async function init(){
-  const nm=getCurrentNewMoon(),nmDate=new Date(nm+'T12:00:00'),sign=getNewMoonSign(nm);
-  const display=document.getElementById('cycleDisplay');
-  if(display)display.textContent=`New Moon in ${sign} · ${nmDate.toLocaleDateString('en-US',{month:'long',day:'numeric'})}`;
+  updateCycleDisplay();
   updateLiveGate();setInterval(updateLiveGate,60000);
   updateProgress();
   document.getElementById('mainContent').innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--ink-faint);font-size:13px;font-weight:700;letter-spacing:1px">Syncing your data…</div>';
