@@ -244,11 +244,19 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .spell-section-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:10px}
 .spell-type-chip{background:var(--green-pale);border:1.5px solid var(--green-light);color:var(--green);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;transition:all .15s}
 .spell-type-chip.selected{background:var(--green);border-color:var(--green);color:white}
-.material-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center}
+.material-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center}
 .material-input{background:var(--white);border:1.5px solid var(--border);color:var(--ink);padding:8px 10px;border-radius:5px;font-size:13px;font-family:'Libre Baskerville',serif;outline:none;width:100%;transition:border-color .15s}
 .material-input:focus{border-color:var(--green)}
 .material-del{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:18px;padding:0 6px;line-height:1}
 .material-del:hover{color:#A84040}
+.reorder-btns{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.reorder-btn{background:none;border:1px solid var(--border-light);color:var(--ink-faint);cursor:pointer;font-size:10px;padding:2px 5px;border-radius:3px;line-height:1;transition:all .15s}
+.reorder-btn:hover{border-color:var(--green);color:var(--green)}
+.reorder-btn:disabled{opacity:.2;cursor:default}
+.spell-action-btn{background:none;border:1.5px solid var(--border);color:var(--ink-soft);padding:5px 10px;border-radius:4px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:.5px;transition:all .15s}
+.spell-action-btn:hover{border-color:var(--green);color:var(--green)}
+.step-incantation-toggle{font-size:11px;color:var(--gold);font-weight:700;cursor:pointer;background:none;border:none;padding:4px 0;font-family:'Libre Baskerville',serif;display:flex;align-items:center;gap:5px}
+.step-incantation-toggle:hover{color:var(--gold-warm)}
 .step-row{display:grid;grid-template-columns:24px 1fr auto;gap:8px;margin-bottom:8px;align-items:start}
 .step-num{font-size:12px;font-weight:700;color:var(--gold);padding-top:10px;text-align:center}
 .step-del{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:16px;padding:4px 6px;line-height:1}
@@ -1269,7 +1277,56 @@ function toggleSpellType(spellId,type){
   const types=[...(spells[idx].types||[])];const i=types.indexOf(type);if(i>-1)types.splice(i,1);else types.push(type);
   spells[idx].types=types;saveSpells(spells);render();}
 
-function addMaterialRow(spellId){
+function reorderSpell(spellId, dir){
+  const spells=loadSpells();
+  const idx=spells.findIndex(s=>s.id===spellId);
+  if(idx<0)return;
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=spells.length)return;
+  [spells[idx],spells[newIdx]]=[spells[newIdx],spells[idx]];
+  saveSpells(spells);render();}
+
+function duplicateSpell(spellId){
+  const spells=loadSpells();
+  const orig=spells.find(s=>s.id===spellId);if(!orig)return;
+  const now=new Date(),deg=getMoonEclipticLongitude(now),gn=getGateFromDegree(deg),ln=getMoonLine(deg,gn);
+  const copy={
+    ...JSON.parse(JSON.stringify(orig)),
+    id:Date.now().toString(),
+    created:now.toISOString(),
+    occasion:getSpellOccasion(),
+    gateNum:gn,gateLine:ln,
+    castingNotes:'',
+    followups:[],
+    name:(orig.name?orig.name+' (copy)':'Copy'),
+  };
+  // Give materials fresh IDs
+  copy.materials=(orig.materials||[]).map(m=>({...m,id:Date.now().toString()+Math.random()}));
+  copy.steps=(orig.steps||[]).map(s=>({...s,id:Date.now().toString()+Math.random()}));
+  spells.unshift(copy);saveSpells(spells);
+  localStorage.setItem('lumina_open_spell',copy.id);
+  render();}
+
+function reorderMaterial(spellId, matId, dir){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  const mats=spells[idx].materials||[];
+  const mi=mats.findIndex(m=>m.id===matId);if(mi<0)return;
+  const newMi=mi+dir;if(newMi<0||newMi>=mats.length)return;
+  [mats[mi],mats[newMi]]=[mats[newMi],mats[mi]];
+  spells[idx].materials=mats;saveSpells(spells);render();}
+
+function reorderStep(spellId, stepId, dir){
+  const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
+  const steps=spells[idx].steps||[];
+  const si=steps.findIndex(s=>s.id===stepId);if(si<0)return;
+  const newSi=si+dir;if(newSi<0||newSi>=steps.length)return;
+  [steps[si],steps[newSi]]=[steps[newSi],steps[si]];
+  spells[idx].steps=steps;saveSpells(spells);render();}
+
+function toggleStepIncantation(spellId, stepId){
+  const key=`lumina_step_inc_${spellId}_${stepId}`;
+  localStorage.setItem(key,localStorage.getItem(key)==='1'?'':'1');render();}
+
   const spells=loadSpells(),idx=spells.findIndex(s=>s.id===spellId);if(idx<0)return;
   spells[idx].materials.push({id:Date.now().toString(),item:'',purpose:''});saveSpells(spells);render();}
 function updateMaterial(spellId,matId,field,value){
@@ -1320,7 +1377,7 @@ function renderSpellwork(el){
   if(!spells.length){html+='<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No spells yet. Add one to begin tracking your practice.</div>';}
   else{
     html+='<div class="spell-list">';
-    spells.forEach(spell=>{
+    spells.forEach((spell,si)=>{
       const isOpen=localStorage.getItem('lumina_open_spell')===spell.id;
       const latest=spell.followups&&spell.followups.length?spell.followups[spell.followups.length-1].status:'';
       const sc=STATUS_COLORS[latest]||'';
@@ -1333,9 +1390,14 @@ function renderSpellwork(el){
             <div class="spell-card-meta">${castDate} · ${escHtml(spell.occasion||'—')} · ${escHtml(typeStr)}</div>
             ${latest?`<div style="display:inline-block;margin-top:5px;padding:2px 10px;border-radius:10px;background:${sc}22;border:1px solid ${sc}55;font-size:10px;font-weight:700;color:${sc}">${latest}</div>`:''}
           </div>
-          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-            ${spell.steps&&spell.steps.length?`<button style="background:var(--gold-warm);border:none;color:white;padding:7px 14px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px" onclick="event.stopPropagation();launchExecute('${spell.id}')">▶ Execute</button>`:''}
-            <button class="decision-delete" onclick="event.stopPropagation();deleteSpell('${spell.id}')">×</button>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0" onclick="event.stopPropagation()">
+            <div class="reorder-btns">
+              <button class="reorder-btn" onclick="reorderSpell('${spell.id}',-1)" ${si===0?'disabled':''}>▲</button>
+              <button class="reorder-btn" onclick="reorderSpell('${spell.id}',1)" ${si===spells.length-1?'disabled':''}>▼</button>
+            </div>
+            <button class="spell-action-btn" onclick="duplicateSpell('${spell.id}')">⧉ Copy</button>
+            ${spell.steps&&spell.steps.length?`<button style="background:var(--gold-warm);border:none;color:white;padding:7px 14px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px" onclick="launchExecute('${spell.id}')">▶ Execute</button>`:''}
+            <button class="decision-delete" onclick="deleteSpell('${spell.id}')">×</button>
           </div>
         </div>
         <div class="spell-card-body ${isOpen?'open':''}">${renderSpellForm(spell)}</div>
@@ -1364,32 +1426,53 @@ function renderSpellForm(spell){
   </div>
   <div class="spell-section">
     <div class="spell-section-label">Materials</div>
-    ${(spell.materials||[]).map(m=>`<div class="material-row">
-      <input class="material-input" list="mat_list_${spell.id}" value="${escHtml(m.item||'')}" placeholder="Item (e.g. green candle)" onchange="updateMaterial('${spell.id}','${m.id}','item',this.value)"/>
-      <input class="material-input" value="${escHtml(m.purpose||'')}" placeholder="Purpose (e.g. prosperity)" onchange="updateMaterial('${spell.id}','${m.id}','purpose',this.value)"/>
-      <button class="material-del" onclick="removeMaterial('${spell.id}','${m.id}')">×</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;margin-bottom:6px">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1px;color:var(--ink-faint);text-transform:uppercase">Item</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:1px;color:var(--ink-faint);text-transform:uppercase">Purpose</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:1px;color:var(--ink-faint);text-transform:uppercase">Visualize</div>
+      <div></div>
+    </div>
+    ${(spell.materials||[]).map((m,mi)=>`<div class="material-row">
+      <input class="material-input" list="mat_list_${spell.id}" value="${escHtml(m.item||'')}" placeholder="e.g. green candle" onchange="updateMaterial('${spell.id}','${m.id}','item',this.value)"/>
+      <input class="material-input" value="${escHtml(m.purpose||'')}" placeholder="e.g. prosperity" onchange="updateMaterial('${spell.id}','${m.id}','purpose',this.value)"/>
+      <input class="material-input" value="${escHtml(m.visualize||'')}" placeholder="e.g. golden light flowing in" onchange="updateMaterial('${spell.id}','${m.id}','visualize',this.value)"/>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <button class="reorder-btn" onclick="reorderMaterial('${spell.id}','${m.id}',-1)" ${mi===0?'disabled':''}>▲</button>
+        <button class="reorder-btn" onclick="reorderMaterial('${spell.id}','${m.id}',1)" ${mi===(spell.materials.length-1)?'disabled':''}>▼</button>
+        <button class="material-del" onclick="removeMaterial('${spell.id}','${m.id}')">×</button>
+      </div>
     </div>`).join('')}
     <button class="add-row-btn" onclick="addMaterialRow('${spell.id}')">+ Add Material</button>
   </div>
   <div class="spell-section">
     <div class="spell-section-label">Steps / Process</div>
-    ${(spell.steps||[]).map((s,si)=>`<div class="step-row">
+    ${(spell.steps||[]).map((s,si)=>{
+      const incOpen=localStorage.getItem(`lumina_step_inc_${spell.id}_${s.id}`)==='1';
+      return`<div class="step-row">
       <div class="step-num">${si+1}</div>
       <div style="flex:1">
         <textarea class="field-textarea" rows="2" style="margin-bottom:6px" placeholder="Describe this step…" oninput="updateStep('${spell.id}','${s.id}','text',this.value)">${escHtml(s.text||'')}</textarea>
-        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
           <label style="font-size:11px;color:var(--ink-faint);display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" ${s.hasTimer?'checked':''} onchange="updateStep('${spell.id}','${s.id}','hasTimer',this.checked);render()"/> Timer</label>
           ${s.hasTimer?`<input type="number" min="1" max="120" value="${s.timerMins||5}" style="width:60px;padding:4px 8px;border:1.5px solid var(--border);border-radius:4px;font-size:12px;font-family:'Libre Baskerville',serif" onchange="updateStep('${spell.id}','${s.id}','timerMins',parseInt(this.value)||5)"/> <span style="font-size:11px;color:var(--ink-faint)">mins</span>`:''}
-          <label style="font-size:11px;color:var(--ink-faint);display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" ${s.isIncantation?'checked':''} onchange="updateStep('${spell.id}','${s.id}','isIncantation',this.checked)"/> Show incantation at this step</label>
         </div>
+        <button class="step-incantation-toggle" onclick="toggleStepIncantation('${spell.id}','${s.id}')">
+          ${incOpen?'▾':'▸'} ${s.stepIncantation?'Incantation added':'Add incantation for this step'}
+        </button>
+        ${incOpen?`<textarea class="field-textarea" rows="3" style="margin-top:6px" placeholder="Words, chant, or invocation specific to this step…" oninput="updateStep('${spell.id}','${s.id}','stepIncantation',this.value)">${escHtml(s.stepIncantation||'')}</textarea>`:''}
       </div>
-      <button class="step-del" onclick="removeStep('${spell.id}','${s.id}')">×</button>
-    </div>`).join('')}
+      <div style="display:flex;flex-direction:column;gap:3px;align-items:center">
+        <button class="reorder-btn" onclick="reorderStep('${spell.id}','${s.id}',-1)" ${si===0?'disabled':''}>▲</button>
+        <button class="reorder-btn" onclick="reorderStep('${spell.id}','${s.id}',1)" ${si===(spell.steps.length-1)?'disabled':''}>▼</button>
+        <button class="step-del" onclick="removeStep('${spell.id}','${s.id}')">×</button>
+      </div>
+    </div>`}).join('')}
     <button class="add-row-btn" onclick="addStepRow('${spell.id}')">+ Add Step</button>
   </div>
   <div class="spell-section">
-    <div class="spell-section-label">Incantation / Chant / Invocation</div>
-    <textarea class="field-textarea" rows="5" placeholder="Words, chants, or invocations. Will display prominently during execution." oninput="updateSpellField('${spell.id}','incantation',this.value)">${escHtml(spell.incantation||'')}</textarea>
+    <div class="spell-section-label">Global Incantation / Chant / Invocation</div>
+    <div style="font-size:11px;color:var(--ink-faint);margin-bottom:8px">Shown during execution on any step marked as incantation. Steps can also have their own — see above.</div>
+    <textarea class="field-textarea" rows="5" placeholder="Words, chants, or invocations for the full working…" oninput="updateSpellField('${spell.id}','incantation',this.value)">${escHtml(spell.incantation||'')}</textarea>
   </div>
   <div class="spell-section">
     <div class="spell-section-label">Casting Notes</div>
@@ -1453,6 +1536,7 @@ function renderExecute(){
           <div>
             <div class="exec-material-name" style="${checked?'opacity:.4;text-decoration:line-through':''}">${escHtml(m.item)}</div>
             ${m.purpose?`<div class="exec-material-purpose">${escHtml(m.purpose)}</div>`:''}
+            ${m.visualize?`<div class="exec-material-purpose" style="color:rgba(184,134,11,.7);font-style:italic">Visualize: ${escHtml(m.visualize)}</div>`:''}
           </div>
         </div>`});
     } else {html+=`<p style="color:rgba(255,255,255,.4);font-size:14px;text-align:center;padding:20px 0">No materials listed — proceed when ready.</p>`;}
@@ -1466,7 +1550,7 @@ function renderExecute(){
     <div class="exec-step-box">
       <div class="exec-step-counter">Step ${execState.stepIndex+1} of ${steps.length}</div>
       <div class="exec-step-text">${escHtml(step.text)}</div>
-      ${step.isIncantation&&spell.incantation?`<div class="exec-incantation">${escHtml(spell.incantation)}</div>`:''}
+      ${step.isIncantation?(step.stepIncantation||spell.incantation)?`<div class="exec-incantation">${escHtml(step.stepIncantation||spell.incantation)}</div>`:'':(step.stepIncantation)?`<div class="exec-incantation">${escHtml(step.stepIncantation)}</div>`:''}
       ${step.hasTimer?`<div class="exec-timer">
         <div class="exec-timer-display">${String(Math.floor((execState.timerSecs||step.timerMins*60)/60)).padStart(2,'0')}:${String((execState.timerSecs||step.timerMins*60)%60).padStart(2,'0')}</div>
         <button class="exec-timer-btn" onclick="execTimerToggle(${step.timerMins*60})">${execState.timerRunning?'⏸ Pause':'▶ Start'}</button>
