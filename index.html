@@ -1188,11 +1188,14 @@ function renderCardSlots(day, entryId){
         </div>`;
       }
       if(slot.type==='oracle'&&selectedOracle){
-        const msg=selectedOracle.core_message||selectedOracle.meaning||'';
-        return`<div class="card-meaning-box">
-          ${selectedOracle.theme?`<div class="card-meaning-keywords">${escHtml(selectedOracle.theme)}</div>`:''}
-          ${msg?`<div class="card-meaning-text">${escHtml(msg)}</div>`:''}
-        </div>`;
+        const sections=[
+          selectedOracle.theme?`<div class="card-meaning-keywords">${escHtml(selectedOracle.theme)}</div>`:'',
+          selectedOracle.core_message?`<div class="card-meaning-text" style="margin-bottom:8px">${escHtml(selectedOracle.core_message)}</div>`:'',
+          selectedOracle.meaning?`<div style="margin-top:8px"><div class="card-meaning-keywords">Expanded Meaning</div><div class="card-meaning-text">${escHtml(selectedOracle.meaning)}</div></div>`:'',
+          selectedOracle.shadow?`<div style="margin-top:8px"><div class="card-meaning-keywords" style="color:#7858A8">Shadow / Reversed</div><div class="card-meaning-text">${escHtml(selectedOracle.shadow)}</div></div>`:'',
+          selectedOracle.guidebook?`<div style="margin-top:8px"><div class="card-meaning-keywords">Guidebook Notes</div><div class="card-meaning-text">${escHtml(selectedOracle.guidebook)}</div></div>`:'',
+        ].filter(Boolean).join('');
+        return`<div class="card-meaning-box">${sections}</div>`;
       }
       return'';
     };
