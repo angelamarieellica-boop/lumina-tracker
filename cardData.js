@@ -957,6 +957,20 @@ const ORACLE_CARDS = [
     "meaning": "She holds the scales of justice delcately between her fingers. She carefully weighs every spoken word people utter in her presence. Each nuance, each word choice petitioners make, gives their position away. Determining right from wrong requires an intricate skill. Not everyoen can do what she can do. Flowers decorate her hair, showing the beauty that happens when the scales pass judgment. Her golden clothing matches the small scales dangling in each hand. If you look closely, one seems higher than the other. Did the results bring positive or negative outcomes? Only history will tell."
   },
   {
+    "deck": "Dreamscape Oracle",
+    "name": "Tiger",
+    "theme": "",
+    "core_message": "Overcome adversity through personal power. Exert a. strong will to push through tough times.",
+    "meaning": "Tiger are some of hte most recognizable cats int eh world. They are territoria and mostly solitary, but are social creatures when they go hunting. Diverse cultures feaer their ferocity and view tigers as a formidable force. Many people call upon tiger energy to overcome obstacles and reclaim personal power. With their dwindling habitat, tigers have had to adapt to the constant changes humanity imposes upon them. Call upon Tiger when you are dealing wiht adverse situations that need your assistance. Show your strength and don't back dowon until you nkow when things are in your favor. "
+  },
+  {
+    "deck": "Dreamscape Oracle",
+    "name": "The Night",
+    "theme": "",
+    "core_message": "Don't be afraid of the dark; greet the shadows.",
+    "meaning": "The Night transports deep, dark, dreamy scents with him. He moves slowly and effortlessly through the streets. His incense spills from the censer, coloring the air with its perfume. The smoke hangs thick in the air, blanketing the world in darkness. The Night wears the stars at his waist. Each speck twinkles with his movement, blinking in and out with each step. He wears a head wrap filled with the colors of the sky. The cover appears white at the top and then darkens into the daytime glow cast by the sun. He walks everywhere, bringing dreams and nightmares to everyone as the day falls away to meet the shadows."
+  },
+  {
     "deck": "Loputyn Oracle",
     "name": "Inner Healing",
     "theme": "Healing",
@@ -983,6 +997,20 @@ const ORACLE_CARDS = [
     "theme": "",
     "core_message": "I trust my senses to lead me in the direction of my moonlit trail. \n\nProtect, Nourish, Nurture",
     "meaning": "It is time to break fresh ground! Find what thrills you and go there. Follow the moon and golden stardust toward infinite horizons. This is your destiny. \n\nA powerful period of rebirth is on the careds for you. Like a snake, you are shedding your skin to reawaken anew. \n\nCircumstances do not make or break you; they simply crack open your heart to learn and grow. A downward spiral is often an inward journey of self-discovery, the perfect time for reflection and an opportunity to change directio.n \n\nThe love of the lunar mother heals you with nature's green energy of rejuvenation. Refill, revive and then jump back in with renewed enthusiasm! The winds of change blow away dusty cobwebs, so you can rise with the sun and glow like the moon. New pathways will open up and give you a renewed zest for life. \n\nAnytime you have a gut feeling, pay attention and believe in your hunches, as they will never let you down. If you find that sometimes you feel connected and other times you don't, it's just a matter of turning inwards, calming the mind, linking with your heart and reflecting, with the intention to strengthen your spiritual awareness."
+  },
+  {
+    "deck": "Moon Temple Oracle",
+    "name": "Journey",
+    "theme": "",
+    "core_message": "I am a light warrior of love. \n\nBreak out. Explore, Arise",
+    "meaning": "Ride the wave of victory! An upsurge of good fortune is streaming in for you. \n\nBring forth your inner warrior of courage and self-belief. Be a little daring. Unleash your free-spirited rebel to lunge forward fearlessly and dive headfirst into teh unnown. The moon will ight your way to great heights. \n\nOne of life's reatest discoveries is that the hunt, not th eprize, is the most rewarding part. Life is a sacred quest. Overcoming challenges builds your confidence, abilities and spirituality. So, stick it out! Take a break if you need to, but never give up. The highs and lows provide contrast and blance. "
+  },
+  {
+    "deck": "Moon Temple Oracle",
+    "name": "Seed",
+    "theme": "",
+    "core_message": "My intentions grow, flourish, and thrive.\n\nPlan, Cultivate, Ripen",
+    "meaning": "Open fully to receive the lavish opulence that is unfurling for you. Your alluring magnetism draws a jam-packed bounty of love to you. The beauty of nature and gifts of the earth are there for the picking. You are the gardener of your life. You get to reap the rewards of all your hard work and dedication.\nSeeds represent kernels of wisdom and abundance that inspire generosity, connection, healing and forgiveness. It is time for you to scatter the spiritual seeds of grace and hope across your garden. And, as the New Moon shines, these seeds will grow and gift you luscious fruit and blossoms.\nA seed is like an embryo, a precious living thing, but in a sleeping state it must be buried in the sacred earth to activate the growth process. In the darkness, with compassion and understanding, new growth will spring forth. Profound life lessons are germinated in the darkest of days. Never lose hope that the most beautiful flowers bloom from the eternal love of the earth mother. You are loved beyond belief.\nTiny seeds grow, blossom and thrive when nurtured.\nEnsure you feed and sustain your best-laid plans all the way to completion. Patience is required right now. Be flexible and adapt to different soils and ways of cultivating. Allow the fruit of your labours to ripen naturally on the mother tree. Don't be tempted to pick it too early!\nDivine seeds are like valuable lessons. Once planted, observe the insights and lessons that emerge throughout the growth phase. Fragments of enlightenment are everywhere if you open to see the flowers amongst the weeds. Qualities like purity, love, perception and awareness are waiting to fully bloom. Radiate and share your blossoming gifts with the world, moon lover."
   },
   {
     "deck": "Lightworker Oracle",
@@ -1013,6 +1041,13 @@ const ORACLE_CARDS = [
     "meaning": ""
   },
   {
+    "deck": "White Light Oracle",
+    "name": "Bastet of 174Hz",
+    "theme": "",
+    "core_message": "You've been moving so fast for so long that you're not realising how wound up you've become. Gently unwind now, to drop into a deeper, slower healing rhythm, and you will restore your body, mind and soul. Things which seem too difficult right now shall soon seem very manageable and even pleasurable to accomplish.",
+    "meaning": "The Egyptian cat-headed goddess of dance, festivals, birth, healing and sacred potions is known as Bastet. Her sacred cult was one of beauty, pleasure and enjoyment. Worshipping her was not about ignoring the problems that are part of being alive. In fact, just as cats can see in the dark and are natural and skilful hunters, Bastet was often called upon for psychic protection from hidden negativities and to secure ones life force and enhance one's vitality. In her role as healer and creatrix of magical healing potions and sacred perfumes, she integrates healing with pleasure, relaxation and a sensual connection to the physical world of nature — including beautiful natural oils and jewels made with precious and semi-precious stones.\n• Bastet shows us how to slow down and smell the roses, whilst applying their perfumed oil to our bodies and breathing in their high-frequency scent to protect and soothe the heart. She is the guardian of and guide into the sumptuous feminine paradise that brings healing, a willingness to connect to the earth and the body, and a capacity to experience sacred healing playfulness, exuberance and natural states of joy.\n\nThe healing frequency of 174Hz is known as the pain-relieving frequency. A natural anaesthetic, it is a musical version of the similar, low-frequency purring of a cat. The cat's purr is considered medically therapeutic, as is 174Hz. This frequency creates an experience of grounding and slowing down, and evokes deep healing for body and mind, providing love and peace to organs and tissues, strengthening your bones and your soul.\n\nThe oracle of Bastet of 174Hz asks you to slow down and take some time to heal, rest, relax and enjoy your life. Then, you can more effortlessly be source of positive energy. We deal with issues far more effectively from a place of peace and relaxation than from stress. If you are interested in exploring any of the sacred arts of pleasure, including music and sound, food, touch and massage, healing, play, dance, celebration and art, colour therapy or healing with crystals and oils, this oracle encourages you to do so. Such avenues are authentic and helpful for your soul healing. \n\nIf you've been too hard on yourself, it's time to be kind. Question and heal any guilt or shaem which have prevented you from enjoying the natural pleasures of your body. You are encouraged to enjoy life. Your delight can be a source of positive energy for yourself and others, too. this life is a gift and Bastet of 174Hz reminds us that when we are moving too fast, we will miss out o n much, including being present for and sharing ourselves with our loved ones. \n\nIf an issue has been troubling you, this oracle brings guidance that there is an approach available that can reduce suffering and increase your feelings of happiness. Open your heart to the divine feminine for guidance and inspiration. Bastet is a portent of joy and celebration. Believe in the happiness and healing your heart can create and attract. "
+  },
+  {
     "deck": "Mystical Shaman Oracle",
     "name": "The Ghost Dance",
     "theme": "",
@@ -1025,6 +1060,13 @@ const ORACLE_CARDS = [
     "theme": "",
     "core_message": "THE ESSENCE\nNative peoples around the Earth recognize mountains as places of great power where one encounters Spirit or where the gods or goddesses reside. In ancient Greece, Mount Olympus was the home of the 12 main Gods and Goddesses. In Tibet, pilgrims circumambulate Mount Kailash to bring prosperity. In Perú, pilgrims climb the ice-capped Mount Aus-angate to receive the starlight and bring fire to the Earth.\n\nTHE INVITATION\nThe Holy Mountain invites you to go on a sacred pilgrimage to acquire vision and perspective. First you must accept the present situation as an opportunity to discover higher understanding. Find a sacred altar where others who came before you have prayed and found wisdom, and make your offering there. Make a commitment to walk with courage, love, and compassion until you see with clarity the perfection of all.\n\nTHE MEDICINE\nWhen the Holy Mountain shows up, it is time to be active. Do not let your doubts deter you and keep you bound. This is a time to leap over challenges and to remember that from the top of the mountain there are no obstacles, only beauty and an unobstructed view of the entire Earth.\nAnd there's no need to go shopping for the right hiking boots or camping equipment to climb the holy mountain; you already have all the gear you need. Overcome any lethargy, indolence, and laziness, as these are the real obstacles.",
     "meaning": ""
+  },
+  {
+    "deck": "Mystical Shaman Oracle",
+    "name": "The Serpent",
+    "theme": "",
+    "core_message": "THE ESSENCE\nThe Serpent is the life force of Mother Earth. The coiled serpent of the Kundalini brings passion, healing, and renewal. She offers us the fruit of the Tree of Knowledge in the Garden of Eden, and reminds us to shed the past the way she sheds her tired, old skin. Serpent comes to offer you the forbidden fruit that will set your passion and creativity free.",
+    "meaning": "THE INVITATION\nThe Serpent power of the Kundalini is stirring within your chakras, gently asking you to embrace its mystery. Shed the old skin that you have been so attached to, and welcome the vulnerable pink underbelly that will bring you a fresh experience of your life. Your passion and sexuality are awakening, and this can be scary. Trust the wisdom of Serpent to transform your sensual energies into beautiful, original manifestation."
   }
 ];
 
