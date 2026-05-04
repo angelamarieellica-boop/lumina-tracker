@@ -835,24 +835,50 @@ async function generateDayInsight(dayIdx){
   const allEnergy=dd.entries.map(e=>e.energy).filter(Boolean);
   const allMoods=dd.entries.flatMap(e=>e.moods||[]);
   const allBody=dd.entries.flatMap(e=>e.body||[]);
-  const allObs=dd.entries.flatMap(e=>([
-    e.obsPatterns&&`Patterns: ${e.obsPatterns}`,
-    e.obsReactions&&`Reactions: ${e.obsReactions}`,
-    e.obsImpulses&&`Impulses: ${e.obsImpulses}`,
-    e.obsSurprises&&`Surprises: ${e.obsSurprises}`,
-    e.obsOthers&&`In others: ${e.obsOthers}`,
-    e.obsEnv&&`Environment: ${e.obsEnv}`,
-    e.reflectorLens&&`Reflector lens: ${e.reflectorLens}`
-  ].filter(Boolean)));
 
-  const allCards=dd.entries.flatMap(e=>(e.cardSlots||[]).filter(s=>s.cardName).map(s=>{
+  // Build rich observation blocks per entry
+  const entryBlocks=dd.entries.map((e,i)=>{
+    const entryGate=GATES[e.gateNum]||{};
+    const eTime=e.time?new Date(e.time).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'';
+    const parts=[
+      eTime&&`Time: ${eTime}`,
+      e.gateNum&&`Gate at entry: Gate ${e.gateNum}.${e.gateLine||''} ${entryGate.name||''} (${entryGate.center||''} Center)`,
+      e.energy&&`Energy: ${e.energy}`,
+      (e.moods||[]).length&&`Mood: ${e.moods.join(', ')}`,
+      (e.body||[]).length&&`Body: ${e.body.join(', ')}`,
+      e.reflectorLens&&`Reflector lens: ${e.reflectorLens}`,
+      e.obsPatterns&&`Patterns: ${e.obsPatterns}`,
+      e.obsReactions&&`Reactions: ${e.obsReactions}`,
+      e.obsImpulses&&`Impulses: ${e.obsImpulses}`,
+      e.obsSurprises&&`Surprises: ${e.obsSurprises}`,
+      e.obsOthers&&`In others: ${e.obsOthers}`,
+      e.obsEnv&&`In environment: ${e.obsEnv}`,
+    ].filter(Boolean);
+    return parts.length?`Entry ${i+1}:\n${parts.join('\n')}`:'';
+  }).filter(Boolean);
+
+  // Build rich card blocks
+  const cardBlocks=dd.entries.flatMap(e=>(e.cardSlots||[]).filter(s=>s.cardName).map(s=>{
     if(s.type==='tarot'){
       const card=TAROT_CARDS&&TAROT_CARDS.find(c=>c.name===s.cardName);
       const kw=s.orientation==='reversed'?(card?.keywords_rev||''):(card?.keywords_up||'');
-      return`${s.cardName} (${s.orientation}) — ${kw}${s.notes?` | Your note: ${s.notes}`:''}`;
+      const meaning=s.orientation==='reversed'?(card?.meaning_rev||''):(card?.meaning_up||'');
+      return[
+        `Card: ${s.cardName} — ${s.orientation} (Tarot, ${card?.suit||''})`,
+        kw&&`Keywords: ${kw}`,
+        meaning&&`Meaning: ${meaning.substring(0,400)}`,
+        s.notes&&`Your note: ${s.notes}`,
+      ].filter(Boolean).join('\n');
     } else {
       const card=ORACLE_CARDS&&ORACLE_CARDS.find(c=>c.name===s.cardName);
-      return`${s.cardName} (${s.deck||'Oracle'}) — ${card?.core_message||''}${s.notes?` | Your note: ${s.notes}`:''}`;
+      return[
+        `Card: ${s.cardName} (${s.deck||'Oracle'})`,
+        card?.theme&&`Theme: ${card.theme}`,
+        card?.core_message&&`Core message: ${card.core_message.substring(0,300)}`,
+        card?.meaning&&`Expanded: ${card.meaning.substring(0,300)}`,
+        card?.shadow&&`Shadow: ${card.shadow.substring(0,200)}`,
+        s.notes&&`Your note: ${s.notes}`,
+      ].filter(Boolean).join('\n');
     }}));
 
   const spells=loadSpells().filter(s=>{
@@ -860,37 +886,59 @@ async function generateDayInsight(dayIdx){
     const dd2=new Date(day.date);dd2.setHours(0,0,0,0);
     return sd.getTime()===dd2.getTime();});
 
-  const prompt=`You are synthesizing a single day's data for Gela, a 4/6 Reflector in Human Design. She is a nurse informaticist and holistic practitioner (reiki, tarot, calligraphy). Sag Sun, Pisces Moon, Gemini Rising.
+  // Determine which centers were activated today
+  const activatedCenters=[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))];
 
-DATE: ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}
-CYCLE: Day ${day.dayNum} of 29 · New Moon in ${sign}
-MOON PHASE: ${getSpellOccasion()}
+  const prompt=`You are Gela's personal pattern analyst and spiritual mirror. Gela is a 4/6 Reflector in Human Design — meaning ALL of her energy centers are open and undefined. She does not generate her own consistent energy; she samples, amplifies, and reflects the energy of others and her environment. This is critical context for everything below.
 
-GATES ACTIVE TODAY:
-${displayGates.map(g=>`Gate ${g.gateNum}.${g.line||''} ${g.gate.name} (${g.gate.center} Center) — ${g.gate.theme}`).join('\n')}
+Her chart: Sag Sun (6th house), Pisces Moon (9th house), Gemini Rising. Jupiter in Cancer 1st house (exalted, Jupiter return year). Saturn in Capricorn 7th house. Nurse informaticist + holistic practitioner (reiki, tarot, calligraphy).
 
-ENERGY: ${allEnergy.join(', ')||'not logged'}
-MOODS: ${allMoods.join(', ')||'not logged'}
-BODY: ${allBody.join(', ')||'not logged'}
+TODAY: ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}
+Day ${day.dayNum} of 29 · New Moon in ${sign} · ${getSpellOccasion()}
 
-CARDS PULLED:
-${allCards.join('\n')||'None'}
+GATES ACTIVE TODAY (the moon transited these gates during waking hours):
+${displayGates.map(g=>{
+  const reading=GATE_READINGS[g.gateNum]||'';
+  return`Gate ${g.gateNum}.${g.line||''} — ${g.gate?.name||''} (${g.gate?.center||''} Center)
+Theme: ${g.gate?.theme||''}
+${reading?'Context: '+reading.substring(0,250):''}`;
+}).join('\n\n')}
 
-OBSERVATIONS:
-${allObs.join('\n')||'None logged'}
+CENTERS ACTIVATED TODAY: ${activatedCenters.join(', ')||'none logged'}
+Note: As a Reflector, ALL of Gela's centers are open. When a gate activates a center today, she is temporarily "defined" in that center — meaning she may feel more consistent, driven, or certain energy in that area than usual. This is temporary and NOT her. It's worth naming which center got lit up and what that might have felt like.
+
+JOURNAL ENTRIES TODAY:
+${entryBlocks.join('\n\n')||'No entries logged'}
+
+CARDS PULLED TODAY:
+${cardBlocks.join('\n\n')||'No cards pulled'}
+
+SPELLWORK TODAY:
+${spells.map(s=>`${s.name||'Unnamed'} — ${(s.types||[]).join(', ')}
+Intention: ${s.intention||'not recorded'}
+Materials: ${(s.materials||[]).map(m=>m.item).filter(Boolean).join(', ')||'none listed'}
+Casting notes: ${s.castingNotes||'none'}`).join('\n\n')||'None'}
 
 PLANNING INTENTIONS: ${(dd.planningTags||[]).join(', ')||'none'} ${dd.planningNote||''}
 
-SPELLWORK TODAY:
-${spells.map(s=>`${s.name||'Unnamed spell'} — ${(s.types||[]).join(', ')} — Intention: ${s.intention||'not recorded'}`).join('\n')||'None'}
+---
 
-Write a concise synthesis of this day — 3-4 sentences maximum. Focus on: what themes are showing up across the gate energy, cards, and observations; what the interplay between the card pulls and the active gate(s) suggests; anything surprising or worth tracking. Be specific to the actual data. Speak directly to Gela. Plain prose, no bullet points, no headers. Write as if you're a wise mirror reflecting what the day's data is showing.`;
+Write a comprehensive day synthesis for Gela in 3-4 paragraphs. Use plain, direct language — no jargon, no HD terminology unless you explain it in plain words immediately after. Write as if you're a wise, perceptive friend who has been watching her day unfold.
+
+Structure your response like this (but write it as flowing prose, not with headers):
+
+PARAGRAPH 1 — The gates: What energy was moving through today? What did Gate [X] actually mean in practical terms — how might it have shown up in her body, her interactions, her mood? If a center got temporarily activated (defined), name it plainly and explain what that might have felt like — e.g. "the Ego/Heart center lit up today, which can create a temporary feeling of willpower or needing to prove something — that's not usually your baseline."
+
+PARAGRAPH 2 — The cards: What is the overall story the cards are telling? Look across all of them — tarot and oracle. What themes repeat? What tension or conversation is happening between them? Don't describe each card individually — find the through-line. What is the day's reading as a whole saying?
+
+PARAGRAPH 3 — The convergence: Where do the gates, the cards, the energy, and the observations all point to the same thing? What pattern is showing up across multiple data streams? Be specific — name actual details from what she logged.
+
+PARAGRAPH 4 — Two reflective questions: End with exactly 2 questions that would help Gela go deeper into what this day is showing her. Make them specific to her data, not generic. Phrase them warmly but directly.`;
 
   try{
-    const resp=await fetch('/.netlify/functions/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+    const resp=await fetch('/.netlify/functions/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,max_tokens:1200})});
     const data=await resp.json();if(data.error)throw new Error(data.error);
     const text=data.text||'Unable to synthesize.';
-    // Store it
     localStorage.setItem(`lumina_day_ai_${getCycleStart()}_${dayIdx}`,text);
     if(result)result.innerHTML=`<div class="day-digest-ai-text" style="margin-top:10px">${escHtml(text)}</div>`;
     if(btn){btn.disabled=false;btn.textContent='↺ Regenerate';}
