@@ -25,7 +25,7 @@ exports.handler = async function(event) {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
-  const { prompt } = body;
+  const { prompt, max_tokens } = body;
   if (!prompt) {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'No prompt provided' }) };
   }
@@ -40,7 +40,7 @@ exports.handler = async function(event) {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
+        max_tokens: max_tokens || 1000,
         messages: [{ role: 'user', content: prompt }]
       })
     });
