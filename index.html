@@ -302,6 +302,11 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .exec-notes-input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:white;padding:12px;border-radius:6px;font-size:14px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.7}
 .exec-notes-input::placeholder{color:rgba(255,255,255,.3)}
 .exec-close{position:fixed;top:20px;right:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:8px 16px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px;z-index:2001}
+.brain-dump-section{border-top:1.5px solid var(--border-light);padding-top:18px;margin-top:4px}
+.brain-dump-label{font-size:10px;font-weight:700;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:8px}
+.brain-dump-hint{font-size:11px;color:var(--ink-faint);margin-bottom:10px;line-height:1.5}
+.brain-dump-textarea{width:100%;background:var(--white);border:1.5px solid var(--border-light);color:var(--ink);padding:14px 16px;border-radius:7px;font-size:14px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.8;transition:border-color .15s;min-height:140px}
+.brain-dump-textarea:focus{border-color:var(--green)}
 /* Daily digest */
 .day-digest{background:linear-gradient(135deg,var(--ink) 0%,#1a1a2e 100%);border-radius:10px;padding:22px 26px;margin-bottom:18px;color:white;position:relative;overflow:hidden}
 .day-digest::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold-warm),var(--green),var(--gold-warm))}
@@ -436,12 +441,7 @@ const MY_GATES={
 // Gate center lookup for chart awareness
 const GATE_CENTER_MAP={1:'G',2:'G',3:'Sacral',4:'Ajna',5:'Sacral',6:'Solar Plexus',7:'G',8:'Throat',9:'Sacral',10:'G',11:'Ajna',12:'Throat',13:'G',14:'Sacral',15:'G',16:'Throat',17:'Ajna',18:'Spleen',19:'Root',20:'Throat',21:'Ego/Heart',22:'Solar Plexus',23:'Throat',24:'Ajna',25:'G',26:'Ego/Heart',27:'Sacral',28:'Spleen',29:'Sacral',30:'Solar Plexus',31:'Throat',32:'Spleen',33:'Throat',34:'Sacral',35:'Throat',36:'Solar Plexus',37:'Solar Plexus',38:'Root',39:'Root',40:'Ego/Heart',41:'Root',42:'Sacral',43:'Ajna',44:'Spleen',45:'Throat',46:'G',47:'Ajna',48:'Spleen',49:'Solar Plexus',50:'Spleen',51:'Ego/Heart',52:'Root',53:'Root',54:'Root',55:'Solar Plexus',56:'Throat',57:'Spleen',58:'Root',59:'Sacral',60:'Root',61:'Head',62:'Throat',63:'Head',64:'Head'};
 
-/* Brain dump CSS */
-.brain-dump-section{border-top:1.5px solid var(--border-light);padding-top:18px;margin-top:4px}
-.brain-dump-label{font-size:10px;font-weight:700;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:8px}
-.brain-dump-hint{font-size:11px;color:var(--ink-faint);margin-bottom:10px;line-height:1.5}
-.brain-dump-textarea{width:100%;background:var(--white);border:1.5px solid var(--border-light);color:var(--ink);padding:14px 16px;border-radius:7px;font-size:14px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.8;transition:border-color .15s;min-height:140px}
-.brain-dump-textarea:focus{border-color:var(--green)}
+/* Brain dump field lives in the style block above */
 const GATE_FORECAST={1:'deep creative expression',2:'receptive & nurturing',3:'new beginnings emerging',4:'mental problem-solving',5:'ritual & rhythm',6:'emotional sensitivity high',7:'leadership & direction',8:'authentic voice',9:'focused detail work',10:'self-love & alignment',11:'imagination & vision',12:'careful words',13:'listening & witnessing',14:'empowered resource work',15:'community & connection',16:'sharing your gifts',17:'strong opinions & perspective',18:'correction & discernment',19:'tender needs & care',20:'presence & being',21:'control & resource mastery',22:'grace & emotional opening',23:'distillation & clarity',24:'inward reflection',25:'innocence & openness',26:'integrity & authentic voice',27:'nourishing & caretaking',28:'meaning & purpose',29:'commitment & follow-through',30:'desire & longing',31:'influence through truth',32:'discerning what endures',33:'retreat & privacy',34:'power & independence',35:'adventure & new experience',36:'emotional growth',37:'family & community bonds',38:'purpose over struggle',39:'provocative energy',40:'rest after contribution',41:'new beginnings & anticipation',42:'completion & growth',43:'breakthrough insight',44:'pattern recognition',45:'gathering & resources',46:'body & embodiment',47:'making meaning',48:'depth & wisdom',49:'revolution & transformation',50:'values & responsibility',51:'shock & awakening',52:'stillness & grounding',53:'gradual new starts',54:'ambition & drive',55:'abundance & freedom',56:'storytelling & experience',57:'intuition & clarity',58:'vitality & joy',59:'intimacy & dissolution',60:'limitation & acceptance',61:'inner knowing & mystery',62:'detail & practicality',63:'doubt & questioning',64:'confusion before clarity'};
 
 // ── GATE READINGS ─────────────────────────────────────────────────────────
