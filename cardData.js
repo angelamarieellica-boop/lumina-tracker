@@ -1027,6 +1027,18 @@ const ORACLE_CARDS = [
     "imagery": ""
   },
   {
+    "deck": "Loputyn Oracle",
+    "card_number": "3.0",
+    "name": "The Spring of the Senses",
+    "theme": "",
+    "core_message": "In this card everything is tangible, the inner awakening leads you towards a desire to touch and bite into life as if it were a juicy apple. We must help the process of returning to light in a practical and concrete way. Passion and curiosity dominate this card, which emphasises what we are and can be passionate about in order to make our life attractive and active.\nWhat gives us pleasure? What do we want to put in place to be in constant perception of our surround-ings? What can we be seduced by in everyday life?\nWe are flesh and blood, not just soul, and this card reminds us of that. But beware: while it is right to seek fulfilment, an excess of it makes us sluggish and a prisoner of our senses.",
+    "meaning": "",
+    "shadow": "",
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": ""
+  },
+  {
     "deck": "Moon Temple Oracle",
     "card_number": "32.0",
     "name": "Tears",
@@ -1087,6 +1099,18 @@ const ORACLE_CARDS = [
     "imagery": ""
   },
   {
+    "deck": "Moon Temple Oracle",
+    "card_number": "37.0",
+    "name": "Love",
+    "theme": "",
+    "core_message": "I create a passionate Life. \n\nAmplify, Embody, Appreciate",
+    "meaning": "Your sensuality is like a love magnet. Ooze it, embody it and express it freely with self-confidence. Own your unique quintessence and love yourself as if you were a red-hot Full Moon pulsating with self-assurance and authenticity. It is your time to shine like the ruby moon and stars! Dance to your own love song to entice a higher love to you.\nBe prepared to come out of hibernation and step out of your comfort zone. The best way to find a like-minded lover is to go where they hang out. Decide how you want to feel and follow that feeling. Listen to your natural instincts and soul's voice to follow a higher, happier pathway to euphoric ecstasy.\nFinding your passion will help you live a full and purposeful existence. Passion, like love, is a sensation worth seeking. Do not wait for your passion to find you - look for it and create opportunities that align to your heart's desires.\nDesire activates your purpose. It gives you a reason to keep seeking, learning and embracing your mastery. It opens you up to soulful experiences and spirited adventures. Passionate souls, like you, make the most of every moment. You find pleasure and simple abundance in everyday living.\nIntuitive clarity grows when you open your senses to feel passion and pleasure. Self-awareness expands when you are in your body experiencing the sacred pulse of Source. The physical-body temple is a conduit for love. Let love in!\nPassion knows no restrictions and being enthusiastic about something can be explosive, like the Full Moon. Be mindful that your passion doesn't become an unhealthy obsession, that's not love. As with everything, in love there has to be sacred balance.",
+    "shadow": "",
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": ""
+  },
+  {
     "deck": "Lightworker Oracle",
     "card_number": "14.0",
     "name": "Soul Child",
@@ -1116,6 +1140,18 @@ const ORACLE_CARDS = [
     "name": "Seventh Ray of Ritual, Order & Ceremony",
     "theme": "",
     "core_message": "When the gift of the Seventh Ray enters your life, something new is being formed, something that will benefit your world. There may be  an increased interest in magic, ceremony and ritual for healing purposes. Resonating with high frequency violet light and the Archangel Zadkiel, the Seventh Ray also belps transmute energy from lower to higher frequency. It is a spiritual cleansing agent that allows the truth of spiritual freedom, empowerment and choice to be seen and felt, restoring hope and joy to the heart.\n\nThe Seventh Ray is very active upon the earth at this time. All of humanity is being affected by it. The Seventh Ray is the push-pull between the old and the new - the life that has been and can no longer continue in that form, and the new life that wants to evolve from the old. It honours traditions and ancestral wisdom that serve new life. When the Seventh Ray enters your life, you are asked to balance your attachment to what has been with an openness to the new. It is a time to fearlessly question what has been, honour what continues to hold value for you and dismiss what no longer serves you.\n\nThe Seventh Ray also creates form from invisible, intangible spiritual energy. These are the inspired solutions and synchronicities that seem to come out of nowhere. They are signs of the divine order happening. The Seventh Ray brings an alignment with that divine order, and the more you are willing to invoke and allow that energy to bless you, the more your life will align itself with the genius of creativity, solutions and loving opportunities the Universe wants to bring to your world.\n\nThe gifts of ritual, order and ceremony are ways to attract this energy. Conscious ceremony, done in service to unconditional divine love, teeds a need for sacred embodiment. It is the hunger within the soul that many seek to feed through religion - and others through the less conscious rituals of addiction. Ritual can be something that keeps you stuck, or opens you to the sacred.\n\nChoosing a spiritual practice to engage on a regular basis - creating your own spiritual system - will help you call the genius of Seventh Ray energy into your life. Your spiritual practice might be a daily prayer followed by a short, conscious dance or yoga session, a meditation, a walk in nature, or some combination of these. Find what works for you. Do that regularly. Make it a priority. You can invite Spirit into your life through a simple and ordered system that you do on a regular basis - even if only for five or ten minutes a day. Then the new life, the new you, the order that brings an expansive idea to life in the world, can happen.\n\nThe challenge with the Seventh Ray is to not become obsessed with the future, with the new, to the extent that you forget about the valuable aspects of what already is. It is about developing what has value, not rejecting outright anything from the past. The past can teach us wisdom and help us create a more loving future if we allow ourselves to balance our passion for the future with a respect for what has been.\n\nThe gift of the Seventh Ray is the ability to live as an embodied, divine presence. For humans who don't trust or even recognise the love of the Divine in their hearts as yet, those who do are great supporters. The Seventh Ray empowers us to use loving ritual to invite divine presence to fill us and our lives. It also teaches us how to use our consciousness to clean up our own energy field and the energy field of the world around us, so the Divine can show its face more clearly, The comfort of this can help free all beings from anguish and suffering.",
+    "meaning": "",
+    "shadow": "",
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": ""
+  },
+  {
+    "deck": "Lightworker Oracle",
+    "card_number": "30.0",
+    "name": "Dark Angel",
+    "theme": "",
+    "core_message": "The Dark Angel comes to you with a radical truth: Divine love is always there for you, without exception. Love will never forget you.\nIt will never stop caring for you. Even when it seems most unlikely - in fact, especially then - the Divine is reaching for you and nurturing\n30 -\nDARK ANGEL\nyou. Even our wounds are ways that we can discover love and divine grace through the\nbealing process. The Divine is always helping you remember who you are and find your true joy. When the Dark Angel appears, you are being given a gift of light, even if it may seem to be a hidden blessing.\nA dark mystery is one that helps us learn that even if things don't seem to be working out according to the timing or the methods that we believe necessary, the light and love of Spirit are unfailing. If a door is closed in your face, it is the wrong door for you! Divine love will ensure that the right door opens at the right time.\nWhen you encounter darkness, how you respond can make either the dark or the light victorious. You can choose doubt and fear - or you can force the darkness to serve the light, by choosing trust and faith. You are spiritually advanced enough to trust unconditionally. That is the trust that burns bright not only when things appear good, but even when your mind thinks things seem to be heading in the wrong direction.\nDoes unconditional trust mean that you give up if things get tough, assuming it is not meant to be'? Of course not! Relying on unconditional trust - and understanding the dark mystery - you are willing to go through periods of not knowing. You are willing to continue on your path, even when you are not seeing immediate results, because in your heart you know it's right. This type of trust is powerful enough to release any separation between you and the Universe. You know that, even when the Universe guides you into challenging territory, you shall benefit, grow in divine power and become the amazing being you are destined to be.\nPraying to the beautiful Dark Angel - and writing, drawing, dancing your feelings or dialoguing with your dream images - you can work through the pain of a challenging time and grow in wisdom. What matters is that you honestly express the depth of your suffering. Then, when you are ready, acknowledge that the experience has helped you grow.\nAs we realise how we have grown through the experience, turning what was once a source of pain into spiritual light, we masterfully transform our deepest pain into our greatest growth and spiritual accomplishment. We become true spiritual alchemists, releasing light from darkness.\nAs you learn to put more faith in love than in fear, your trust becomes increasingly unconditional, and you find the light even through the dark. In this way, you become initiated in the mystery of the Dark Angel.\nThen, you can show others that this is possible. You can help heal others from victim consciousness and show them that inner peace is possible, even when they are facing the unpredictable twists and turns of life.\nIf you have been going through a difficult time or struggling to heal an issue, the Dark Angel promises that even through the depths of despair you shall find the light. In your own time you will rise again into trust, restored faith and hope. All will be well.",
     "meaning": "",
     "shadow": "",
     "guidebook": "",
@@ -1171,6 +1207,18 @@ const ORACLE_CARDS = [
     "imagery": ""
   },
   {
+    "deck": "White Light Oracle",
+    "card_number": "35.0",
+    "name": "Pearl of Sharro",
+    "theme": "",
+    "core_message": "Taking responsibility for your experiences empowers you. You are going to resolve an issue through spiritual inspiration and higher guidance. You will rise up in full connection to your spirit and access a wealth of divine treasure. That which has brought darkness into your world shall submit to the light and be transformed. Have courage and commitment to your awakening, for you are a precious being and can go far on the spiritual path this lifetime.\nSharro is a Tibetan word meaning to arise or manifest and shine with radiant spiritual light. Sharro is the outcome of sacred alchemy, It is the manifestation of the pearl beyond price. Created in the depths of the ocean, hidden away in a clam shell away from prying eyes, this pearl symbolises a beautiful blessing of unexpected grace. It began when an irritant caused the formation of a luminescent coating. The healing response to that initial intrusion resulted in an organic creation of inestimable beauty, value and uniqueness, so this pearl can be a sacred catalyst.\nTo arise spiritually, manifesting one's own priceless soul pearl, we are required to respond to an initially unwanted situation in such a way that our soul light and power is increased as a result.\nThis soul alchemy evokes the inner pearl of radiant being. Such spiritual wisdom cannot be bought or sold, controlled nor exploited. It is perfect, nourishing grace, always free and always radiant with light. It is the inspirational triumph of creativity and healing.\nIn the inner work of self-transformation, we take that which appears negative and utilise it to increase our goodness. However, we need to take care not to attribute the negativities to divine will that are actually caused by humans. Human beings have free will.\nWithout it, there could be no growth, only a following of rules.\nFor the soul, life is something like a multidimensional art class. It is allowed to create with absolute freedom, with the understanding that it will be responsible for its creations. That opens the path for truly beautiful and blessed offerings to the collective. It also opens the path to expressions of free will that create suffering.\nWhether our choices create liberation or enslavement to pain is the responsibility of human beings. This body has been given to us that we may learn and grow spiritually. We are all in that process, varying in our capacities and awareness, but ultimately progressing together. If some members of our human tamily are in such pain, they can only create further pain, that is their choice. As a group, we work to heal the causes of that pain to free them-and the rest of us—from such a tragic use of free will. When rare and precious members of our human family develop such luminous awareness that, exuding light, they call us into greater peace and happiness, then those of us who are able to receive and share what they offer do so for the benefit of all.\nFrom a deeply pained place of confusion, some souls cry out in anger toward the Divine, wondering why there is disease and suffering and cruelty on this planet. We need to understand the difference between taking an ego-created situation and working with it so that it can become divine and believing the ego-created situation was divine to begin with. Spirit does not wish you or any creature to become sick or to suffer. In its infinite resourcefulness and love—with full respect for your free will, which enables you to grow according to your own pace and purpose-Spirit will provide path after path of healing resolution. It is up to us when, or if, we answer that call.\nThis oracle has emerged in your reading because you have the capacity to become a light bearer. Safeguard your energy yet trust that the light within is strong enough to see you through any struggle and eventually transform it into a precious pearl of sacred empowerment. You have wisdom in your divinely alchemical heart. You shall arise with dignity.",
+    "meaning": "",
+    "shadow": "",
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": ""
+  },
+  {
     "deck": "Mystical Shaman Oracle",
     "card_number": "22.0",
     "name": "The Ghost Dance",
@@ -1214,6 +1262,18 @@ const ORACLE_CARDS = [
     "core_message": "THE ESSENCE\nPachamama represents the unconditional love that the Earth has for all her children, including the stones, the plants, the animals, and humans.\nShe is the Goddess of Earth, also known as Gaia, who pervades all creation in our planet. Thanks to Pachamama, our timeless soul can experience life in a biological body. The joy and pain we taste during our brief time on Earth are invitations to discover the boundless love of Pachamama.",
     "meaning": "THE INVITATION\nYou are a child of the Earth. Now is the time to eat right, love right, and be joyous, regardless of the circumstances you may find yourself in. Be grateful for your life, your body, and all that nourishes you. Pachamama invites you to relish each breath, embrace your joy and your pain equally, and discover love through both. Let Pachamama know how much you appreciate all her blessings with an act of service such as planting a tree, helping save an endangered species, or protecting the ocean.",
     "shadow": "THE MEDICINE\nYou still believe that you have been cast out of the Garden of Eden, that you are Motherless and homeless. You suppose that you need to work very hard to survive or thrive. It is time to stop suffering-let go of that old myth-and realize you were given the Garden to rejoice in and to become its steward. Your melancholy is really a longing to return to the heart of Pachamama. Listen deeply to the Mother who is always there for you. Walk in beauty, and honor all life!",
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": ""
+  },
+  {
+    "deck": "Mystical Shaman Oracle",
+    "card_number": "48.0",
+    "name": "The Sorcerer",
+    "theme": "",
+    "core_message": "THE ESSENCE\nThis is the source of dark power. The Sorcerer represents the destructive aspect of the human psyche and the self-centered behavior that harms others. It symbolizes the unconscious beliefs and ideas that foster separa-tion, conflict, and scarcity.",
+    "meaning": "THE INVITATION\nWhen the Sorcerer enters your circle, you're being called to look at how your beliefs around scarcity and self-centered fear manifest in your world. Examine the destructive part of your psyche that misuses power or harbors feelings of resentment, vengeance, lust, greed, bigotry, or hatred. Perhaps you've harmed someone because of these dark tenden-cies. If so, all is not lost. You have only forgotten that all beings are interconnected and the universe is abundant. The Sorcerer arrives to challenge you to change your thinking. You're given a second chance.\nCorrect your course and and practice not blaming others for the darkness that lives inside you. Make peace with it and choose another way.",
+    "shadow": "The MEDICINE\n\nHave you been feeling out of sorts because you've been faced with your own character flaws and the pain that you inflict on others when you are out of alignment? Radical self-acceptance is called for now. You must reconcile these darker aspects of your nature so you don't behave irresponsibly and cause more harm to yourself and the ones you love. It's time to come out of denial and accept responsibility for your words and deeds. When you meet the energy of the Sorcerer with humility, this destructive power transforms into grace, which you can use in service to the highest good. Perhaps it's time to make amends. Do it. It will set you free from the shadows and let you step into the Light.",
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
