@@ -307,6 +307,31 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .brain-dump-hint{font-size:11px;color:var(--ink-faint);margin-bottom:10px;line-height:1.5}
 .brain-dump-textarea{width:100%;background:var(--white);border:1.5px solid var(--border-light);color:var(--ink);padding:14px 16px;border-radius:7px;font-size:14px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.8;transition:border-color .15s;min-height:140px}
 .brain-dump-textarea:focus{border-color:var(--green)}
+/* Gates tab */
+.gate-field-note{background:var(--gold-pale);border-left:3px solid var(--gold-warm);border-radius:0 5px 5px 0;padding:8px 12px;margin-bottom:14px;font-size:12px;color:var(--ink-mid);line-height:1.6}
+.gate-field-note-label{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:3px}
+.gates-list{display:flex;flex-direction:column;gap:8px}
+.gate-entry-card{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;overflow:hidden}
+.gate-entry-header{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .15s}
+.gate-entry-header:hover{background:var(--ivory-mid)}
+.gate-entry-header.open{background:var(--green-pale);border-bottom:1.5px solid var(--border-light)}
+.gate-entry-num{font-size:13px;font-weight:700;color:var(--ink)}
+.gate-entry-name{font-size:12px;color:var(--ink-soft);margin-top:1px}
+.gate-entry-center{font-size:10px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:10px;margin-left:8px}
+.gate-entry-body{padding:16px 18px;display:none}
+.gate-entry-body.open{display:block}
+.gate-note-item{background:var(--ivory-mid);border-radius:5px;padding:10px 12px;margin-bottom:8px;position:relative}
+.gate-note-item-date{font-size:10px;font-weight:700;color:var(--ink-faint);margin-bottom:4px;letter-spacing:.5px}
+.gate-note-item-text{font-size:13px;color:var(--ink-mid);line-height:1.6}
+.gate-note-item-del{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:14px;padding:0}
+.gate-note-item-del:hover{color:#A84040}
+.gate-search{width:100%;background:var(--white);border:1.5px solid var(--border);color:var(--ink);padding:10px 14px;border-radius:5px;font-size:14px;font-family:'Libre Baskerville',serif;outline:none;margin-bottom:16px;transition:border-color .15s}
+.gate-search:focus{border-color:var(--green)}
+.gate-filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.gate-filter-btn{background:none;border:1.5px solid var(--border);color:var(--ink-soft);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;transition:all .15s}
+.gate-filter-btn:hover{border-color:var(--green);color:var(--green)}
+.gate-filter-btn.active{background:var(--green);border-color:var(--green);color:white}
+.gate-has-notes::after{content:'✦';font-size:10px;color:var(--gold-warm);margin-left:6px}
 /* Daily digest */
 .day-digest{background:linear-gradient(135deg,var(--ink) 0%,#1a1a2e 100%);border-radius:10px;padding:22px 26px;margin-bottom:18px;color:white;position:relative;overflow:hidden}
 .day-digest::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold-warm),var(--green),var(--gold-warm))}
@@ -356,6 +381,7 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
     <button class="nav-btn active" id="navGrid" onclick="switchView('grid')">Monthly</button>
     <button class="nav-btn" id="navDecision" onclick="switchView('decision')">Decisions</button>
     <button class="nav-btn" id="navSpellwork" onclick="switchView('spellwork')">Spellwork</button>
+    <button class="nav-btn" id="navGates" onclick="switchView('gates')">Gates</button>
     <button class="nav-btn" id="navInsights" onclick="switchView('insights')">Insights</button>
   </div>
 </div>
@@ -643,6 +669,7 @@ function switchView(v){currentView=v;selectedDay=null;
   document.getElementById('navGrid').classList.toggle('active',v==='grid');
   document.getElementById('navDecision').classList.toggle('active',v==='decision');
   document.getElementById('navSpellwork').classList.toggle('active',v==='spellwork');
+  document.getElementById('navGates').classList.toggle('active',v==='gates');
   document.getElementById('navInsights').classList.toggle('active',v==='insights');
   render()}
 function render(){const el=document.getElementById('mainContent');
@@ -650,6 +677,7 @@ function render(){const el=document.getElementById('mainContent');
   if(currentView==='grid')renderGrid(el);
   else if(currentView==='decision')renderDecision(el);
   else if(currentView==='spellwork')renderSpellwork(el);
+  else if(currentView==='gates')renderGatesTab(el);
   else renderInsights(el)}
 
 // ── GRID ───────────────────────────────────────────────────────────────────
@@ -709,7 +737,8 @@ function renderDetail(el){
     <div class="reading-box">
       <div class="reading-box-label">✦ Gate ${g.gateNum} Reading</div>
       <div class="reading-text">${escHtml(reading)}</div>
-    </div>`}).join('');
+    </div>
+    ${renderGateFieldNote(g.gateNum)}`}).join('');
 
   const planningTags=PLANNING_TAGS.map(t=>`<button class="chip-btn ${(dd.planningTags||[]).includes(t)?'selected':''}" style="${(dd.planningTags||[]).includes(t)?'background:var(--gold-warm);border-color:var(--gold-warm);color:white;':''}" onclick="togglePlanningTag(${selectedDay},'${t}')">${t}</button>`).join('');
 
@@ -945,7 +974,8 @@ ${displayGates.map(g=>{
   const isPersonality=MY_GATES.personality.includes(g.gateNum);
   const isDesign=MY_GATES.design.includes(g.gateNum);
   let ctx=isBoth?'PERSONAL (both streams)':isPersonality?'PERSONAL (personality)':isDesign?'PERSONAL (design)':'TRANSIT-ONLY (open in her chart)';
-  return`Gate ${g.gateNum}.${g.line||''} — ${g.gate?.name||''} (${g.gate?.center||''} Center) | ${g.gate?.theme||''} | ${ctx}`;
+  const fieldNote=getLatestGateNote(g.gateNum);
+  return`Gate ${g.gateNum}.${g.line||''} — ${g.gate?.name||''} (${g.gate?.center||''} Center) | ${g.gate?.theme||''} | ${ctx}${fieldNote?` | Her note: "${fieldNote.text}"`:''}`; 
 }).join('\n')}
 
 CENTERS ACTIVATED TODAY: ${[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))].join(', ')}
@@ -1745,6 +1775,110 @@ function execTimerToggle(total){
       renderExecute();},1000);}
   renderExecute();}
 function execTimerReset(total){clearInterval(execState.timerInterval);execState.timerRunning=false;execState.timerSecs=total;renderExecute()}
+
+// ── GATE FIELD NOTES ──────────────────────────────────────────────────────
+function loadGateNotes(){try{return JSON.parse(localStorage.getItem('lumina_gate_notes')||'{}')}catch(e){return{}}}
+function saveGateNotes(d){try{localStorage.setItem('lumina_gate_notes',JSON.stringify(d))}catch(e){}}
+function getGateNotes(gateNum){return(loadGateNotes()[gateNum]||[])}
+function addGateNote(gateNum,text){
+  if(!text.trim())return;
+  const all=loadGateNotes();
+  if(!all[gateNum])all[gateNum]=[];
+  all[gateNum].unshift({id:Date.now().toString(),date:new Date().toISOString(),text:text.trim()});
+  saveGateNotes(all);render();}
+function deleteGateNote(gateNum,noteId){
+  const all=loadGateNotes();
+  if(!all[gateNum])return;
+  all[gateNum]=all[gateNum].filter(n=>n.id!==noteId);
+  saveGateNotes(all);render();}
+function getLatestGateNote(gateNum){
+  const notes=getGateNotes(gateNum);
+  return notes.length?notes[0]:null;}
+
+let gateSearch='',gateFilter='all';
+
+function renderGatesTab(el){
+  const allGateNotes=loadGateNotes();
+  const gateNums=Object.keys(GATES).map(Number).sort((a,b)=>a-b);
+  const centers=[...new Set(Object.values(GATES).map(g=>g.center))].sort();
+
+  const filtered=gateNums.filter(n=>{
+    const g=GATES[n];
+    if(!g)return false;
+    if(gateFilter==='personal'&&!MY_GATES.defined.includes(n))return false;
+    if(gateFilter==='noted'&&!allGateNotes[n]?.length)return false;
+    if(gateFilter!=='all'&&gateFilter!=='personal'&&gateFilter!=='noted'&&g.center!==gateFilter)return false;
+    if(gateSearch){
+      const q=gateSearch.toLowerCase();
+      if(!`gate ${n} ${g.name} ${g.theme} ${g.center}`.toLowerCase().includes(q))return false;
+    }
+    return true;});
+
+  let html=`<div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green);margin-bottom:16px">Gate Field Notes</div>
+  <div style="font-size:12px;color:var(--ink-faint);margin-bottom:16px;line-height:1.6">Your personal observations about each gate — what you've noticed when it's active, patterns, best uses for your practice.</div>
+  <input class="gate-search" placeholder="Search gates…" value="${escHtml(gateSearch)}" oninput="gateSearch=this.value;render()"/>
+  <div class="gate-filter-row">
+    <button class="gate-filter-btn ${gateFilter==='all'?'active':''}" onclick="gateFilter='all';render()">All 64</button>
+    <button class="gate-filter-btn ${gateFilter==='personal'?'active':''}" onclick="gateFilter='personal';render()">My Gates</button>
+    <button class="gate-filter-btn ${gateFilter==='noted'?'active':''}" onclick="gateFilter='noted';render()">With Notes</button>
+    ${centers.map(c=>`<button class="gate-filter-btn ${gateFilter===c?'active':''}" style="${gateFilter===c?'':'color:'+CENTER_COLORS[c]}" onclick="gateFilter='${c}';render()">${c}</button>`).join('')}
+  </div>
+  <div class="gates-list">`;
+
+  filtered.forEach(n=>{
+    const g=GATES[n];
+    const notes=allGateNotes[n]||[];
+    const isPersonal=MY_GATES.defined.includes(n);
+    const cc=CENTER_COLORS[g.center]||'#3A7A3A';
+    const isOpen=localStorage.getItem('lumina_open_gate')===String(n);
+    html+=`<div class="gate-entry-card">
+      <div class="gate-entry-header ${isOpen?'open':''}" onclick="toggleGateEntry(${n})">
+        <div style="display:flex;align-items:center;gap:8px;flex:1">
+          <div>
+            <div class="gate-entry-num ${notes.length?'gate-has-notes':''}">Gate ${n} — ${g.name}</div>
+            <div class="gate-entry-name">${g.theme}</div>
+          </div>
+          <span class="gate-entry-center" style="background:${cc}22;color:${cc};border:1px solid ${cc}44">${g.center}</span>
+          ${isPersonal?`<span style="font-size:9px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase">Your gate</span>`:''}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          ${notes.length?`<span style="font-size:10px;font-weight:700;color:var(--gold-warm)">${notes.length} note${notes.length>1?'s':''}</span>`:''}
+          <span style="color:var(--ink-faint);font-size:12px">${isOpen?'▾':'▸'}</span>
+        </div>
+      </div>
+      <div class="gate-entry-body ${isOpen?'open':''}">
+        ${notes.length?notes.map(note=>`<div class="gate-note-item">
+          <div class="gate-note-item-date">${new Date(note.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+          <div class="gate-note-item-text">${escHtml(note.text)}</div>
+          <button class="gate-note-item-del" onclick="deleteGateNote(${n},'${note.id}')">×</button>
+        </div>`).join(''):'<div style="font-size:12px;color:var(--ink-faint);margin-bottom:12px">No notes yet for this gate.</div>'}
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <textarea class="field-textarea" id="gate_note_input_${n}" rows="2" placeholder="Add a field note — what did you observe when this gate was active?" style="flex:1;font-size:13px"></textarea>
+          <button class="add-decision-btn" style="align-self:flex-end;white-space:nowrap" onclick="addGateNoteFromInput(${n})">+ Add</button>
+        </div>
+      </div>
+    </div>`});
+
+  html+=`</div>`;
+  el.innerHTML=html;}
+
+function toggleGateEntry(n){
+  const c=localStorage.getItem('lumina_open_gate');
+  localStorage.setItem('lumina_open_gate',c===String(n)?'':String(n));render();}
+
+function addGateNoteFromInput(n){
+  const input=document.getElementById(`gate_note_input_${n}`);
+  if(!input)return;
+  addGateNote(n,input.value);
+  input.value='';}
+
+function renderGateFieldNote(gateNum){
+  const note=getLatestGateNote(gateNum);
+  if(!note)return'';
+  return`<div class="gate-field-note">
+    <div class="gate-field-note-label">Your Field Note</div>
+    ${escHtml(note.text)}
+  </div>`;}
 
 function backToGrid(){selectedDay=null;render()}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
