@@ -933,58 +933,47 @@ async function generateDayInsight(dayIdx){
     return`Gate ${g.gateNum} ${g.gate?.name||''}: ${context}`;
   }).join('\n');
 
-  const prompt=`You are Gela's personal pattern analyst and spiritual mirror. Gela is a 4/6 Reflector in Human Design — ALL energy centers open and undefined. She samples, amplifies, and reflects the energy of others and her environment. She does NOT generate consistent energy of her own.
+  const prompt=`You are Gela's personal pattern analyst and spiritual mirror. Gela is a 4/6 Reflector in Human Design — ALL energy centers open and undefined. She samples, amplifies, and reflects others' energy. She does NOT generate consistent energy of her own.
 
-HER CHART: 21 defined gates (high for a Reflector): ${MY_GATES.defined.join(', ')}
-Profile: 4/6 · Cross: Right Angle Cross of the Vessel of Love
-Sag Sun, Pisces Moon, Gemini Rising · Jupiter return year · Nurse informaticist + holistic practitioner
+HER CHART: Defined gates: ${MY_GATES.defined.join(', ')} · Profile 4/6 · Sag Sun, Pisces Moon, Gemini Rising · Jupiter return year · Nurse + holistic practitioner
 
-TODAY: ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}
-Day ${day.dayNum} of 29 · New Moon in ${sign} · ${getSpellOccasion()}
+TODAY: ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})} · Day ${day.dayNum} of 29 · New Moon in ${sign} · ${getSpellOccasion()}
 
-GATES ACTIVE + CHART CONTEXT:
+GATES ACTIVE:
 ${displayGates.map(g=>{
-  const isPersonal=MY_GATES.defined.includes(g.gateNum);
-  const reading=GATE_READINGS[g.gateNum]||'';
-  return`Gate ${g.gateNum}.${g.line||''} — ${g.gate?.name||''} (${g.gate?.center||''} Center)
-Theme: ${g.gate?.theme||''}
-Chart context: ${isPersonal?'THIS IS A PERSONAL GATE — already in her chart. When the moon transits this gate she may feel a resonant amplification rather than something foreign.':'Transit-only gate — completely open in her chart. Energy here is entirely environmental, sampled from others.'}
-${reading?'Gate context: '+reading.substring(0,200):''}`;
-}).join('\n\n')}
+  const isBoth=MY_GATES.both.includes(g.gateNum);
+  const isPersonality=MY_GATES.personality.includes(g.gateNum);
+  const isDesign=MY_GATES.design.includes(g.gateNum);
+  let ctx=isBoth?'PERSONAL (both streams)':isPersonality?'PERSONAL (personality)':isDesign?'PERSONAL (design)':'TRANSIT-ONLY (open in her chart)';
+  return`Gate ${g.gateNum}.${g.line||''} — ${g.gate?.name||''} (${g.gate?.center||''} Center) | ${g.gate?.theme||''} | ${ctx}`;
+}).join('\n')}
 
-CHART/GATE AWARENESS:
-${gateChartContext}
-
-CENTER ACTIVATION TODAY: ${[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))].join(', ')}
-Important: All of Angela's centers are open. When a center activates today, she temporarily takes on consistent energy there. Name which center and what that feels like in plain terms.
+CENTERS ACTIVATED TODAY: ${[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))].join(', ')}
 
 JOURNAL ENTRIES:
-${entryBlocks.join('\n\n')||'No entries logged'}
+${entryBlocks.join('\n\n').substring(0,1500)||'None'}
 
 BRAIN DUMP:
-${dd.brainDump||'Nothing written'}
+${(dd.brainDump||'Nothing written').substring(0,600)}
 
 CARDS PULLED:
-${cardBlocks.join('\n\n')||'No cards pulled'}
+${cardBlocks.map(c=>c.substring(0,300)).join('\n\n').substring(0,1200)||'None'}
 
-SPELLWORK:
-${spells.map(s=>`${s.name||'Unnamed'} — ${(s.types||[]).join(', ')}
-Intention: ${s.intention||'not recorded'}
-Casting notes: ${s.castingNotes||'none'}`).join('\n\n')||'None'}
+SPELLWORK: ${spells.map(s=>`${s.name} — ${(s.types||[]).join(', ')} — Intention: ${s.intention||'—'}`).join(' | ')||'None'}
 
-PLANNING INTENTIONS: ${(dd.planningTags||[]).join(', ')||'none'} ${dd.planningNote||''}
+PLANNING: ${(dd.planningTags||[]).join(', ')||'none'}
 
 ---
 
-Write a comprehensive day synthesis for Gela in 3-4 paragraphs. Plain language, no jargon — if you use an HD term explain it immediately in plain words. Write as a wise, perceptive friend who has been watching her day.
+Write a 3-4 paragraph day synthesis. Plain language — explain HD concepts immediately in plain terms.
 
-PARAGRAPH 1 — The gates and what they actually mean today: Explain each gate in practical terms — how would this energy show up in her body, interactions, thoughts? Crucially: tell her whether each gate is a PERSONAL gate (already in her chart) or a TRANSIT gate (completely new energy). If it's personal, say something like "Gate 35 is actually your gate — you carry this energy natively, so today may feel like a familiar amplification of something you already know." If it's transit-only, say something like "Gate X is completely open in your chart, so what you're feeling here is entirely coming from your environment." Name which center got activated today and what that means in plain terms.
+P1 — GATES: Explain each gate practically — body, interactions, mood. Tell her whether each is PERSONAL (already in her chart, familiar amplification) or TRANSIT-ONLY (entirely environmental). Name which center activated and what that concretely feels like.
 
-PARAGRAPH 2 — The cards: What is the overall story across all cards? Look for the through-line — not card by card. What themes repeat? What tension or conversation is happening between the tarot and oracle cards together? What is the day's reading as a whole saying about where she is right now?
+P2 — CARDS: Find the through-line across ALL cards together. What story are they collectively telling? What themes repeat across tarot and oracle? Don't go card-by-card — find the narrative.
 
-PARAGRAPH 3 — The convergence: Where do the gates, cards, brain dump, observations, and energy all point to the same thing? Be specific — name actual details from what she logged. If her brain dump contains something that echoes the cards or the gate energy, call that out directly.
+P3 — CONVERGENCE: Where do gates + cards + brain dump + observations all point to the same thing? Name specific details she actually wrote.
 
-PARAGRAPH 4 — Two questions: End with exactly 2 specific, warm but direct questions that would help her go deeper. Base them on something specific she wrote or a tension that showed up in the data. Not generic prompts.`;
+P4 — TWO QUESTIONS: End with exactly 2 warm, direct questions specific to her data. Not generic.`;
 
   try{
     const resp=await fetch('/.netlify/functions/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,max_tokens:1200})});
