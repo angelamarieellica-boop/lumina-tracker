@@ -950,6 +950,11 @@ const ORACLE_CARDS = [
     "core_message": "It's time to transform bad habits into good ones; take a healthy break from your obsessions to gain revelations.",
     "meaning": "A luna moth lives for only a short time. Within that period, they mate, eat, and then die, only to have their offspring carry on their legacy.\nTheir unique coloring attracts much interest.\nTheir wings appear to glow, and they have circles that look like moons on them. Some cultures associate the luna moth with a symbol of transformation and change. Other cultures suggest the luna moth represents a person's soul as it leaves a dead body. No matter where you place the luna moth's spiritual virtue, it is a stunning specimen of Lepidoptera.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -962,6 +967,11 @@ const ORACLE_CARDS = [
     "core_message": "Listen to what is going on in the situation and make a decision to benefit your world; bring proper judgment back to the world.",
     "meaning": "She holds the scales of justice delcately between her fingers. She carefully weighs every spoken word people utter in her presence. Each nuance, each word choice petitioners make, gives their position away. Determining right from wrong requires an intricate skill. Not everyoen can do what she can do. Flowers decorate her hair, showing the beauty that happens when the scales pass judgment. Her golden clothing matches the small scales dangling in each hand. If you look closely, one seems higher than the other. Did the results bring positive or negative outcomes? Only history will tell.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -974,6 +984,11 @@ const ORACLE_CARDS = [
     "core_message": "Overcome adversity through personal power. Exert a. strong will to push through tough times.",
     "meaning": "Tiger are some of hte most recognizable cats int eh world. They are territoria and mostly solitary, but are social creatures when they go hunting. Diverse cultures feaer their ferocity and view tigers as a formidable force. Many people call upon tiger energy to overcome obstacles and reclaim personal power. With their dwindling habitat, tigers have had to adapt to the constant changes humanity imposes upon them. Call upon Tiger when you are dealing wiht adverse situations that need your assistance. Show your strength and don't back dowon until you nkow when things are in your favor.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -986,6 +1001,11 @@ const ORACLE_CARDS = [
     "core_message": "Don't be afraid of the dark; greet the shadows.",
     "meaning": "The Night transports deep, dark, dreamy scents with him. He moves slowly and effortlessly through the streets. His incense spills from the censer, coloring the air with its perfume. The smoke hangs thick in the air, blanketing the world in darkness. The Night wears the stars at his waist. Each speck twinkles with his movement, blinking in and out with each step. He wears a head wrap filled with the colors of the sky. The cover appears white at the top and then darkens into the daytime glow cast by the sun. He walks everywhere, bringing dreams and nightmares to everyone as the day falls away to meet the shadows.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -998,6 +1018,11 @@ const ORACLE_CARDS = [
     "core_message": "You are at a point where you can consider yourself safe. Your wounded soul is healing, you can indulge in a metaphorical weeping, to moisten what has become arid and allow forgiveness to take its course.\nLay down your weapons before the goodness of the heart, let someone embrace you, or embrace yourself.\nThere is no room for guilt, this card is like a warm blanket, someone telling you that everything will be OK, but you have to let it happen. Allow yourself to feel the relief of knowing that there is something out there waiting for you, but first you have to open the door and let someone comfort you and show you how to love and be loved in return. Embrace a tree, or friends, an idea you cherish or a belief, if these are on your way to the light. It's OK, you're accepted.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1010,6 +1035,11 @@ const ORACLE_CARDS = [
     "core_message": "The beginning, when we are whole and have not yet known fractures nad cuts, we are in a warm womb together with our sisters. This card represents home, our certainties before growing up and having to face all the challenges that put ourselves in question. It helsp us feel part of a group, of the surrounding environment, similar to others. \n\nBut in order to evolve, we must necessarily discover what lies beyond the threshold, be it dangers, forbidden fruits, or new paths in which to fragment ourselves. The risk of being part of Everything is that we may fail to find our own identity and be unable to unravel the mysteries that are just waiting to be revealed so that we can continue our journey of growth.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1022,6 +1052,11 @@ const ORACLE_CARDS = [
     "core_message": "Your limiting thoughts, the rigid upbringing you re-ceived, the beliefs that prevent you from growing envelop you like a viscous web that imprisons you and stifles your evolution. The time has come to embark on a journey in which you can finally be yourself and break those inner chains. Doing so will not be easy, because it means breaking with the \"you\" you have believed yourself to be up to now, with your roots and with the image of yourself you have projected out-wardly, although it was not authentic.\n\nYou must allow yourself to leave behind that which does not belong to you, which has been sewn onto you and which keeps you well below the potential you know you can manifest. To do so, however, you will have to face your fear of flying high, of shining, and stop uttering the words \"I can't do it\". Beware, though: this card may also indicate that you are running away from your problems in order not to face them; be honest in recognising this.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1034,6 +1069,28 @@ const ORACLE_CARDS = [
     "core_message": "In this card everything is tangible, the inner awakening leads you towards a desire to touch and bite into life as if it were a juicy apple. We must help the process of returning to light in a practical and concrete way. Passion and curiosity dominate this card, which emphasises what we are and can be passionate about in order to make our life attractive and active.\nWhat gives us pleasure? What do we want to put in place to be in constant perception of our surround-ings? What can we be seduced by in everyday life?\nWe are flesh and blood, not just soul, and this card reminds us of that. But beware: while it is right to seek fulfilment, an excess of it makes us sluggish and a prisoner of our senses.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": ""
+  },
+  {
+    "deck": "Loputyn Oracle",
+    "card_number": "9.0",
+    "name": "Gratitude",
+    "theme": "",
+    "core_message": "Embrace yourself. Hold close to you the people who let you be who you are, who accept you in the form in which you have decided to manifest yourself, who encourage you to do what makes you feel good and who want you to be happy. And do the same for your-self. Take five minutes a day to do this. Talk with the plants, the stones, the waterways near you and thank them for what they give you: the roads, the oxygen, the bridges, and the glimmers of light in spring.\nLet yourself be lost in this feeling of thankfulness, but also learn to give thanks for the things you do not yet have and do not take for granted those that will come in the future.",
+    "meaning": "",
+    "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1046,6 +1103,11 @@ const ORACLE_CARDS = [
     "core_message": "I let go and let love in. \n\nGrieve, Release, Surrender",
     "meaning": "Grief is part of the healing journey. You may be grieving the promise of a romantic relationship or the loss of a lover or an unrequited, one-sided love. Whatever the loss, the pain runs deep, and it may feel impossible to let go and make sense of it all right now. You are understandably heartbroken.\n\nBypassing the healing journey only delays the inevitable.\nYou may be scared but you are exactly where you are meant to be. You can't run from the truth, so face your fears with self-compassion. Know that in time this grief will soften. Your heart will crack open to let the light of love stream back in. Your tears clear the way for a fresh start, but for now honour your feelings, cry yourself to sleep if necessary and breathe through the heartache.\nWhen love means letting go it will take you on an emotional roller-coaster ride and you may\nstruggle to find answers.\nSeparation is not a concept that our higher self understands, so it may resist. Focus on the lessons learnt, love felt and happier memories to try and make sense of it all. You may also have to accept that you may never truly understand the hidden\nmeaning.\n\nPerhaps you loved with everything you had, and it wasn't enough? Know that you are always enough, worthy and deserving of a higher love. There is one answer that always rings true deep in your heart and soul. You know that love starts with self first. Once you merge with a higher love, you will see yourself everywhere. Relationships are mirrors of the soul for spiritual reflection and growth - sometimes joyful and, from time to time, extremely painful. Appreciate that love has divine duality, like the sun and the moon, light and shadow, day and night, fire and ice.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1058,6 +1120,11 @@ const ORACLE_CARDS = [
     "core_message": "I trust my senses to lead me in the direction of my moonlit trail. \n\nProtect, Nourish, Nurture",
     "meaning": "It is time to break fresh ground! Find what thrills you and go there. Follow the moon and golden stardust toward infinite horizons. This is your destiny. \n\nA powerful period of rebirth is on the careds for you. Like a snake, you are shedding your skin to reawaken anew. \n\nCircumstances do not make or break you; they simply crack open your heart to learn and grow. A downward spiral is often an inward journey of self-discovery, the perfect time for reflection and an opportunity to change directio.n \n\nThe love of the lunar mother heals you with nature's green energy of rejuvenation. Refill, revive and then jump back in with renewed enthusiasm! The winds of change blow away dusty cobwebs, so you can rise with the sun and glow like the moon. New pathways will open up and give you a renewed zest for life. \n\nAnytime you have a gut feeling, pay attention and believe in your hunches, as they will never let you down. If you find that sometimes you feel connected and other times you don't, it's just a matter of turning inwards, calming the mind, linking with your heart and reflecting, with the intention to strengthen your spiritual awareness.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1070,6 +1137,11 @@ const ORACLE_CARDS = [
     "core_message": "I am a light warrior of love. \n\nBreak out. Explore, Arise",
     "meaning": "Ride the wave of victory! An upsurge of good fortune is streaming in for you. \n\nBring forth your inner warrior of courage and self-belief. Be a little daring. Unleash your free-spirited rebel to lunge forward fearlessly and dive headfirst into teh unnown. The moon will ight your way to great heights. \n\nOne of life's reatest discoveries is that the hunt, not th eprize, is the most rewarding part. Life is a sacred quest. Overcoming challenges builds your confidence, abilities and spirituality. So, stick it out! Take a break if you need to, but never give up. The highs and lows provide contrast and blance.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1082,6 +1154,11 @@ const ORACLE_CARDS = [
     "core_message": "My intentions grow, flourish, and thrive.\n\nPlan, Cultivate, Ripen",
     "meaning": "Open fully to receive the lavish opulence that is unfurling for you. Your alluring magnetism draws a jam-packed bounty of love to you. The beauty of nature and gifts of the earth are there for the picking. You are the gardener of your life. You get to reap the rewards of all your hard work and dedication.\nSeeds represent kernels of wisdom and abundance that inspire generosity, connection, healing and forgiveness. It is time for you to scatter the spiritual seeds of grace and hope across your garden. And, as the New Moon shines, these seeds will grow and gift you luscious fruit and blossoms.\nA seed is like an embryo, a precious living thing, but in a sleeping state it must be buried in the sacred earth to activate the growth process. In the darkness, with compassion and understanding, new growth will spring forth. Profound life lessons are germinated in the darkest of days. Never lose hope that the most beautiful flowers bloom from the eternal love of the earth mother. You are loved beyond belief.\nTiny seeds grow, blossom and thrive when nurtured.\nEnsure you feed and sustain your best-laid plans all the way to completion. Patience is required right now. Be flexible and adapt to different soils and ways of cultivating. Allow the fruit of your labours to ripen naturally on the mother tree. Don't be tempted to pick it too early!\nDivine seeds are like valuable lessons. Once planted, observe the insights and lessons that emerge throughout the growth phase. Fragments of enlightenment are everywhere if you open to see the flowers amongst the weeds. Qualities like purity, love, perception and awareness are waiting to fully bloom. Radiate and share your blossoming gifts with the world, moon lover.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1094,6 +1171,11 @@ const ORACLE_CARDS = [
     "core_message": "My breath is here to support me. \n\nDetach. Encircle. Relinquish.",
     "meaning": "It's time to rest and reset in the serenity of the night. Seek sanctuary with grandmother moon.\n\nTrust in the 'night and day' of sacred balance to restore your equilibrium. Allow yourself to enjoy this downtime. You may feel some resistance to taking life at a slower pace. Give up the internal struggle and flow freely into a more harmonious state of bliss.\n\nIn the stillness of the night, a web of creative light, cleansing smoke and ancestral guides surround you in an impenetrable shield of loving protection. Along with Hanwi's two white wolves by your side, know that you are safeguarded at all times.\n\nAs a spirit animal, the wolf symbolises fierce protection, devotion and unity. In Očeti Sakowin culture, the wolf is traditionally valued as a spiritual guiding force. Wolves are highly intuitive and have a mystical instinct that can detect and avert danger. You have this same inborn awareness to predict and gracefully sidestep any hazards along your life path. The wolf teaches you to feed the love, not the fear, to preserve your peace of mind. Listen to the words of wisdom that your soul whispers to you when all is quiet. Have confidence in your raw instincts to guide you onwards and upwards.\n\nDevelop a strong and harmonious relationship with yourself. Gift yourself a 'home, sweet home' to house your spirit. Remember the very best relationship you can have is the one you have with yourself. So back yourself, stop the internal self-loathing and start loving all of you. Accept and embrace your light and shadow. Strengthen your self-love to build an aura of confidence that repeatedly attracts goodness to you.\n\nHealthy detachment brings a comforting sense of freedom. Set your soul free by releasing toxic ties that restrain and drain you, where you can.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1106,6 +1188,11 @@ const ORACLE_CARDS = [
     "core_message": "I create a passionate Life. \n\nAmplify, Embody, Appreciate",
     "meaning": "Your sensuality is like a love magnet. Ooze it, embody it and express it freely with self-confidence. Own your unique quintessence and love yourself as if you were a red-hot Full Moon pulsating with self-assurance and authenticity. It is your time to shine like the ruby moon and stars! Dance to your own love song to entice a higher love to you.\nBe prepared to come out of hibernation and step out of your comfort zone. The best way to find a like-minded lover is to go where they hang out. Decide how you want to feel and follow that feeling. Listen to your natural instincts and soul's voice to follow a higher, happier pathway to euphoric ecstasy.\nFinding your passion will help you live a full and purposeful existence. Passion, like love, is a sensation worth seeking. Do not wait for your passion to find you - look for it and create opportunities that align to your heart's desires.\nDesire activates your purpose. It gives you a reason to keep seeking, learning and embracing your mastery. It opens you up to soulful experiences and spirited adventures. Passionate souls, like you, make the most of every moment. You find pleasure and simple abundance in everyday living.\nIntuitive clarity grows when you open your senses to feel passion and pleasure. Self-awareness expands when you are in your body experiencing the sacred pulse of Source. The physical-body temple is a conduit for love. Let love in!\nPassion knows no restrictions and being enthusiastic about something can be explosive, like the Full Moon. Be mindful that your passion doesn't become an unhealthy obsession, that's not love. As with everything, in love there has to be sacred balance.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1118,6 +1205,11 @@ const ORACLE_CARDS = [
     "core_message": "14. SOUL CHILD\nRebirth is upon you, beautiful child of the Universe. You have prepared for new life, and it is starting right now. The divine moment of rebirth - which occurs after a period of struggle, of intense inner work and physical transformation - has arrived. Enjoy getting to know this new self. It is a new day, a new beginning, a new you. Like an adventurer\nenjoying the discovery of a brand new world, take your time to explore the increase of your light, power and love.\nYou have undergone the death of the old order. Nothing is as it was, nor will it be so again. You have had to learn detachment, to release and let go, over and over again. In so many ways, you have experienced inner death as you have bravely surrendered that which no longer serves your growth this lifetime - even if you once loved it dearly or couldn't imagine life without it.\nDeep inside, through that process, your soul has been gathering energy. It has been drawing it away from the old forms of your life and relationships, from your old beliefs about health, finances, work, and from what used to hold meaning for you. It has done so in order to feed the new soul child being carried within your body. This new you is filled with divine light, love and power. Your inner soul child, this newly integrated self, is preparing for birth, now. From that which is no longer, something new is now being born.\nYou are ready for the next cycle or phase of your life. Even if, like a newborn colt learning to stand steady on shaky legs, you are not sure of your strength, be reassured: The new self you are experiencing will grow strong and powerful soon enough. Let confidence in your new self emerge. Reflect upon how different you are now to a year or even a month ago. Be curious about who you are now. Do not expect the same reactions or experiences you encountered in your past. It is a time of celebration and acknowledgement that a new day, a new you has begun a journey in the physical world. You shall enjoy the divine harvest of all of your growth and effort.\nThis card can also indicate that a child around you, perhaps one about whom you have been thinking deeply, is particularly gifted or spiritually oriented. This child may have an important mission this lifetime and need your loving support and spiritual encouragement to thrive into that mission, according to his or her own divine timing.\nThis card may also be a sign that a new business idea, professional or personal relationship or lifestyle choice is going to support the growth of your spirit in a positive and encouraging way. If this is the case, that new idea or connection will lead to the birth of creative new programs, ideas and structures in your life. On the other hand, if something has been flagging in energy or success, but you are not yet inclined to give it up, this oracle comes as confirmation and encouragement. Rebirth is going to happen. Do not give up - sometimes it is darkest just before the dawn.\n\nINVOCATION\nI am a child of the Universe, divinely loved and empowered to grow into a shining, radiant soul of love. May all aspects of my life journey be blessed to grow into their most beautiful and loving form. May all the people and ideas that are in need of protection so they may grow into their divine fullness be blessed and supported by unconditional love.\nThrough divine grace, so be it.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Invocation",
+      "shadow": "Shadow"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1130,6 +1222,11 @@ const ORACLE_CARDS = [
     "core_message": "You are a talented soul. Over many lifetimes, you have developed your spiritual abilities to channel higher awareness, attract healing energy and radiate light to uplift the\nconsciousness of those around you. Your divine talents are many, and uniquely expressed through you. Your talents do not have to resemble those of another to have their own inestimable value. Do not be afraid to use them!\n\nDivine talents are a way in which the Universe reminds us of what we are here to do. Divine talents are unlimited. They include the ability to channel spiritual guidance and healing energy, to perceive clairvoyantly, and be psychic and empathic. Other spiritual talents are the ability to release earthbound spirits, earth-healing techniques such as working with energy grids, as well as healing ability with crystals and the many and varied technologies of light.\n\nThere are other spiritual talents, too. These include writing, performing, sound healing, dancing to awaken awareness, creating art, photography or divinely inspired tools and jewellery. Cooking food that heals body and spirit is a spiritual talent, as are the abilities to bring people together, to offer comforting and inspiring words at the right time, to help others overcome fear and feel more at peace in moments of importance and more.\nYou could use your divine talents in your career as a healer, in your work in the corporate world or in your stay-at-home role as a parent, helping to raise more conscious, secure and empowered children - in a world that is in desperate need of strong, spiritually-grounded leaders for the future. You can use your talents to create a vocation that truly inspires you and brings your light to the world. You can use them in the line at the grocery store. The point is that you use them.\n\nThis oracle comes to you with a message. You have spiritual talents, some of which have been developed in other lifetimes and will simply and suddenly spring back to life' as if from out of the blue this lifetime.\n\nOthers need a little more attention, patience and effort to be brought to life in the world. This is particularly the case for you at this time if you have also drawn (or are also attracted to read the message now the oracle of Past Life Activation.\n\nSometimes, there is fear in sharing talents. You may have a subconscious or a very conscious past life recollection that involved shame, isolation, ridicule, fear or even torture or death as a response to your sharing your talents for healing and helping others. Maybe you fear your spiritual talent will not allow you to meet your material needs, or that others will reject or deny your talent - even if you know it to be authentic and helpful.\n\nOr perhaps you need to acknowledge your talents, yourself. Believe in yourself, in your abilities and in your capacity to use those talents in a constructive, healing way. Keep developing your talents until your own unique expression comes to life. Don't give up in the early and possibly awkward stages, dismissing your abilities as less than those of another.\nTrust that there is something very real and worthwhile in you. Do not dismiss or diminish your potential. Treat yourself as an investment worthy of development! Give yourself a chance - enough time, attention and practice to discover what you are really capable of. The Universe knows! Soon, you shall, too.\n\nThis oracle also reminds you to do what makes you happy, to chase your sacred bliss and express yourself in the world via the unique and special abilities that the Divine has bestowed upon you. When you follow what you love, you are on your life path, and you shall succeed, beloved.\n\nINVOCATION\nAll-loving Universe, teach me to realise and trust in my divinely given talents. I ask for your unconditionally loving assistance in releasing any block or obstacle to the full development and joyful expression of my spiritual gifts in the world. Help me find the courage and boldness within that I need to believe in myself and be completely empowered to make my loving contribution to the world. Through my own free will, and divine merciful grace, so be it.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Invocation",
+      "shadow": "Shadow"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1142,6 +1239,11 @@ const ORACLE_CARDS = [
     "core_message": "When the gift of the Seventh Ray enters your life, something new is being formed, something that will benefit your world. There may be  an increased interest in magic, ceremony and ritual for healing purposes. Resonating with high frequency violet light and the Archangel Zadkiel, the Seventh Ray also belps transmute energy from lower to higher frequency. It is a spiritual cleansing agent that allows the truth of spiritual freedom, empowerment and choice to be seen and felt, restoring hope and joy to the heart.\n\nThe Seventh Ray is very active upon the earth at this time. All of humanity is being affected by it. The Seventh Ray is the push-pull between the old and the new - the life that has been and can no longer continue in that form, and the new life that wants to evolve from the old. It honours traditions and ancestral wisdom that serve new life. When the Seventh Ray enters your life, you are asked to balance your attachment to what has been with an openness to the new. It is a time to fearlessly question what has been, honour what continues to hold value for you and dismiss what no longer serves you.\n\nThe Seventh Ray also creates form from invisible, intangible spiritual energy. These are the inspired solutions and synchronicities that seem to come out of nowhere. They are signs of the divine order happening. The Seventh Ray brings an alignment with that divine order, and the more you are willing to invoke and allow that energy to bless you, the more your life will align itself with the genius of creativity, solutions and loving opportunities the Universe wants to bring to your world.\n\nThe gifts of ritual, order and ceremony are ways to attract this energy. Conscious ceremony, done in service to unconditional divine love, teeds a need for sacred embodiment. It is the hunger within the soul that many seek to feed through religion - and others through the less conscious rituals of addiction. Ritual can be something that keeps you stuck, or opens you to the sacred.\n\nChoosing a spiritual practice to engage on a regular basis - creating your own spiritual system - will help you call the genius of Seventh Ray energy into your life. Your spiritual practice might be a daily prayer followed by a short, conscious dance or yoga session, a meditation, a walk in nature, or some combination of these. Find what works for you. Do that regularly. Make it a priority. You can invite Spirit into your life through a simple and ordered system that you do on a regular basis - even if only for five or ten minutes a day. Then the new life, the new you, the order that brings an expansive idea to life in the world, can happen.\n\nThe challenge with the Seventh Ray is to not become obsessed with the future, with the new, to the extent that you forget about the valuable aspects of what already is. It is about developing what has value, not rejecting outright anything from the past. The past can teach us wisdom and help us create a more loving future if we allow ourselves to balance our passion for the future with a respect for what has been.\n\nThe gift of the Seventh Ray is the ability to live as an embodied, divine presence. For humans who don't trust or even recognise the love of the Divine in their hearts as yet, those who do are great supporters. The Seventh Ray empowers us to use loving ritual to invite divine presence to fill us and our lives. It also teaches us how to use our consciousness to clean up our own energy field and the energy field of the world around us, so the Divine can show its face more clearly, The comfort of this can help free all beings from anguish and suffering.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Invocation",
+      "shadow": "Shadow"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1154,6 +1256,28 @@ const ORACLE_CARDS = [
     "core_message": "The Dark Angel comes to you with a radical truth: Divine love is always there for you, without exception. Love will never forget you.\nIt will never stop caring for you. Even when it seems most unlikely - in fact, especially then - the Divine is reaching for you and nurturing\n30 -\nDARK ANGEL\nyou. Even our wounds are ways that we can discover love and divine grace through the\nbealing process. The Divine is always helping you remember who you are and find your true joy. When the Dark Angel appears, you are being given a gift of light, even if it may seem to be a hidden blessing.\nA dark mystery is one that helps us learn that even if things don't seem to be working out according to the timing or the methods that we believe necessary, the light and love of Spirit are unfailing. If a door is closed in your face, it is the wrong door for you! Divine love will ensure that the right door opens at the right time.\nWhen you encounter darkness, how you respond can make either the dark or the light victorious. You can choose doubt and fear - or you can force the darkness to serve the light, by choosing trust and faith. You are spiritually advanced enough to trust unconditionally. That is the trust that burns bright not only when things appear good, but even when your mind thinks things seem to be heading in the wrong direction.\nDoes unconditional trust mean that you give up if things get tough, assuming it is not meant to be'? Of course not! Relying on unconditional trust - and understanding the dark mystery - you are willing to go through periods of not knowing. You are willing to continue on your path, even when you are not seeing immediate results, because in your heart you know it's right. This type of trust is powerful enough to release any separation between you and the Universe. You know that, even when the Universe guides you into challenging territory, you shall benefit, grow in divine power and become the amazing being you are destined to be.\nPraying to the beautiful Dark Angel - and writing, drawing, dancing your feelings or dialoguing with your dream images - you can work through the pain of a challenging time and grow in wisdom. What matters is that you honestly express the depth of your suffering. Then, when you are ready, acknowledge that the experience has helped you grow.\nAs we realise how we have grown through the experience, turning what was once a source of pain into spiritual light, we masterfully transform our deepest pain into our greatest growth and spiritual accomplishment. We become true spiritual alchemists, releasing light from darkness.\nAs you learn to put more faith in love than in fear, your trust becomes increasingly unconditional, and you find the light even through the dark. In this way, you become initiated in the mystery of the Dark Angel.\nThen, you can show others that this is possible. You can help heal others from victim consciousness and show them that inner peace is possible, even when they are facing the unpredictable twists and turns of life.\nIf you have been going through a difficult time or struggling to heal an issue, the Dark Angel promises that even through the depths of despair you shall find the light. In your own time you will rise again into trust, restored faith and hope. All will be well.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Invocation",
+      "shadow": "Shadow"
+    },
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": ""
+  },
+  {
+    "deck": "Lightworker Oracle",
+    "card_number": "31.0",
+    "name": "Alchemical Mutation",
+    "theme": "",
+    "core_message": "Your spiritual growth is changing your mind, body and soul. It is very real. It is helping you fulfil all aspects of your divine destiny. It is awakening spiritual talents and attracting in new energies. This process will bring tremendous joy and satisfaction.\n\nThe body changes as light enters. Alchemy is catalysed and transformation happens. Sometimes, the appearance of the body changes. There will be change in how the body feels, responds, acts and creates. Radiance increases. Lightness of being increases. If you have clairvoyant vision you will see the increase in light, as though the person is actually lit up from within they are!). Spiritual abilities become grounded in the body, and the person can channel healing energy just as naturally as they would set the dinner table. The spirit becomes a living reality in the body, and the material world is experienced as an extension of the divine light.\n\nThis alchemy is an empowering gift of love. Symptoms of this process can at times be challenging. They may include headaches and other aches and pains, fu like symptoms and inexplicable and nearly overwhelming fatigue that lasts for days - and then suddenly vanishes along with a surge of new energy. We may also experience pinging in the ears, increased sensitivity to light or sound, hormonal imbalance and hot flushes, excessive sexual energy, mental obsessions or mood swings, aggression and unintentionally harsh reactions to people.\nIf you have been experiencing any of the above and wondered if these, or other unusual symptoms, could be a direct result of increased spiritual energy affecting the body, then the answer is that this is very likely. You are encouraged to source whatever protessional health support you need to take care of your body. Also, consider using the following simple practices to ease away the side effects of divine alchemy taking place in\nyou.\n\nThese simple practices include getting regular rest. Additional sleep is a powerful way for the body and mind to heal and repair, integrate and re-organise. Allow time for physical exercise, which can help release excess energy, especially if you tend to feel mentally congested. Take some time away from meditation, spiritual studies or discussions and energy work. Instead, simply be in nature or rest. If you work with colours, then take a break for a short time, only working with very soft, subdued white or colourless light. If you have a tendency to push yourself with spiritual work, learning to take time off on regular occasions will help you recover more quickly and suffer less.\n\nFinally, working with cooling energy, not cold, but refreshing, as a way to discharge excess heat, can be extremely beneficial to body and mind. You can do this by sitting in the shade or in a room that feels cool and relaxing, or even by cooling your hands before an air conditioner or fan, and then using your fingertips to transfer cool and healing energy by lightly touching your chest, back of neck and back of your head, ears and forehead.",
+    "meaning": "I call upon the beings that love me unconditionally and ask for divine grace, protection, information, assistance, intervention and healing in all ways now, as I change alchemically. May my body and mind be supported and recover with divine assistance. I celebrate the alchemy that the light creates, and with kindness I allow for it to unfold in my body, mind and soul according to the guiding hand of divine love. May all those on the path of love and light be assisted to walk their pach with as much joy and as litle suffering as possible. Through my own fre will and divine grace, so be it.",
+    "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Invocation",
+      "shadow": "Shadow"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1166,6 +1290,11 @@ const ORACLE_CARDS = [
     "core_message": "It is time to let go of what has been. You are swiftly outgrowing your past. Explore and commit to a spiritual practice that supports your personal transformation so that you can cross the threshold before you now. Embrace your freedom to be creative in your approach, rather than doggedly committing yourself to your previous ideas or plans. You have the spiritual intelligence necessary to evolve. Continue your healing journey with trust that a positive outcome is imminent.",
     "meaning": "Aurora is the Roman goddess of the dawn, the bringer of light and initiatrix of a new cycle or chapter in your life. She is the luminous dispeller of darkness, the fickering fame of hope in\na enhance our capacity to\nthe heart that can burn into such a radiant holy fire that even the\ng chu openness of being:\ngreatest challenges do not cause the soul to turn away in fear. Her\nand Our way of being become\npresence in a reading signifies a fresh start and the overcoming of\ni We engage with our expe\nan old cycle.\nnot how we respond to what is So of Gamma indicates\nGamma waves are high frequency, typically 40Hz in humans,\nle de growing presence of il\nbut extending to higher levels with hyper-gamma oscillating at around 100Hz. Associated with spiritual insight and clarity, pure\nCan i Spirit. Tuning it\nhing soulfully, away from t\nvision and breakthrough awareness, the gamma state is associated with high-level processing that leads to integration and evolution.\nanady ensnared by the com\nWith the gamma frequency, we transform knowledge into sie external consequence:\nwisdom through application. We tap into our ability to integrate information and, in doing so, are truly healed and transformed.\nanitigin your heart and\nAs the world around us becomes increasing complex, the capacity for superior processing is swiftly becoming necessary for the spiritual, emotional, psychological and even physical wellbeing of humanity. There is a strong link between spiritual practices such as meditation and the production of gamma waves.\nWhen we experience a heightened state of spiritual awareness, an expansive sense of being or a powerful connection with the Universe or Spirit, our brain is in gamma mode.\nShifting our grey-matter gears into gamma waves can facilitate the breaking up of stagnant modes of thinking and behaving.\nThis is the sacred frequency of evolution. Humans who are stuck in patterns repeat the same stories, the same words, the same thoughts over and over, as though on a repeated loop. The soul can begin to wither within such constriction. What is needed is something new and increasingly alive, such as the life-stimulating grace of encounters with the unfamiliar. Connection to gamma waves can enhance our capacity to embrace the unfamiliar, and through that openness of being, constructive adaptation is enhanced. Our way of being becomes more fluid, responsive and creative. We engage with our experiences and grow positively through how we respond to what is happening.\nAurora of Gamma indicates a shift into a new cycle, but also the growing presence of the light within, which is the creative light of Spirit. Tuning in to that light opens up options for living soulfully, away from the grip of ignorance, no longer constantly ensnared by the compelling but ultimately fraudulent conjurations of ego. Her new era is an inner transformation with positive external consequences. Trust in what your inner light is manifesting in your heart and in our world.\nHEALING PROCESS\nSettle into a comfortable position and consciously connect with your breath as it flows in and out. When you are ready, close your eyes and relax. Focus on your breath, allowing it to become deeper and slower, perhaps even with a slight pause after inhalation and a slight pause after exhalation. As you relax, the pauses may lengthen. Allow this to be natural and unforced.\nYour awareness can gently settle within the centre of your brain. Let there be a soft light there, glowing, expanding and bringing a sense of peace, openness and relaxation into your brain.\nRest here for as long as feels good.\nAs your awareness gently settles within the centre of your heart, let there be a soft light there, glowing, expanding and bringing a sense of peace, openness and relaxation into your heart.\nRest here for as long as feels good.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1178,6 +1307,11 @@ const ORACLE_CARDS = [
     "core_message": "There is a gentler way to proceed and obtain the same, or even greater, effect. Tame the wild and frenzied workings of the mind by grounding yourself with beauty, pleasure and grace.\nViolence and its negative effects shall be overcome and healed through feminine gentleness and inner spiritual strength.\nThis oracle is a sign of great future happiness.\n\nParvati is the Universal Mother in her gentle aspect. Although, as with all mothers, her fierce side will emerge if it's needed to protect her children. She is beautiful and benevolent and evokes the qualities of love, connection, creativity and devotion to a higher purpose. The Divine Goddess has many names, and Parvati is also known as Jagatambe, the Mother of the Universe. Her son is Ganesha, the elephant-headed deity who fosters success in all new ventures, protection from obstacles and is of particular benefit to those who feel drawn to write.\nParvati is mother to all and her presence in a reading augurs success on every level. With Lakshmi, the goddess of wealth, love and spiritual enlightenment, and Saraswati, the goddess of wisdom, music and creativity, Parvati is Tridevi, the sacred triune of feminine nature or triple goddess of Hinduism. Parvati is the divine archetype of the vital, competent, creative and loving woman. When her oracle appears, there is an opportunity to heal one's mother wounds and one's relationship with the feminine more generally. She helps heal wounded hearts and teaches us how to belong to ourselves, just as we are, rather than abandoning ourselves to please others. As Tridevi, when you connect with Parvati, you also connect with Lakshmi and Saraswati, as all three are one. So, this oracle also brings comfort for matters to do with material prosperity, love relationships, expressing your voice and fulfilling your higher purpose.\nParvati is the consort and wife of the wild god Shiva. He loves to meditate and has a fierce temper when distracted from his spiritual practice. Wrathful as he can be, he is a protector deity and the destroyer of evil. Parvati stimulates her husband's passion through her skilful practice of yoga. He is roused from meditation by the powerful energy she generates, and he performs his fierce cosmic dance, Tandava, which brings an end to that which needs to be annihilated so new life can emerge.\nThe vigour of Shiva's dance in our lives can be intense.\n\nParvat's dance, Lasya, provides balance and calming grace when the soul needs gentleness and comfort. Parvati dances her dance of happiness, leading us along our path without requiring us to continually push ourselves beyond our limits. Her wisdom protects us from breakdown, guiding us into breakthrough. Her oracle indicates that, even though we may grow through intense challenges, there is a calming influence which can help us if we are willing to allow for it and be kind to ourselves.\nWhen Parvati knows that a more dramatic intervention is the only way to conquer a particular evil in our lives, she will manifest as the ferocious goddess Kali. One story holds that Kali was so intent on destruction that the fate of the world hung in the balance! So, her husband, Shiva, appeared before her as a crying babe, which instantly evoked her maternal instincts and calmed her back into her state as Parvati. We can trust that the Divine Mother loves us and responds to what is needed, but also knows how to get things done without being more heavy-handed than necessary. She is genuinely moved by our suffering and will manifest in whatever forms are needed to heal. Her oracle asks you to invoke her and trust what transpires is for your healing and spiritual fulfilment. Give up the notion that the deepest issues require the most difficult path to heal. Let her Lasya dance of happiness and grace unveil a gentler and more loving way.\n\nHEALING PROCESS\nConnect consciously with your breath, as you become fully present in the here and now. As you breathe in, your awareness disconnects from distractions around you. As you exhale, your awareness settles deeper within. Your awareness is like a white feather, drifting down through the air. Rocking ever so slightly to one side and then the other, it finally settles upon the inner bedrock of your being. In this state of inner connection, you can say the following invocation:\nFor the spiritual benefit of all beings, I call upon the Divine Mother Parvati for her blessings of spiritual grace, happiness, wisdom and healing. May I recognise and embrace the gentlest path for effective healing and loving self-transformation. May the triple blessing of Tridevi grace my soul for the ultimate benefit to all souls. So be it.\nNow imagine, feel, visualise or intend that you see a glorious goddess of white light—graceful, kind and lovingly devoted to you-gazing upon you. From her loving gaze emerges a protective field of powerful white light which enters your body, heart, mind and soul, clearing and healing and blessing you from within.\nThat light expands to softly touch, bless, heal and illuminate all the spaces within and around you, on every level, through all dimensions. Let this happen to the extent you can. Allow it to feel as euphoric or peaceful as you wish.\nRest in this energy for a time. When you are ready, bring yourself back to the present moment by grounding yourself, connecting with the flow of the breath in and out and hydrating your body. You have completed your healing process.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1190,6 +1324,11 @@ const ORACLE_CARDS = [
     "core_message": "You've been moving so fast for so long that you're not realising how wound up you've become. Gently unwind now, to drop into a deeper, slower healing rhythm, and you will restore your body, mind and soul. Things which seem too difficult right now shall soon seem very manageable and even pleasurable to accomplish.",
     "meaning": "The Egyptian cat-headed goddess of dance, festivals, birth, healing and sacred potions is known as Bastet. Her sacred cult was one of beauty, pleasure and enjoyment. Worshipping her was not about ignoring the problems that are part of being alive. In fact, just as cats can see in the dark and are natural and skilful hunters, Bastet was often called upon for psychic protection from hidden negativities and to secure ones life force and enhance one's vitality. In her role as healer and creatrix of magical healing potions and sacred perfumes, she integrates healing with pleasure, relaxation and a sensual connection to the physical world of nature — including beautiful natural oils and jewels made with precious and semi-precious stones.\n• Bastet shows us how to slow down and smell the roses, whilst applying their perfumed oil to our bodies and breathing in their high-frequency scent to protect and soothe the heart. She is the guardian of and guide into the sumptuous feminine paradise that brings healing, a willingness to connect to the earth and the body, and a capacity to experience sacred healing playfulness, exuberance and natural states of joy.\n\nThe healing frequency of 174Hz is known as the pain-relieving frequency. A natural anaesthetic, it is a musical version of the similar, low-frequency purring of a cat. The cat's purr is considered medically therapeutic, as is 174Hz. This frequency creates an experience of grounding and slowing down, and evokes deep healing for body and mind, providing love and peace to organs and tissues, strengthening your bones and your soul.\n\nThe oracle of Bastet of 174Hz asks you to slow down and take some time to heal, rest, relax and enjoy your life. Then, you can more effortlessly be source of positive energy. We deal with issues far more effectively from a place of peace and relaxation than from stress. If you are interested in exploring any of the sacred arts of pleasure, including music and sound, food, touch and massage, healing, play, dance, celebration and art, colour therapy or healing with crystals and oils, this oracle encourages you to do so. Such avenues are authentic and helpful for your soul healing. \n\nIf you've been too hard on yourself, it's time to be kind. Question and heal any guilt or shaem which have prevented you from enjoying the natural pleasures of your body. You are encouraged to enjoy life. Your delight can be a source of positive energy for yourself and others, too. this life is a gift and Bastet of 174Hz reminds us that when we are moving too fast, we will miss out o n much, including being present for and sharing ourselves with our loved ones. \n\nIf an issue has been troubling you, this oracle brings guidance that there is an approach available that can reduce suffering and increase your feelings of happiness. Open your heart to the divine feminine for guidance and inspiration. Bastet is a portent of joy and celebration. Believe in the happiness and healing your heart can create and attract.",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1202,6 +1341,11 @@ const ORACLE_CARDS = [
     "core_message": "Value what is sacred to you by protecting it from interference, even that which may be well-intentioned. Be compassionate, but set firm boundaries. You are going to triumph over a negative situation. It will take courage, but you have more than enough inner strength, resourcefulness and boldness to accomplish what you wish to attain. Do not give up. You have the ability to connect with bigher worlds, so open your heart and mind to the light.\n\nAt the portal between everyday reality and the rapture of unchecked aliveness stands Sovereign Queen Maeve. She is an initiatrix, taking us beyond the constraints of polite moralism and into the bliss, sacred passion, grit and astuteness needed to cultivate and protect the light. Goddess, warrior, Queen of the Fae, and fearless guardian and protector of territory, Maeve is wild and determined. She stimulates confidence, encouraging one not to shy away but, rather, to assertively engage with life and claim your true place in the world. She encourages us to refuse to allow our sacred territory to be intruded upon by unworthy rulers, whether they be critical voices in our own mind or ego-driven interlopers. Maeve is the instinct to engage when challenged, to call on recruits and use all the inner wisdom and talent at your disposal so you can assert the light and refuse to be put down or denied your rightful place.\n\nProtecting territory from a spiritual perspective is unlike the grasping and self-serving of the ego that wishes to obtain whatever it can for its own benefit. This world needs souls who are willing and able to hold sacred space and refuse to allow it to become contaminated by greed, jealousy, hate or confusion. This is an act of courage and selflessness. Such an act of courage serves all beings. To be a son or daughter of Maeve requires some spiritual chops. It takes feisty refusal to be dominated or controlled. It also takes the wisdom to recognise that one can lovingly accept all that. is without judgement whilst discerning when and how to set a fırm boundary, lest sacred space be trampled upon and defiled by ignorance.\n\nRapture is a pathway out of control and into the sacred and consciously chosen abandonment into something greater than self. When the ocean into which we plunge ourselves is that of the Spirit, then our ecstasy becomes a revitalising, frequency-raising, soul-empowering experience which manitests pathways to victory where, in a lower-state of awareness, there appeared to be no hope.\nIf we honour our need for communion with the sacred realms, we will give ourselves the time and space we need to integrate relevant practices into our lives. Committing to spiritual practice requires the self-possession to know what matters to you, irrespective of whether another—or society in general—can recognise the wisdom in your values.\n\nSovereignty is self-possession. It is the belonging to oneself that happens internally as we claim our being and commit to our unique life journey. True spiritual sovereignty exists outside of social mores. It is not about becoming subversive or disrespectful to others, but rather about seeking out freedom ofbeing. This leads to you naturally becoming an active presence which dismantles enslaving social mores and stimulates society to mature spiritually.\n\nThis oracle asks you to come home to yourself again and again.\nKnow you are strong enough to live your life and chart your course in communion with the sacred. In Sanskrit, svaraj is 'self-rule, and, as the meaning of raj is also radiance, it can also mean \"self-luminous? Do not allow your destiny to rest in the hands of others. Recognise that the light within is your true ruler. You have the power to light yourself up with Spirit. Commit to what you can do and believe the realms of the Divine are working with you.\n\nDo not be dissuaded. You shall be victorious.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1214,6 +1358,11 @@ const ORACLE_CARDS = [
     "core_message": "Taking responsibility for your experiences empowers you. You are going to resolve an issue through spiritual inspiration and higher guidance. You will rise up in full connection to your spirit and access a wealth of divine treasure. That which has brought darkness into your world shall submit to the light and be transformed. Have courage and commitment to your awakening, for you are a precious being and can go far on the spiritual path this lifetime.\nSharro is a Tibetan word meaning to arise or manifest and shine with radiant spiritual light. Sharro is the outcome of sacred alchemy, It is the manifestation of the pearl beyond price. Created in the depths of the ocean, hidden away in a clam shell away from prying eyes, this pearl symbolises a beautiful blessing of unexpected grace. It began when an irritant caused the formation of a luminescent coating. The healing response to that initial intrusion resulted in an organic creation of inestimable beauty, value and uniqueness, so this pearl can be a sacred catalyst.\nTo arise spiritually, manifesting one's own priceless soul pearl, we are required to respond to an initially unwanted situation in such a way that our soul light and power is increased as a result.\nThis soul alchemy evokes the inner pearl of radiant being. Such spiritual wisdom cannot be bought or sold, controlled nor exploited. It is perfect, nourishing grace, always free and always radiant with light. It is the inspirational triumph of creativity and healing.\nIn the inner work of self-transformation, we take that which appears negative and utilise it to increase our goodness. However, we need to take care not to attribute the negativities to divine will that are actually caused by humans. Human beings have free will.\nWithout it, there could be no growth, only a following of rules.\nFor the soul, life is something like a multidimensional art class. It is allowed to create with absolute freedom, with the understanding that it will be responsible for its creations. That opens the path for truly beautiful and blessed offerings to the collective. It also opens the path to expressions of free will that create suffering.\nWhether our choices create liberation or enslavement to pain is the responsibility of human beings. This body has been given to us that we may learn and grow spiritually. We are all in that process, varying in our capacities and awareness, but ultimately progressing together. If some members of our human tamily are in such pain, they can only create further pain, that is their choice. As a group, we work to heal the causes of that pain to free them-and the rest of us—from such a tragic use of free will. When rare and precious members of our human family develop such luminous awareness that, exuding light, they call us into greater peace and happiness, then those of us who are able to receive and share what they offer do so for the benefit of all.\nFrom a deeply pained place of confusion, some souls cry out in anger toward the Divine, wondering why there is disease and suffering and cruelty on this planet. We need to understand the difference between taking an ego-created situation and working with it so that it can become divine and believing the ego-created situation was divine to begin with. Spirit does not wish you or any creature to become sick or to suffer. In its infinite resourcefulness and love—with full respect for your free will, which enables you to grow according to your own pace and purpose-Spirit will provide path after path of healing resolution. It is up to us when, or if, we answer that call.\nThis oracle has emerged in your reading because you have the capacity to become a light bearer. Safeguard your energy yet trust that the light within is strong enough to see you through any struggle and eventually transform it into a precious pearl of sacred empowerment. You have wisdom in your divinely alchemical heart. You shall arise with dignity.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1226,6 +1375,11 @@ const ORACLE_CARDS = [
     "core_message": "The Ghost Dance of the American Plains Indians united the spirits of the living with those of the ancestors to bring peace to the world.\nWhen the ancestors are honored, they bring harmony to us. When we hold them responsible for all that is wrong with us today, they haunt us. Honor the spirits of the ancestors and receive their lessons and gifts.\nThis includes honoring your own past lives!",
     "meaning": "THE INVITATION\nThe ancestors have a message of healing and a powerful medicine to offer you. Create a sacred moment at your altar, light a candle to them, and let their wisdom infuse you. At this stage in your life, you are done repeating their tragic stories. Step into the abundance that is offered to you, receive the gifts of those that have come before you, and write a new story for your life.",
     "shadow": "THE MEDICINE\nIf you are trapped in a vicious cycle of nostalgia, mourning a lost youth or opportunities missed, it is time to make an altar for the ancestors.\nCollect a few photos, light some incense, offer sage, and open the windows of your house to release them to their destiny and to the wind.\nBe wary of being snared in a relationship with someone from a past lifetime, as the people we loved or hurt have a way of reappearing in our lives. There is no learning for you there anymore.",
+    "field_labels": {
+      "core_message": "The Essence",
+      "meaning": "The Invitation",
+      "shadow": "The Medicine"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1238,6 +1392,11 @@ const ORACLE_CARDS = [
     "core_message": "THE ESSENCE\nNative peoples around the Earth recognize mountains as places of great power where one encounters Spirit or where the gods or goddesses reside. In ancient Greece, Mount Olympus was the home of the 12 main Gods and Goddesses. In Tibet, pilgrims circumambulate Mount Kailash to bring prosperity. In Perú, pilgrims climb the ice-capped Mount Aus-angate to receive the starlight and bring fire to the Earth.\n\nTHE INVITATION\nThe Holy Mountain invites you to go on a sacred pilgrimage to acquire vision and perspective. First you must accept the present situation as an opportunity to discover higher understanding. Find a sacred altar where others who came before you have prayed and found wisdom, and make your offering there. Make a commitment to walk with courage, love, and compassion until you see with clarity the perfection of all.\n\nTHE MEDICINE\nWhen the Holy Mountain shows up, it is time to be active. Do not let your doubts deter you and keep you bound. This is a time to leap over challenges and to remember that from the top of the mountain there are no obstacles, only beauty and an unobstructed view of the entire Earth.\nAnd there's no need to go shopping for the right hiking boots or camping equipment to climb the holy mountain; you already have all the gear you need. Overcome any lethargy, indolence, and laziness, as these are the real obstacles.",
     "meaning": "",
     "shadow": "",
+    "field_labels": {
+      "core_message": "The Essence",
+      "meaning": "The Invitation",
+      "shadow": "The Medicine"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1250,6 +1409,11 @@ const ORACLE_CARDS = [
     "core_message": "THE ESSENCE\nThe Serpent is the life force of Mother Earth. The coiled serpent of the Kundalini brings passion, healing, and renewal. She offers us the fruit of the Tree of Knowledge in the Garden of Eden, and reminds us to shed the past the way she sheds her tired, old skin. Serpent comes to offer you the forbidden fruit that will set your passion and creativity free.",
     "meaning": "THE INVITATION\nThe Serpent power of the Kundalini is stirring within your chakras, gently asking you to embrace its mystery. Shed the old skin that you have been so attached to, and welcome the vulnerable pink underbelly that will bring you a fresh experience of your life. Your passion and sexuality are awakening, and this can be scary. Trust the wisdom of Serpent to transform your sensual energies into beautiful, original manifestation.",
     "shadow": "THE MEDICINE\nWhen you shed the past gracefully, life will not strip it away with great drama-indeed, that is something you want to avoid. Do not use your energies to seduce others, or allow yourself to be seduced, even by your own ideas!",
+    "field_labels": {
+      "core_message": "The Essence",
+      "meaning": "The Invitation",
+      "shadow": "The Medicine"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1262,6 +1426,11 @@ const ORACLE_CARDS = [
     "core_message": "THE ESSENCE\nPachamama represents the unconditional love that the Earth has for all her children, including the stones, the plants, the animals, and humans.\nShe is the Goddess of Earth, also known as Gaia, who pervades all creation in our planet. Thanks to Pachamama, our timeless soul can experience life in a biological body. The joy and pain we taste during our brief time on Earth are invitations to discover the boundless love of Pachamama.",
     "meaning": "THE INVITATION\nYou are a child of the Earth. Now is the time to eat right, love right, and be joyous, regardless of the circumstances you may find yourself in. Be grateful for your life, your body, and all that nourishes you. Pachamama invites you to relish each breath, embrace your joy and your pain equally, and discover love through both. Let Pachamama know how much you appreciate all her blessings with an act of service such as planting a tree, helping save an endangered species, or protecting the ocean.",
     "shadow": "THE MEDICINE\nYou still believe that you have been cast out of the Garden of Eden, that you are Motherless and homeless. You suppose that you need to work very hard to survive or thrive. It is time to stop suffering-let go of that old myth-and realize you were given the Garden to rejoice in and to become its steward. Your melancholy is really a longing to return to the heart of Pachamama. Listen deeply to the Mother who is always there for you. Walk in beauty, and honor all life!",
+    "field_labels": {
+      "core_message": "The Essence",
+      "meaning": "The Invitation",
+      "shadow": "The Medicine"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""
@@ -1274,6 +1443,28 @@ const ORACLE_CARDS = [
     "core_message": "THE ESSENCE\nThis is the source of dark power. The Sorcerer represents the destructive aspect of the human psyche and the self-centered behavior that harms others. It symbolizes the unconscious beliefs and ideas that foster separa-tion, conflict, and scarcity.",
     "meaning": "THE INVITATION\nWhen the Sorcerer enters your circle, you're being called to look at how your beliefs around scarcity and self-centered fear manifest in your world. Examine the destructive part of your psyche that misuses power or harbors feelings of resentment, vengeance, lust, greed, bigotry, or hatred. Perhaps you've harmed someone because of these dark tenden-cies. If so, all is not lost. You have only forgotten that all beings are interconnected and the universe is abundant. The Sorcerer arrives to challenge you to change your thinking. You're given a second chance.\nCorrect your course and and practice not blaming others for the darkness that lives inside you. Make peace with it and choose another way.",
     "shadow": "The MEDICINE\n\nHave you been feeling out of sorts because you've been faced with your own character flaws and the pain that you inflict on others when you are out of alignment? Radical self-acceptance is called for now. You must reconcile these darker aspects of your nature so you don't behave irresponsibly and cause more harm to yourself and the ones you love. It's time to come out of denial and accept responsibility for your words and deeds. When you meet the energy of the Sorcerer with humility, this destructive power transforms into grace, which you can use in service to the highest good. Perhaps it's time to make amends. Do it. It will set you free from the shadows and let you step into the Light.",
+    "field_labels": {
+      "core_message": "The Essence",
+      "meaning": "The Invitation",
+      "shadow": "The Medicine"
+    },
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": ""
+  },
+  {
+    "deck": "Mystical Shaman Oracle",
+    "card_number": "43.0",
+    "name": "The Rattle",
+    "theme": "",
+    "core_message": "The rattle is the Spirit-caller, carrying the shaman's prayer to the four directions. The body of the rattle is like the Earth spinning on its axis. With the aid of the rattle, the medicine woman instills a desired destiny in her future, closing with the prayer, \"Great Spirit, may your will be done!\" The rattle guides us to pray for all the Earth, not just for our personal needs. When we offer our prayers for the highest good of all, everything we need is provided for us.",
+    "meaning": "The Rattle comes to invite you to work with the tools of Spirit, but be careful-they are very sharp and can hurt you and others if they are not used mindfully. Set your old tools aside, and take up the drawing instruments of Spirit. You are consciously stepping into partnership with the divine. This is the time for courageous deeds. Do not let your hesitation get in the way of your expression.",
+    "shadow": "You want to catch God on the whisper, not on the shout. What you are trying to craft to your own desires and expectations is already there, standing before you. Do not spin the world to your own benefit. You are being offered the Creator's tools, which must be put to use to serve a divine purpose.",
+    "field_labels": {
+      "core_message": "The Essence",
+      "meaning": "The Invitation",
+      "shadow": "The Medicine"
+    },
     "guidebook": "",
     "your_layer": "",
     "imagery": ""

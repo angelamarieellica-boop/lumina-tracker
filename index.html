@@ -1291,29 +1291,32 @@ function renderCardSlots(day, entryId){
     const meaningHtml=()=>{
       if(!slot.cardName)return'';
       if(slot.type==='tarot'&&selectedTarot){
+        const fmtText=t=>t?t.replace(/\n\n+/g,'</p><p style="margin-top:10px">').replace(/\n/g,'<br>'):'';
         const kw=slot.orientation==='reversed'?selectedTarot.keywords_rev:selectedTarot.keywords_up;
         const mn=slot.orientation==='reversed'?selectedTarot.meaning_rev:selectedTarot.meaning_up;
         const extras=slot.orientation==='upright'?[
-          selectedTarot.career?`<div style="margin-top:10px"><div class="card-meaning-keywords">Career & Work</div><div class="card-meaning-text">${escHtml(selectedTarot.career)}</div></div>`:'',
-          selectedTarot.relationships?`<div style="margin-top:10px"><div class="card-meaning-keywords">Relationships & Love</div><div class="card-meaning-text">${escHtml(selectedTarot.relationships)}</div></div>`:'',
-          selectedTarot.spirituality?`<div style="margin-top:10px"><div class="card-meaning-keywords">Spirituality</div><div class="card-meaning-text">${escHtml(selectedTarot.spirituality)}</div></div>`:'',
-          selectedTarot.journaling?`<div style="margin-top:10px"><div class="card-meaning-keywords">Journal Prompts</div><div class="card-meaning-text">${escHtml(selectedTarot.journaling)}</div></div>`:''
+          selectedTarot.career?`<div style="margin-top:10px"><div class="card-meaning-keywords">Career & Work</div><div class="card-meaning-text">${fmtText(selectedTarot.career)}</div></div>`:'',
+          selectedTarot.relationships?`<div style="margin-top:10px"><div class="card-meaning-keywords">Relationships & Love</div><div class="card-meaning-text">${fmtText(selectedTarot.relationships)}</div></div>`:'',
+          selectedTarot.spirituality?`<div style="margin-top:10px"><div class="card-meaning-keywords">Spirituality</div><div class="card-meaning-text">${fmtText(selectedTarot.spirituality)}</div></div>`:'',
+          selectedTarot.journaling?`<div style="margin-top:10px"><div class="card-meaning-keywords">Journal Prompts</div><div class="card-meaning-text">${fmtText(selectedTarot.journaling)}</div></div>`:''
         ].filter(Boolean).join(''):[];
         return`<div class="card-meaning-box">
           ${kw?`<div class="card-meaning-keywords">${escHtml(kw)}</div>`:''}
-          ${mn?`<div class="card-meaning-text">${escHtml(mn)}</div>`:''}
+          ${mn?`<div class="card-meaning-text">${fmtText(mn)}</div>`:''}
           ${extras}
         </div>`;
       }
       if(slot.type==='oracle'&&selectedOracle){
+        const labels=selectedOracle.field_labels||{core_message:'Core Message',meaning:'Expanded Meaning',shadow:'Shadow / Reversed'};
+        const fmtText=t=>t?t.replace(/\n\n+/g,'</p><p style="margin-top:10px">').replace(/\n/g,'<br>'):'';
         const sections=[
           selectedOracle.theme?`<div class="card-meaning-keywords">${escHtml(selectedOracle.theme)}</div>`:'',
-          selectedOracle.core_message?`<div class="card-meaning-text" style="margin-bottom:8px">${escHtml(selectedOracle.core_message)}</div>`:'',
-          selectedOracle.meaning?`<div style="margin-top:8px"><div class="card-meaning-keywords">Expanded Meaning</div><div class="card-meaning-text">${escHtml(selectedOracle.meaning)}</div></div>`:'',
-          selectedOracle.shadow?`<div style="margin-top:8px"><div class="card-meaning-keywords" style="color:#7858A8">Shadow / Reversed</div><div class="card-meaning-text">${escHtml(selectedOracle.shadow)}</div></div>`:'',
-          selectedOracle.guidebook?`<div style="margin-top:8px"><div class="card-meaning-keywords">Guidebook Notes</div><div class="card-meaning-text">${escHtml(selectedOracle.guidebook)}</div></div>`:'',
+          selectedOracle.core_message?`<p style="margin-bottom:4px"><strong style="font-size:10px;letter-spacing:1px;color:var(--gold);text-transform:uppercase">${escHtml(labels.core_message)}</strong></p><p>${fmtText(selectedOracle.core_message)}</p>`:'',
+          selectedOracle.meaning?`<div style="margin-top:10px"><p style="margin-bottom:4px"><strong style="font-size:10px;letter-spacing:1px;color:var(--gold);text-transform:uppercase">${escHtml(labels.meaning)}</strong></p><p>${fmtText(selectedOracle.meaning)}</p></div>`:'',
+          selectedOracle.shadow?`<div style="margin-top:10px"><p style="margin-bottom:4px"><strong style="font-size:10px;letter-spacing:1px;color:#7858A8;text-transform:uppercase">${escHtml(labels.shadow)}</strong></p><p style="color:var(--ink-mid)">${fmtText(selectedOracle.shadow)}</p></div>`:'',
+          selectedOracle.guidebook?`<div style="margin-top:10px"><p style="margin-bottom:4px"><strong style="font-size:10px;letter-spacing:1px;color:var(--gold);text-transform:uppercase">Guidebook Notes</strong></p><p>${fmtText(selectedOracle.guidebook)}</p></div>`:'',
         ].filter(Boolean).join('');
-        return`<div class="card-meaning-box">${sections}</div>`;
+        return`<div class="card-meaning-box" style="font-size:12px;line-height:1.75;color:var(--ink-mid)">${sections}</div>`;
       }
       return'';
     };
