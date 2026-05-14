@@ -317,6 +317,20 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .gc.active-today{border-color:var(--gold-warm);border-width:2px;background:linear-gradient(135deg,var(--white) 0%,var(--gold-pale) 100%)}
 .gc.active-today .gc-header{background:transparent}
 .gc-active-tag{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-top:4px}
+/* Day view gate columns */
+.day-gate-group{margin-bottom:28px}
+.day-gate-group+.day-gate-group{border-top:1.5px solid var(--border-light);padding-top:24px}
+.day-gate-columns{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start}
+@media(max-width:640px){.day-gate-columns{grid-template-columns:1fr}}
+.day-gate-col{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;overflow:hidden}
+.day-gate-col.info-col{border-top:3px solid var(--green)}
+.day-gate-col.reading-col{border-top:3px solid var(--gold-warm)}
+.day-gate-col.note-col{border-top:3px solid var(--border)}
+.day-gate-col-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:10px 14px 0;color:var(--ink-faint)}
+.day-gate-col-body{padding:12px 14px}
+.day-gate-transit{font-size:11px;color:var(--ink-faint);margin-top:6px;line-height:1.5}
+.day-gate-field-note-inline{font-size:12px;color:var(--ink-mid);line-height:1.65;margin-bottom:8px;padding:8px 10px;background:var(--ivory-mid);border-radius:4px}
+.day-gate-field-note-date{font-size:9px;font-weight:700;color:var(--ink-faint);margin-bottom:3px;letter-spacing:.5px}
 .gc-header{padding:14px 16px;border-bottom:1.5px solid var(--border-light);display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .gc-num{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px}
 .gc-name{font-size:11px;color:var(--ink-soft)}
@@ -865,24 +879,60 @@ function renderDetail(el){
 
   const gateBlocksHtml=displayGates.map((g,gi)=>{
     const cc=CENTER_COLORS[g.gate.center]||'#3A7A3A';
+    const badgeStyle=CENTER_BADGE_STYLE[g.gate.center]||'background:var(--ivory-mid);color:var(--ink-soft)';
     const reading=GATE_READINGS[g.gateNum]||'Reading not available.';
     const transit=getTransitTimes(g.gateNum,day.date);
-    const timeLabel=g.startTime?`from ${fmtTime(g.startTime)}`:(gi===0&&displayGates.length>1?'5am onward':'');
-    const transitHtml=transit?`<div class="gate-transit-info" style="margin-top:10px"><strong>Transit:</strong> entered ~${fmtDateTime(transit.entryTime)} &nbsp;·&nbsp; exits ~${fmtDateTime(transit.exitTime)}</div>`:'';
-    return`<div class="gate-hero" style="${gi>0?'margin-top:12px':''}">
-      <span class="gate-moon-big">${gi===0?getMoonPhaseEmoji(selectedDay):'🌙'}</span>
-      ${gi===0?`<div class="gate-eyebrow">Day ${day.dayNum} &nbsp;·&nbsp; ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}${isFuture?' &nbsp;·&nbsp; <span style="color:var(--gold)">Upcoming</span>':''}</div>`:''}
-      ${timeLabel?`<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:6px">${timeLabel}</div>`:''}
-      <div class="gate-title">Gate ${g.gateNum}.${g.line} — ${g.gate.name}</div>
-      <div class="gate-center" style="color:${cc}">${g.gate.center} Center</div>
-      <div class="gate-theme">${g.gate.theme}</div>
-      ${transitHtml}
-    </div>
-    <div class="reading-box">
-      <div class="reading-box-label">✦ Gate ${g.gateNum} Reading</div>
-      <div class="reading-text">${escHtml(reading)}</div>
-    </div>
-    ${renderGateFieldNote(g.gateNum)}`}).join('');
+    const timeLabel=g.startTime?`Active from ${fmtTime(g.startTime)}`:(gi===0&&displayGates.length>1?'Active from 5am':'');
+    const isPersonal=MY_GATES.defined.includes(g.gateNum);
+    const personalLabel=MY_GATES.both.includes(g.gateNum)?'✦ Your gate (both streams)':MY_GATES.personality.includes(g.gateNum)?'✦ Your gate (personality)':MY_GATES.design.includes(g.gateNum)?'✦ Your gate (design)':'';
+
+    // Field note for this gate
+    const fieldNote=getLatestGateNote(g.gateNum);
+    const guide=getGateGuide(g.gateNum);
+    const hasGuide=guide.whenActive||guide.watchFor||guide.bestUse||guide.avoid;
+
+    const noteColContent=fieldNote?`
+      <div class="day-gate-field-note-date">${new Date(fieldNote.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+      <div class="day-gate-field-note-inline">${escHtml(fieldNote.text)}</div>`
+      :(hasGuide?[
+        guide.whenActive&&`<div style="margin-bottom:6px"><div class="day-gate-col-label" style="padding:0;font-size:9px">When active</div><div style="font-size:12px;color:var(--ink-mid);line-height:1.5">${escHtml(guide.whenActive)}</div></div>`,
+        guide.watchFor&&`<div style="margin-bottom:6px"><div class="day-gate-col-label" style="padding:0;font-size:9px">Watch for</div><div style="font-size:12px;color:var(--ink-mid);line-height:1.5">${escHtml(guide.watchFor)}</div></div>`,
+      ].filter(Boolean).join('')
+      :`<div style="font-size:12px;color:var(--ink-faint);font-style:italic">No field notes yet. <button onclick="switchView('gates');gateSearch='${g.gateNum}';render()" style="background:none;border:none;color:var(--green);cursor:pointer;font-size:12px;font-family:'Libre Baskerville',serif;text-decoration:underline">Add in Gates tab →</button></div>`);
+
+    return`<div class="day-gate-group">
+      ${gi===0?`<div class="gate-eyebrow" style="margin-bottom:12px">Day ${day.dayNum} &nbsp;·&nbsp; ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}${isFuture?' &nbsp;·&nbsp; <span style="color:var(--gold)">Upcoming</span>':''}</div>`:''}
+      ${timeLabel?`<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:10px">${getMoonPhaseEmoji(selectedDay)} ${timeLabel}</div>`:''}
+      <div class="day-gate-columns">
+        <!-- Col 1: Info -->
+        <div class="day-gate-col info-col">
+          <div class="day-gate-col-label">Gate Info</div>
+          <div class="day-gate-col-body">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--green);margin-bottom:4px;line-height:1.2">Gate ${g.gateNum}.${g.line} — ${g.gate.name}</div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+              <span style="${badgeStyle};font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px">${g.gate.center}</span>
+              ${personalLabel?`<span style="font-size:10px;font-weight:700;color:var(--gold);background:var(--gold-pale);padding:3px 8px;border-radius:10px;border:1px solid #D8C080">${personalLabel}</span>`:`<span style="font-size:10px;color:var(--ink-faint);font-weight:700">Transit only</span>`}
+            </div>
+            <div style="font-size:13px;color:var(--ink-mid);line-height:1.6;margin-bottom:10px">${g.gate.theme}</div>
+            ${transit?`<div class="day-gate-transit">
+              Entered ~${fmtDateTime(transit.entryTime)}<br>Exits ~${fmtDateTime(transit.exitTime)}
+            </div>`:''}
+          </div>
+        </div>
+        <!-- Col 2: Reading -->
+        <div class="day-gate-col reading-col">
+          <div class="day-gate-col-label">✦ Reading</div>
+          <div class="day-gate-col-body">
+            <div style="font-size:13px;color:var(--ink-mid);line-height:1.85">${escHtml(reading)}</div>
+          </div>
+        </div>
+        <!-- Col 3: Field note / guide -->
+        <div class="day-gate-col note-col">
+          <div class="day-gate-col-label">${fieldNote?'Field Note':hasGuide?'Transit Guide':'Field Note'}</div>
+          <div class="day-gate-col-body">${noteColContent}</div>
+        </div>
+      </div>
+    </div>`}).join('');
 
   const planningTags=PLANNING_TAGS.map(t=>`<button class="chip-btn ${(dd.planningTags||[]).includes(t)?'selected':''}" style="${(dd.planningTags||[]).includes(t)?'background:var(--gold-warm);border-color:var(--gold-warm);color:white;':''}" onclick="togglePlanningTag(${selectedDay},'${t}')">${t}</button>`).join('');
 
