@@ -310,21 +310,38 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 /* Gates tab */
 .gate-field-note{background:var(--gold-pale);border-left:3px solid var(--gold-warm);border-radius:0 5px 5px 0;padding:8px 12px;margin-bottom:14px;font-size:12px;color:var(--ink-mid);line-height:1.6}
 .gate-field-note-label{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:3px}
-.gates-list{display:flex;flex-direction:column;gap:8px}
-.gate-entry-card{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;overflow:hidden}
-.gate-entry-header{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .15s}
-.gate-entry-header:hover{background:var(--ivory-mid)}
-.gate-entry-header.open{background:var(--green-pale);border-bottom:1.5px solid var(--border-light)}
-.gate-entry-num{font-size:13px;font-weight:700;color:var(--ink)}
-.gate-entry-name{font-size:12px;color:var(--ink-soft);margin-top:1px}
-.gate-entry-center{font-size:10px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:10px;margin-left:8px}
-.gate-entry-body{padding:16px 18px;display:none}
-.gate-entry-body.open{display:block}
-.gate-note-item{background:var(--ivory-mid);border-radius:5px;padding:10px 12px;margin-bottom:8px;position:relative}
-.gate-note-item-date{font-size:10px;font-weight:700;color:var(--ink-faint);margin-bottom:4px;letter-spacing:.5px}
-.gate-note-item-text{font-size:13px;color:var(--ink-mid);line-height:1.6}
-.gate-note-item-del{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:14px;padding:0}
-.gate-note-item-del:hover{color:#A84040}
+.gates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.gc{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;overflow:hidden;font-family:'Libre Baskerville',serif;cursor:pointer;transition:border-color .15s}
+.gc:hover{border-color:var(--green-light)}
+.gc.open{border-color:var(--green)}
+.gc-header{padding:14px 16px;border-bottom:1.5px solid var(--border-light);display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.gc-num{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.gc-name{font-size:11px;color:var(--ink-soft)}
+.gc-badges{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.gc-center-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:.5px}
+.gc-personal-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;background:var(--gold-pale);color:var(--gold);border:1px solid #D8C080}
+.gc-transit-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;background:var(--ivory-mid);color:var(--ink-faint);border:1px solid var(--border-light)}
+.gc-theme{padding:8px 16px;font-size:11px;color:var(--ink-soft);border-bottom:1.5px solid var(--border-light);font-style:italic;line-height:1.5}
+.gc-body{display:none}
+.gc-body.open{display:block}
+.gc-guide{padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;border-bottom:1.5px solid var(--border-light)}
+.gc-guide-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
+.gc-guide-text{font-size:12px;color:var(--ink-mid);line-height:1.5}
+.gc-guide-text.empty{color:var(--ink-faint);font-style:italic}
+.gc-guide-input{width:100%;background:var(--white);border:1.5px solid var(--border-light);color:var(--ink);padding:6px 8px;border-radius:4px;font-size:12px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.5;transition:border-color .15s}
+.gc-guide-input:focus{border-color:var(--green)}
+.gc-notes-section{padding:10px 16px;background:var(--ivory-mid)}
+.gc-notes-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px}
+.gc-note-item{font-size:11px;color:var(--ink-mid);line-height:1.5;margin-bottom:6px;padding-left:8px;border-left:2px solid var(--border);position:relative}
+.gc-note-date{font-size:9px;font-weight:700;color:var(--ink-faint);margin-bottom:2px;letter-spacing:.5px}
+.gc-note-text{font-size:11px;color:var(--ink-mid);line-height:1.5}
+.gc-note-del{position:absolute;top:0;right:0;background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:13px;padding:0}
+.gc-note-del:hover{color:#A84040}
+.gc-add-row{padding:8px 16px;display:flex;gap:6px;border-top:1.5px solid var(--border-light);background:var(--ivory-mid)}
+.gc-add-input{flex:1;font-size:12px;padding:6px 8px;border-radius:4px;border:1.5px solid var(--border-light);background:var(--white);color:var(--ink);font-family:'Libre Baskerville',serif;outline:none}
+.gc-add-input:focus{border-color:var(--green)}
+.gc-add-btn{font-size:11px;font-weight:700;padding:6px 12px;border-radius:4px;border:1.5px solid var(--border);background:none;color:var(--ink-soft);cursor:pointer;font-family:'Libre Baskerville',serif;white-space:nowrap;transition:all .15s}
+.gc-add-btn:hover{border-color:var(--green);color:var(--green)}
 .gate-search{width:100%;background:var(--white);border:1.5px solid var(--border);color:var(--ink);padding:10px 14px;border-radius:5px;font-size:14px;font-family:'Libre Baskerville',serif;outline:none;margin-bottom:16px;transition:border-color .15s}
 .gate-search:focus{border-color:var(--green)}
 /* Bodygraph */
@@ -471,6 +488,7 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 const GATE_DEGREES=[[25,358.25,363.875],[17,3.875,9.5],[21,9.5,15.125],[51,15.125,20.75],[42,20.75,26.375],[3,26.375,32.0],[27,32.0,37.625],[24,37.625,43.25],[2,43.25,48.875],[23,48.875,54.5],[8,54.5,60.125],[20,60.125,65.75],[16,65.75,71.375],[35,71.375,77.0],[45,77.0,82.458],[12,82.625,88.25],[15,88.25,93.875],[52,93.875,99.5],[39,99.5,105.125],[53,105.125,110.75],[62,110.75,116.375],[56,116.375,122.0],[31,122.0,127.625],[33,127.625,133.25],[7,133.25,138.875],[4,138.875,144.5],[29,144.5,150.125],[59,150.125,155.75],[40,155.75,161.375],[64,161.375,167.0],[47,167.0,172.625],[6,172.625,178.25],[46,178.25,183.875],[18,183.875,189.5],[48,189.5,195.125],[57,195.125,200.75],[32,200.75,206.375],[50,206.375,212.0],[28,212.0,217.625],[44,217.625,223.25],[1,223.25,228.875],[43,228.875,234.5],[14,234.5,240.125],[34,240.125,245.75],[9,245.75,251.375],[5,251.375,257.0],[26,257.0,262.625],[11,262.625,268.25],[10,268.25,273.875],[58,273.875,279.5],[38,279.5,285.125],[54,285.125,290.75],[61,290.75,296.375],[60,296.375,302.0],[41,302.0,307.625],[19,307.625,313.25],[13,313.25,318.875],[49,318.875,324.5],[30,324.5,330.125],[55,330.125,335.75],[37,335.75,341.375],[63,341.375,347.0],[22,347.0,352.625],[36,352.625,358.25]];
 const GATES={1:{name:"The Creative",theme:"Creative contribution & authenticity",center:"G"},2:{name:"The Receptive",theme:"Direction & surrendering to flow",center:"G"},3:{name:"Difficulty at the Beginning",theme:"Mutation from chaos to clarity",center:"Sacral"},4:{name:"Youthful Folly",theme:"Mental answers & solutions",center:"Ajna"},5:{name:"Waiting",theme:"Rhythm, habit & universal timing",center:"Sacral"},6:{name:"Conflict",theme:"Intimacy, boundaries & emotional waves",center:"Solar Plexus"},7:{name:"The Army",theme:"Leadership through role",center:"G"},8:{name:"Holding Together",theme:"Contribution & individual expression",center:"Throat"},9:{name:"The Taming Power of the Small",theme:"Concentration & detail",center:"Sacral"},10:{name:"Treading",theme:"Self-love & behavior aligned with values",center:"G"},11:{name:"Peace",theme:"Ideas & the archive of imagination",center:"Ajna"},12:{name:"Standstill",theme:"Caution, articulation & transformation",center:"Throat"},13:{name:"Fellowship of Man",theme:"Listening, memory & narrative",center:"G"},14:{name:"Possession in Great Measure",theme:"Empowerment & energy stewardship",center:"Sacral"},15:{name:"Modesty",theme:"Rhythm of extremes & love of humanity",center:"G"},16:{name:"Enthusiasm",theme:"Skills, talent & timing",center:"Throat"},17:{name:"Following",theme:"Opinions & seeing the future",center:"Ajna"},18:{name:"Work on What Has Been Spoilt",theme:"Correction, judgment & perfectionism",center:"Spleen"},19:{name:"Approach",theme:"Sensitivity, need & attunement",center:"Root"},20:{name:"Contemplation",theme:"Presence & the now",center:"Throat"},21:{name:"Biting Through",theme:"Control & material mastery",center:"Ego/Heart"},22:{name:"Grace",theme:"Emotional openness & social grace",center:"Solar Plexus"},23:{name:"Splitting Apart",theme:"Assimilation & simplicity",center:"Throat"},24:{name:"Return",theme:"Rationalization & turning inward",center:"Ajna"},25:{name:"Innocence",theme:"Universal love & spirit of the self",center:"G"},26:{name:"The Taming Power of the Great",theme:"Integrity & the art of the ego",center:"Ego/Heart"},27:{name:"Nourishment",theme:"Caring, nurturing & responsibility",center:"Sacral"},28:{name:"Preponderance of the Great",theme:"Struggle, purpose & risk",center:"Spleen"},29:{name:"The Abysmal",theme:"Commitment & saying yes to life",center:"Sacral"},30:{name:"Clinging Fire",theme:"Desire, feelings & the future",center:"Solar Plexus"},31:{name:"Influence",theme:"Leadership & democratic voice",center:"Throat"},32:{name:"Duration",theme:"Continuity, instinct & what endures",center:"Spleen"},33:{name:"Retreat",theme:"Privacy, memory & withdrawal",center:"Throat"},34:{name:"The Power of the Great",theme:"Power, independence & manifestation",center:"Sacral"},35:{name:"Progress",theme:"Experience, adventure & change",center:"Throat"},36:{name:"Darkening of the Light",theme:"Crisis, emotional depth & experience",center:"Solar Plexus"},37:{name:"The Family",theme:"Friendship, bargaining & community",center:"Solar Plexus"},38:{name:"Opposition",theme:"Struggle & purpose through challenge",center:"Root"},39:{name:"Obstruction",theme:"Provocation & awakening spirit",center:"Root"},40:{name:"Deliverance",theme:"Aloneness, rest & renewal",center:"Ego/Heart"},41:{name:"Decrease",theme:"Fantasy, desire & new beginnings",center:"Root"},42:{name:"Increase",theme:"Growth, completion & finishing",center:"Sacral"},43:{name:"Breakthrough",theme:"Insight, knowing & inner truth",center:"Ajna"},44:{name:"Coming to Meet",theme:"Instinct about the past & patterns",center:"Spleen"},45:{name:"Gathering Together",theme:"Community, abundance & the king/queen",center:"Throat"},46:{name:"Pushing Upward",theme:"Love of body, luck & serendipity",center:"G"},47:{name:"Oppression",theme:"Realization & transforming the past",center:"Ajna"},48:{name:"The Well",theme:"Depth, wisdom & readiness",center:"Spleen"},49:{name:"Revolution",theme:"Principles, rejection & transformation",center:"Solar Plexus"},50:{name:"The Cauldron",theme:"Values, responsibility & the tribe",center:"Spleen"},51:{name:"The Arousing",theme:"Shock, initiation & competition",center:"Ego/Heart"},52:{name:"Keeping Still",theme:"Stillness, focus & restraint",center:"Root"},53:{name:"Development",theme:"Beginnings, pressure & cyclic starts",center:"Root"},54:{name:"The Marrying Maiden",theme:"Ambition, drive & transformation",center:"Root"},55:{name:"Abundance",theme:"Emotional richness & faith",center:"Solar Plexus"},56:{name:"The Wanderer",theme:"Storytelling, beliefs & stimulation",center:"Throat"},57:{name:"The Gentle",theme:"Intuition, clarity & survival instinct",center:"Spleen"},58:{name:"The Joyous",theme:"Vitality, joy & love of life",center:"Root"},59:{name:"Dispersion",theme:"Sexuality, intimacy & breaking barriers",center:"Sacral"},60:{name:"Limitation",theme:"Acceptance & transcending limits",center:"Root"},61:{name:"Inner Truth",theme:"Mystery, knowing & universal principles",center:"Head"},62:{name:"Preponderance of the Small",theme:"Detail, facts & precision",center:"Throat"},63:{name:"After Completion",theme:"Doubt, logic & questioning",center:"Head"},64:{name:"Before Completion",theme:"Confusion, inspiration & divine chaos",center:"Head"}};
 const CENTER_COLORS={"Head":"#6B5FA0","Ajna":"#4A7AAA","Throat":"#A86830","G":"#3A7A3A","Ego/Heart":"#A84040","Sacral":"#B08820","Solar Plexus":"#7858A8","Spleen":"#2A8868","Root":"#7A5830"};
+const CENTER_BADGE_STYLE={"Head":"background:#EEEDFE;color:#3C3489","Ajna":"background:#E6F1FB;color:#185FA5","Throat":"background:#FAEEDA;color:#854F0B","G":"background:#EAF3DE;color:#3B6D11","Ego/Heart":"background:#FCEBEB;color:#A32D2D","Sacral":"background:#FAEEDA;color:#854F0B","Solar Plexus":"background:#EEEDFE;color:#534AB7","Spleen":"background:#E1F5EE;color:#0F6E56","Root":"background:#FAECE7;color:#993C1D"};
 const MOON_PHASES=["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"];
 const ENERGY_COLORS={'High ✦':'#3A7A3A','Steady ○':'#B08820','Low ◌':'#7A5830','Scattered ~':'#9070B8','Tender ♡':'#A84070','Depleted ✗':'#A84040'};
 const BODY_STATES=['Grounded','Expansive','Tight','Tender','Spacious','Heavy','Light','Restless','Calm'];
@@ -1104,9 +1122,9 @@ async function generateDayInsight(dayIdx){
     return parts?`Gate ${g.gateNum} guide: ${parts}`:'';
   }).filter(Boolean).join('\n');
 
-  const prompt=`You are Gela's personal pattern mirror. Gela is a 4/6 Reflector — ALL centers open. She samples and amplifies others' energy. She does NOT generate consistent energy of her own.
+  const prompt=`You are speaking directly to Gela — use "you" throughout, never third person. She is a 4/6 Reflector — ALL centers open, meaning you sample and amplify others' energy. You do not generate consistent energy of your own.
 
-HER CHART: Defined gates: ${MY_GATES.defined.join(', ')} · Sag Sun, Pisces Moon, Gemini Rising
+YOUR CHART: Defined gates: ${MY_GATES.defined.join(', ')} · Sag Sun, Pisces Moon, Gemini Rising
 
 TODAY: ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})} · Day ${day.dayNum} of 29 · ${getSpellOccasion()}
 
@@ -1119,9 +1137,9 @@ ${displayGates.map(g=>{
   const fieldNote=getLatestGateNote(g.gateNum);
   return`Gate ${g.gateNum}.${g.line||''} ${g.gate?.name||''} | ${g.gate?.center||''} Center | ${ctx}${fieldNote?` | Her note: "${fieldNote.text}"`:''}`
 }).join('\n')}
-${gateGuideContext?'\nHER TRANSIT GUIDES:\n'+gateGuideContext:''}
+${gateGuideContext?'\nYOUR TRANSIT GUIDES:\n'+gateGuideContext:''}
 
-CENTERS ACTIVATED: ${[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))].map(c=>`${c} (${isCenterDefined(c)?'TRANSIT DEFINED':'open'})`).join(', ')}
+CENTERS ACTIVATED TODAY: ${[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))].map(c=>`${c} (${isCenterDefined(c)?'TRANSIT DEFINED':'open'})`).join(', ')}
 
 BRAIN DUMP: ${(dd.brainDump||'—').substring(0,500)}
 JOURNAL: ${entryBlocks.join(' | ').substring(0,800)||'—'}
@@ -1146,10 +1164,17 @@ This is one sharp, specific question based on something she actually logged.
 ---
 
 VERSION 2 — DEEPER:
-3 short paragraphs. Plain language only.
-Para 1: Gates — personal vs environmental, what the active center means in her body and interactions today.
-Para 2: Cards — the through-line story across all cards together, not card-by-card.
-Para 3: Convergence — where gates + cards + what she actually wrote all point to the same thing. Be specific, name actual details from her data.
+Write 4 clearly labeled sections. Each label on its own line in ALL CAPS, then 2-4 sentences below it. Speak directly to her as "you". Plain language, name actual details from her data.
+
+GATES
+What these gates mean in practice in her body and interactions today. Is this your energy being amplified, or coming entirely from the field around you?
+
+CARDS
+The through-line across all cards together — not card-by-card. What theme or tension runs through the whole reading?
+
+WHAT ALIGNS
+Where do the gates, cards, and what you actually wrote all point to the same thing? Name specifics.
+
 End with the same ? question.`;
 
   try{
@@ -1178,7 +1203,12 @@ End with the same ? question.`;
     }).join('');
 
     const deeperHtml=deeperText?`<div id="dayDeeper_${dayIdx}" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)">
-      <div class="day-digest-ai-text">${escHtml(deeperText)}</div>
+      ${deeperText.split('\n').filter(l=>l.trim()).map(line=>{
+        const t=line.trim();
+        if(t.startsWith('?'))return`<div style="margin-top:14px;font-size:14px;font-style:italic;color:var(--gold-warm);line-height:1.6;padding-top:12px;border-top:1px solid rgba(255,255,255,.1)">${escHtml(t)}</div>`;
+        if(t===t.toUpperCase()&&t.length>2&&/^[A-Z\s\/]+$/.test(t))return`<div style="font-size:9px;font-weight:700;letter-spacing:3px;color:var(--gold-warm);text-transform:uppercase;margin-top:16px;margin-bottom:6px">${escHtml(t)}</div>`;
+        return`<div style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.75;margin-bottom:6px">${escHtml(t)}</div>`;
+      }).join('')}
     </div>
     <button onclick="toggleDayDeeper(${dayIdx})" id="dayDeeperBtn_${dayIdx}" style="margin-top:10px;background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);padding:6px 14px;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px">Go Deeper ↓</button>`:'';
 
@@ -2020,57 +2050,56 @@ function renderGatesTab(el){
     <button class="gate-filter-btn ${gateFilter==='noted'?'active':''}" onclick="gateFilter='noted';render()">With Notes</button>
     ${centers.map(c=>`<button class="gate-filter-btn ${gateFilter===c?'active':''}" style="${gateFilter===c?'':'color:'+CENTER_COLORS[c]}" onclick="gateFilter='${c}';render()">${c}</button>`).join('')}
   </div>
-  <div class="gates-list">`;
+  <div class="gates-grid">`;
 
   filtered.forEach(n=>{
     const g=GATES[n];
     const notes=allGateNotes[n]||[];
+    const guide=getGateGuide(n);
     const isPersonal=MY_GATES.defined.includes(n);
-    const cc=CENTER_COLORS[g.center]||'#3A7A3A';
+    const badgeStyle=CENTER_BADGE_STYLE[g.center]||'background:var(--ivory-mid);color:var(--ink-soft)';
     const isOpen=localStorage.getItem('lumina_open_gate')===String(n);
-    html+=`<div class="gate-entry-card">
-      <div class="gate-entry-header ${isOpen?'open':''}" onclick="toggleGateEntry(${n})">
-        <div style="display:flex;align-items:center;gap:8px;flex:1">
-          <div>
-            <div class="gate-entry-num ${notes.length?'gate-has-notes':''}">Gate ${n} — ${g.name}</div>
-            <div class="gate-entry-name">${g.theme}</div>
-          </div>
-          <span class="gate-entry-center" style="background:${cc}22;color:${cc};border:1px solid ${cc}44">${g.center}</span>
-          ${isPersonal?`<span style="font-size:9px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase">Your gate</span>`:''}
+    const hasGuide=guide.whenActive||guide.watchFor||guide.bestUse||guide.avoid;
+    const hasNotes=notes.length>0;
+
+    const guideFields=[
+      {field:'whenActive',label:'When active'},
+      {field:'watchFor',label:'Watch for'},
+      {field:'bestUse',label:'Best use'},
+      {field:'avoid',label:'Avoid'},
+    ];
+
+    html+=`<div class="gc ${isOpen?'open':''}">
+      <div class="gc-header" onclick="toggleGateEntry(${n})">
+        <div>
+          <div class="gc-num">${notes.length||hasGuide?'✦ ':''} Gate ${n} — ${g.name}</div>
+          <div class="gc-name">${g.theme}</div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-          ${notes.length?`<span style="font-size:10px;font-weight:700;color:var(--gold-warm)">${notes.length} note${notes.length>1?'s':''}</span>`:''}
-          <span style="color:var(--ink-faint);font-size:12px">${isOpen?'▾':'▸'}</span>
+        <div class="gc-badges">
+          <span class="gc-center-badge" style="${badgeStyle}">${g.center}</span>
+          ${isPersonal?`<span class="gc-personal-badge">✦ Your gate</span>`:`<span class="gc-transit-badge">Transit only</span>`}
         </div>
       </div>
-      <div class="gate-entry-body ${isOpen?'open':''}">
-        <!-- Transit Guide -->
-        <div style="margin-bottom:16px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:10px">Transit Guide</div>
-          ${[
-            {field:'whenActive',label:'When active'},
-            {field:'watchFor',label:'Watch for'},
-            {field:'bestUse',label:'Best use'},
-            {field:'avoid',label:'Avoid'},
-          ].map(({field,label})=>{
-            const guide=getGateGuide(n);
-            return`<div style="margin-bottom:8px">
-              <label style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--ink-faint);text-transform:uppercase;display:block;margin-bottom:4px">${label}</label>
-              <input class="field-input" style="font-size:13px;padding:8px 12px" value="${escHtml(guide[field]||'')}" placeholder="${label}…" onchange="updateGateGuide(${n},'${field}',this.value)"/>
-            </div>`;}).join('')}
+      <div class="gc-body ${isOpen?'open':''}">
+        <div class="gc-guide">
+          ${guideFields.map(({field,label})=>`<div>
+            <div class="gc-guide-label">${label}</div>
+            ${isOpen?`<input class="gc-guide-input" value="${escHtml(guide[field]||'')}" placeholder="Not yet documented" onchange="updateGateGuide(${n},'${field}',this.value)"/>`
+            :`<div class="gc-guide-text ${guide[field]?'':'empty'}">${guide[field]?escHtml(guide[field]):'Not yet documented'}</div>`}
+          </div>`).join('')}
         </div>
-        <!-- Field Notes -->
-        <div style="border-top:1.5px solid var(--border-light);padding-top:14px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px">Field Notes</div>
-          ${notes.length?notes.map(note=>`<div class="gate-note-item">
-            <div class="gate-note-item-date">${new Date(note.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
-            <div class="gate-note-item-text">${escHtml(note.text)}</div>
-            <button class="gate-note-item-del" onclick="deleteGateNote(${n},'${note.id}')">×</button>
-          </div>`).join(''):'<div style="font-size:12px;color:var(--ink-faint);margin-bottom:12px">No field notes yet — add observations from lived experience below.</div>'}
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <textarea class="field-textarea" id="gate_note_input_${n}" rows="2" placeholder="What did you observe when this gate was active?" style="flex:1;font-size:13px"></textarea>
-            <button class="add-decision-btn" style="align-self:flex-end;white-space:nowrap" onclick="addGateNoteFromInput(${n})">+ Add</button>
+        <div class="gc-notes-section">
+          <div class="gc-notes-label">Field notes ${notes.length?`(${notes.length})`:''}
           </div>
+          ${notes.length?notes.map(note=>`<div class="gc-note-item">
+            <div class="gc-note-date">${new Date(note.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+            <div class="gc-note-text">${escHtml(note.text)}</div>
+            <button class="gc-note-del" onclick="event.stopPropagation();deleteGateNote(${n},'${note.id}')">×</button>
+          </div>`).join(''):`<div style="font-size:11px;color:var(--ink-faint);font-style:italic;margin-bottom:6px">No notes yet.</div>`}
+        </div>
+        <div class="gc-add-row" onclick="event.stopPropagation()">
+          <input class="gc-add-input" id="gate_note_input_${n}" placeholder="Add a field note…"/>
+          <button class="gc-add-btn" onclick="addGateNoteFromInput(${n})">+ Add</button>
         </div>
       </div>
     </div>`});
@@ -2084,7 +2113,7 @@ function toggleGateEntry(n){
 
 function addGateNoteFromInput(n){
   const input=document.getElementById(`gate_note_input_${n}`);
-  if(!input)return;
+  if(!input||!input.value.trim())return;
   addGateNote(n,input.value);
   input.value='';}
 
