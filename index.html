@@ -313,7 +313,7 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .gates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
 .gc{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;overflow:hidden;font-family:'Libre Baskerville',serif;cursor:pointer;transition:border-color .15s}
 .gc:hover{border-color:var(--green-light)}
-.gc.open{border-color:var(--green)}
+.gc.open{border-color:var(--green);grid-column:1/-1}
 .gc-header{padding:14px 16px;border-bottom:1.5px solid var(--border-light);display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .gc-num{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px}
 .gc-name{font-size:11px;color:var(--ink-soft)}
@@ -324,7 +324,7 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .gc-theme{padding:8px 16px;font-size:11px;color:var(--ink-soft);border-bottom:1.5px solid var(--border-light);font-style:italic;line-height:1.5}
 .gc-body{display:none}
 .gc-body.open{display:block}
-.gc-guide{padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;border-bottom:1.5px solid var(--border-light)}
+.gc-guide{padding:12px 16px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;border-bottom:1.5px solid var(--border-light)}
 .gc-guide-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
 .gc-guide-text{font-size:12px;color:var(--ink-mid);line-height:1.5}
 .gc-guide-text.empty{color:var(--ink-faint);font-style:italic}
