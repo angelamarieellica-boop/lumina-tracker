@@ -314,6 +314,9 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .gc{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;overflow:hidden;font-family:'Libre Baskerville',serif;cursor:pointer;transition:border-color .15s}
 .gc:hover{border-color:var(--green-light)}
 .gc.open{border-color:var(--green);grid-column:1/-1}
+.gc.active-today{border-color:var(--gold-warm);border-width:2px;background:linear-gradient(135deg,var(--white) 0%,var(--gold-pale) 100%)}
+.gc.active-today .gc-header{background:transparent}
+.gc-active-tag{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-top:4px}
 .gc-header{padding:14px 16px;border-bottom:1.5px solid var(--border-light);display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .gc-num{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px}
 .gc-name{font-size:11px;color:var(--ink-soft)}
@@ -2021,6 +2024,15 @@ let gateSearch='',gateFilter='all';
 
 function renderGatesTab(el){
   const allGateNotes=loadGateNotes();
+  // Get today's active gate numbers
+  const todayDays=buildDays();
+  const todayDay=todayDays.find(d=>d.isToday);
+  const activeGateNums=new Set();
+  if(todayDay){
+    const wg=todayDay.wakingGates||[];
+    if(wg.length>0)wg.forEach(g=>activeGateNums.add(g.gateNum));
+    else activeGateNums.add(todayDay.gateNum);
+  }
   const gateNums=Object.keys(GATES).map(Number).sort((a,b)=>a-b);
   const centers=[...new Set(Object.values(GATES).map(g=>g.center))].sort();
 
@@ -2034,7 +2046,10 @@ function renderGatesTab(el){
       const q=gateSearch.toLowerCase();
       if(!`gate ${n} ${g.name} ${g.theme} ${g.center}`.toLowerCase().includes(q))return false;
     }
-    return true;});
+    return true;}).sort((a,b)=>{
+      const aActive=activeGateNums.has(a)?-1:0;
+      const bActive=activeGateNums.has(b)?-1:0;
+      return aActive-bActive||a-b;});
 
   let html=`<div style="margin-bottom:28px">
     <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green);margin-bottom:6px">Your Bodygraph</div>
@@ -2069,11 +2084,14 @@ function renderGatesTab(el){
       {field:'avoid',label:'Avoid'},
     ];
 
-    html+=`<div class="gc ${isOpen?'open':''}">
+    const isActiveToday=activeGateNums.has(n);
+
+    html+=`<div class="gc ${isOpen?'open':''} ${isActiveToday?'active-today':''}">
       <div class="gc-header" onclick="toggleGateEntry(${n})">
         <div>
           <div class="gc-num">${notes.length||hasGuide?'✦ ':''} Gate ${n} — ${g.name}</div>
           <div class="gc-name">${g.theme}</div>
+          ${isActiveToday?`<div class="gc-active-tag">🌙 Active today</div>`:''}
         </div>
         <div class="gc-badges">
           <span class="gc-center-badge" style="${badgeStyle}">${g.center}</span>
