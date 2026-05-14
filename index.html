@@ -1130,15 +1130,27 @@ RITUALS: ${spells.map(s=>`${s.name} — ${s.intention||'—'}`).join(' | ')||'�
 
 ---
 
-Write TWO versions of a synthesis, clearly separated.
+Write TWO versions, separated by --- on its own line.
 
-VERSION 1 — PEARLS (short, direct, no explanation):
-Write 6-8 one-line observations — maximum 2 per source. Sources: gate transit, cards as a whole, center state, personal vs transit gate. Each line is a direct statement, like holding up a mirror. No softening, no HD jargon, no explanation. Use plain language. Each pearl on its own line starting with ✦
+VERSION 1 — PEARLS:
+Write labeled groups. Each group: source label in ALL CAPS on its own line, then 1-2 pearl statements starting with ✦. Be frank and specific — no metaphors, no poetry. Each pearl states plainly: what is happening, why it matters for a Reflector, and what she can do with this. 1-3 sentences per pearl is fine. Use only labels where there's relevant data:
 
-After the pearls, write ONE sharp question that cuts to what the day is really asking. Start it with a ? on its own line.
+GATES (what gate energy is doing today, personal vs transit)
+CARDS (the through-line across all cards, not individual meanings)
+CENTER (which center is active, defined or open, what that means practically right now)
+PERSONAL GATE (only write this label if the moon is in one of her defined gates — say which one and why it's different from a pure transit)
 
-VERSION 2 — DEEPER (separated by a line of three dashes ---):
-3 short paragraphs. Plain language. Gates first (personal vs environmental, what the center means in practice). Cards second (the through-line story, not card-by-card). Convergence third (where it all points, using specific things she actually wrote). End with the same question from Version 1.`;
+After the labeled pearls, write one line starting with ?
+This is one sharp, specific question based on something she actually logged.
+
+---
+
+VERSION 2 — DEEPER:
+3 short paragraphs. Plain language only.
+Para 1: Gates — personal vs environmental, what the active center means in her body and interactions today.
+Para 2: Cards — the through-line story across all cards together, not card-by-card.
+Para 3: Convergence — where gates + cards + what she actually wrote all point to the same thing. Be specific, name actual details from her data.
+End with the same ? question.`;
 
   try{
     const resp=await fetch('/.netlify/functions/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,max_tokens:1000})});
@@ -1156,9 +1168,13 @@ VERSION 2 — DEEPER (separated by a line of three dashes ---):
     // Render pearls + expand option
     const pearlLines=pearlsText.split('\n').filter(l=>l.trim());
     const pearlsHtml=pearlLines.map(line=>{
-      if(line.startsWith('?'))return`<div style="margin-top:12px;font-size:14px;font-style:italic;color:var(--gold-warm);line-height:1.6">${escHtml(line)}</div>`;
-      if(line.startsWith('✦'))return`<div style="margin-bottom:8px;font-size:13px;color:white;line-height:1.6;padding-left:2px">${escHtml(line)}</div>`;
-      return`<div style="margin-bottom:6px;font-size:12px;color:rgba(255,255,255,.6)">${escHtml(line)}</div>`;
+      const t=line.trim();
+      if(t.startsWith('?'))return`<div style="margin-top:14px;font-size:14px;font-style:italic;color:var(--gold-warm);line-height:1.6;padding-top:12px;border-top:1px solid rgba(255,255,255,.1)">${escHtml(t)}</div>`;
+      if(t.startsWith('✦'))return`<div style="margin-bottom:10px;font-size:13px;color:white;line-height:1.7">${escHtml(t)}</div>`;
+      // Source label — all caps, short, no ✦ or ?
+      if(t===t.toUpperCase()&&t.length>2&&/^[A-Z\s\/]+$/.test(t))
+        return`<div style="font-size:9px;font-weight:700;letter-spacing:3px;color:var(--gold-warm);text-transform:uppercase;margin-top:16px;margin-bottom:8px;opacity:.8">${escHtml(t)}</div>`;
+      return`<div style="margin-bottom:6px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.6">${escHtml(t)}</div>`;
     }).join('');
 
     const deeperHtml=deeperText?`<div id="dayDeeper_${dayIdx}" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)">
