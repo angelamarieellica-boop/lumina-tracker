@@ -327,6 +327,33 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .gate-note-item-del:hover{color:#A84040}
 .gate-search{width:100%;background:var(--white);border:1.5px solid var(--border);color:var(--ink);padding:10px 14px;border-radius:5px;font-size:14px;font-family:'Libre Baskerville',serif;outline:none;margin-bottom:16px;transition:border-color .15s}
 .gate-search:focus{border-color:var(--green)}
+/* Bodygraph */
+.bodygraph-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:24px}
+.bodygraph-legend{display:flex;gap:16px;margin-bottom:12px;font-size:11px;font-weight:700}
+.legend-swatch{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border);display:inline-block;vertical-align:middle;margin-right:4px}
+.center-panel{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:18px 20px;margin-top:14px;width:100%;max-width:560px}
+.center-panel-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.center-panel-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--green)}
+.center-panel-type{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--ink-faint);text-transform:uppercase;margin-top:2px;line-height:1.5}
+.center-panel-badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap}
+.center-panel-badge.open{background:var(--ivory-mid);color:var(--ink-faint);border:1px solid var(--border)}
+.center-panel-badge.defined{background:var(--gold-pale);color:var(--gold);border:1px solid #D8C080}
+.center-panel-text{font-size:13px;color:var(--ink-mid);line-height:1.85;margin-bottom:10px}
+.center-panel-strategy{font-size:12px;font-weight:700;color:var(--green);line-height:1.6;margin-bottom:14px;padding:8px 12px;background:var(--green-pale);border-radius:5px;border-left:3px solid var(--green)}
+.center-panel-controls{padding-top:12px;border-top:1px solid var(--border-light);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+/* Day center context */
+.day-center-context{background:linear-gradient(135deg,var(--green-pale),var(--ivory));border:1.5px solid #B8D09A;border-radius:8px;padding:16px 18px;margin-bottom:18px}
+.day-center-context-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:12px}
+.day-center-items{display:flex;flex-direction:column;gap:12px}
+.day-center-item{background:rgba(255,255,255,.6);border-radius:6px;padding:12px 14px}
+.day-center-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;flex-wrap:wrap;gap:4px}
+.day-center-item-name{font-size:13px;font-weight:700}
+.day-center-item-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.day-center-item-badge.open{background:var(--ivory-mid);color:var(--ink-faint)}
+.day-center-item-badge.defined{background:var(--gold-pale);color:var(--gold);border:1px solid #D8C080}
+.day-center-item-type{font-size:10px;color:var(--ink-faint);margin-bottom:6px;font-weight:700;letter-spacing:.3px}
+.day-center-item-text{font-size:12px;color:var(--ink-mid);line-height:1.7;margin-bottom:6px}
+.day-center-item-strategy{font-size:11px;font-weight:700;color:var(--green);padding-left:8px;border-left:2px solid var(--green)}
 .gate-filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
 .gate-filter-btn{background:none;border:1.5px solid var(--border);color:var(--ink-soft);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;transition:all .15s}
 .gate-filter-btn:hover{border-color:var(--green);color:var(--green)}
@@ -466,6 +493,82 @@ const MY_GATES={
 
 // Gate center lookup for chart awareness
 const GATE_CENTER_MAP={1:'G',2:'G',3:'Sacral',4:'Ajna',5:'Sacral',6:'Solar Plexus',7:'G',8:'Throat',9:'Sacral',10:'G',11:'Ajna',12:'Throat',13:'G',14:'Sacral',15:'G',16:'Throat',17:'Ajna',18:'Spleen',19:'Root',20:'Throat',21:'Ego/Heart',22:'Solar Plexus',23:'Throat',24:'Ajna',25:'G',26:'Ego/Heart',27:'Sacral',28:'Spleen',29:'Sacral',30:'Solar Plexus',31:'Throat',32:'Spleen',33:'Throat',34:'Sacral',35:'Throat',36:'Solar Plexus',37:'Solar Plexus',38:'Root',39:'Root',40:'Ego/Heart',41:'Root',42:'Sacral',43:'Ajna',44:'Spleen',45:'Throat',46:'G',47:'Ajna',48:'Spleen',49:'Solar Plexus',50:'Spleen',51:'Ego/Heart',52:'Root',53:'Root',54:'Root',55:'Solar Plexus',56:'Throat',57:'Spleen',58:'Root',59:'Sacral',60:'Root',61:'Head',62:'Throat',63:'Head',64:'Head'};
+
+// ── ANGELA'S CENTER DESCRIPTIONS (from custom HD report) ──────────────────
+const CENTER_DATA={
+  'Head':{
+    type:'Pressure Center — Pressure to Think & Be Inspired',
+    function:'Inspiration, questioning, mental pressure to seek understanding',
+    gates:[64,61,63],
+    open:`Your mind has no consistent filter for ideas — you absorb inspiration from everyone around you without being able to quickly discern what matters to you. This is actually a gift: through detachment, you develop genuine wisdom about what's truly worth thinking about. You don't need to solve every question that enters your mind. Let inspiration flow through without clinging to any of it. A "don't know, don't care" attitude helps manage the mental overwhelm.`,
+    transit:`When temporarily defined by transit, you'll feel a more consistent pressure around specific questions or inspirations — like you can't stop thinking about something. This is real but temporary. Don't make permanent decisions from this mental certainty.`,
+    strategy:`You don't need to answer every question. Not every inspiration is yours to act on. Let ideas pass through.`
+  },
+  'Ajna':{
+    type:'Awareness Center — Intellectual Awareness & Conceptualisation',
+    function:'Processing ideas into knowledge, analysis, research, mental frameworks',
+    gates:[47,24,4,17,11,43],
+    open:`Your mental process lacks consistency and is heavily influenced by conditioning and planetary transits. Your perspectives can change rapidly — this is not a flaw, it's your design. You're not meant to have fixed opinions. The Not-Self pressure is to appear certain about everything, becoming argumentative and defensive. Your truth is to play with ideas in multiple ways without any of them being permanent. Avoid identifying too strongly with your thoughts.`,
+    transit:`When defined by transit, you may feel unusually certain or fixed in your thinking. A specific way of seeing something will feel very real and solid. This certainty is temporary — avoid making permanent decisions from it.`,
+    strategy:`Wait for invitations to share your perspective. Your wisdom comes from holding multiple viewpoints simultaneously, not from certainty.`
+  },
+  'Throat':{
+    type:'Manifestation Center — Communication & Manifestation Through Action',
+    function:'Expression, speaking, action, the hub where all energy seeks to manifest',
+    gates:[62,23,56,35,12,45,33,8,31,20,16],
+    open:`Your expression is naturally adaptable and flexible — you can communicate in many ways and become genuinely wise about communication itself. The shadow is amplifying others' pressure to speak, leading to over-talking, or shutting down from fear of not being understood. The correct state is patient, mindful quietness — waiting for the right moment. Your authentic voice emerges from your active gates; trust those themes.`,
+    transit:`When defined by transit, you may feel an unusual drive to speak, express, or act. Words may come more easily. What you say now may not reflect your full truth once the transit passes — be thoughtful.`,
+    strategy:`Speak when spoken to or clearly invited. Silence is not failure. Correct attention will find you in your natural state of quiet.`
+  },
+  'G':{
+    type:'Identity Center — Sense of Self, Love & Direction',
+    function:'Identity, self-love, life direction, the magnetic pull of your unique path',
+    gates:[1,13,7,10,25,15,46,2],
+    open:`Your sense of identity, direction, and love is fluid — you freely explore various versions of yourself throughout life. You may be fascinated by others' identities and temporarily adopt aspects of them; this is not a problem. Your authentic identity is about being in the right place, surrounded by the right people. Avoid people and environments that don't feel good — your surroundings are your compass. Your identity can change multiple times throughout life, and this is entirely correct for you.`,
+    transit:`When defined by transit, you may feel a stronger, more consistent sense of who you are and where you're going. Enjoy this clarity, but hold your plans loosely — it's a visiting energy.`,
+    strategy:`Pay attention to how different environments and people feel in your body. The right places feel good. Follow that signal — it's your most reliable guidance system.`
+  },
+  'Ego/Heart':{
+    type:'Motor Center — Willpower, Self-Worth & Material Resources',
+    function:'Willpower, self-worth, material security, promises, community commitments',
+    gates:[21,51,26,40],
+    open:`You don't have consistent willpower — and understanding this is essential to your wellbeing. You may struggle to recognise your inherent worthiness and feel the need to constantly prove yourself to others. Saying "no" and setting boundaries is genuinely harder for you. Making commitments without considering your energy limitations can drain you badly. Your worthiness is inherent and doesn't require external validation or achievement.`,
+    transit:`When defined by transit, you may feel unusually driven, willful, or capable of pushing through. A strong need to prove something or assert yourself may arise. This willpower is real but temporary — avoid making long-term commitments from this state.`,
+    strategy:`Make promises carefully and only when you truly mean them. Rest completely when a task is done. Your energy works in bursts, not marathons. You cannot willpower your way through everything.`
+  },
+  'Sacral':{
+    type:'Motor Center — Life Force, Generative Power to Work & Create',
+    function:'Life force energy, sexuality, creativity, the power to sustain work',
+    gates:[5,14,29,34,27,59,42,3,9],
+    open:`Your energy levels fluctuate — you experience bursts of energy followed by exhaustion. Around Generators and Manifesting Generators, you absorb and amplify their energy intensely, often not knowing when to stop. This is your primary burnout risk. Your natural flow involves working in spurts and honouring your profound need for rest. You are not designed to sustain effort the way defined Sacral types can — and that's not a failing.`,
+    transit:`When defined by transit, you may feel a significant boost in energy, drive, and capacity. This can feel wonderful. Don't schedule yourself as if this output level is sustainable — it's borrowed energy that will pass.`,
+    strategy:`Respect your need for rest deeply. Learn to leave situations before you're depleted — you won't naturally feel the "done" signal. Build your own stopping points in.`
+  },
+  'Solar Plexus':{
+    type:'Motor & Awareness Center — Emotional Awareness & Emotional Energy',
+    function:'Emotional intelligence, feelings, the emotional wave, sensitivity to the collective emotional field',
+    gates:[36,22,37,49,55,30,6],
+    open:`You are highly sensitive to the emotions of everyone around you — you absorb and amplify them, syncing deeply with your environment. Many of the emotions you feel are not yours. Reframe emotions as feelings rather than identity: instead of "I am sad," try "I feel sadness." When you recognise emotional conditioning, you gain profound wisdom about emotions. Be very conscious of how others' emotions influence your decisions and moods — this is significant for you.`,
+    transit:`When defined by transit, you may experience a more consistent emotional wave — highs and lows that feel particularly personal. Give yourself time before making decisions from strong emotional states. The wave will shift.`,
+    strategy:`Ask yourself: "Is this emotion mine, or am I picking it up from my environment?" Space and solitude help you distinguish. Many feelings that feel urgent simply need time and distance to resolve.`
+  },
+  'Spleen':{
+    type:'Awareness Center — Instinctual Awareness, Safety & Survival',
+    function:'Intuition, survival instinct, health awareness, in-the-moment fear signals',
+    gates:[48,57,44,50,32,28,18],
+    open:`Your instinctual awareness is inconsistent — you must sensitively rely on absorbing cues from your environment rather than a fixed internal alarm system. Be cautious of anxiety-driven spontaneous decisions. Ground yourself in bodily sensations to distinguish genuine fear from external conditioning. Around Defined Spleen individuals, you may absorb their feelings of security and hold onto unhealthy situations too long. You have heightened sensitivity to your health — trust early body signals.`,
+    transit:`When defined by transit, your intuition may feel sharper and more consistent. A gut sense about something may feel very clear. Trust it in the moment — splenic hits don't repeat themselves.`,
+    strategy:`Pay close attention to immediate body signals. Ground yourself in nature and physical sensation. Notice when you're holding onto something past its time because someone else feels secure about it.`
+  },
+  'Root':{
+    type:'Motor & Pressure Center — Adrenaline, Drive & Pressure to Move',
+    function:'Stress, adrenaline, pressure to act, survival drive, momentum for change',
+    gates:[53,60,52,19,39,41,38,58,54],
+    open:`You absorb and magnify stress and urgency from your environment, leading to an anxiety-driven hurry that can feel relentless. Without a consistent benchmark for stress, you may remain in a perpetual state of rushing, always trying to dispel pressure that isn't actually yours. Recognising that this stress is usually external — not yours — is genuinely liberating. Guilt about not being constantly productive is the Not-Self, not your truth.`,
+    transit:`When defined by transit, you may feel a surge of drive, urgency, or adrenaline — like things are genuinely pressing. This pressure can be channelled productively, but don't let it push you into hasty decisions.`,
+    strategy:`When you feel urgency, pause: "Is this pressure mine, or from my environment?" Nature resets your baseline. You are not lazy — you are not designed for constant drive.`
+  }
+};
 
 /* Brain dump field lives in the style block above */
 const GATE_FORECAST={1:'deep creative expression',2:'receptive & nurturing',3:'new beginnings emerging',4:'mental problem-solving',5:'ritual & rhythm',6:'emotional sensitivity high',7:'leadership & direction',8:'authentic voice',9:'focused detail work',10:'self-love & alignment',11:'imagination & vision',12:'careful words',13:'listening & witnessing',14:'empowered resource work',15:'community & connection',16:'sharing your gifts',17:'strong opinions & perspective',18:'correction & discernment',19:'tender needs & care',20:'presence & being',21:'control & resource mastery',22:'grace & emotional opening',23:'distillation & clarity',24:'inward reflection',25:'innocence & openness',26:'integrity & authentic voice',27:'nourishing & caretaking',28:'meaning & purpose',29:'commitment & follow-through',30:'desire & longing',31:'influence through truth',32:'discerning what endures',33:'retreat & privacy',34:'power & independence',35:'adventure & new experience',36:'emotional growth',37:'family & community bonds',38:'purpose over struggle',39:'provocative energy',40:'rest after contribution',41:'new beginnings & anticipation',42:'completion & growth',43:'breakthrough insight',44:'pattern recognition',45:'gathering & resources',46:'body & embodiment',47:'making meaning',48:'depth & wisdom',49:'revolution & transformation',50:'values & responsibility',51:'shock & awakening',52:'stillness & grounding',53:'gradual new starts',54:'ambition & drive',55:'abundance & freedom',56:'storytelling & experience',57:'intuition & clarity',58:'vitality & joy',59:'intimacy & dissolution',60:'limitation & acceptance',61:'inner knowing & mystery',62:'detail & practicality',63:'doubt & questioning',64:'confusion before clarity'};
@@ -783,11 +886,13 @@ function renderDetail(el){
 
   // Build auto-digest
   const digestHtml=buildDayDigest(selectedDay,day,dd,displayGates);
+  const centerContextHtml=renderDayCenterContext(displayGates);
 
   el.innerHTML=`
     <button class="back-btn" onclick="backToGrid()">← Back to Monthly View</button>
     ${digestHtml}
     ${gateBlocksHtml}
+    ${centerContextHtml}
     <div class="fields">
       <div class="field-section">
         <div class="field-section-title">✦ Planning Notes</div>
@@ -1817,7 +1922,12 @@ function renderGatesTab(el){
     }
     return true;});
 
-  let html=`<div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green);margin-bottom:16px">Gate Field Notes</div>
+  let html=`<div style="margin-bottom:28px">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green);margin-bottom:6px">Your Bodygraph</div>
+    <div style="font-size:12px;color:var(--ink-faint);margin-bottom:14px;line-height:1.6">Tap a center to see its description and update its state. All centers are open by default — mark as Transit Defined when a planetary transit is temporarily defining one for you.</div>
+    ${renderBodygraph()}
+  </div>
+  <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--green);margin-bottom:6px">Gate Field Notes</div>
   <div style="font-size:12px;color:var(--ink-faint);margin-bottom:16px;line-height:1.6">Your personal observations about each gate — what you've noticed when it's active, patterns, best uses for your practice.</div>
   <input class="gate-search" placeholder="Search gates…" value="${escHtml(gateSearch)}" oninput="gateSearch=this.value;render()"/>
   <div class="gate-filter-row">
@@ -1882,6 +1992,155 @@ function renderGateFieldNote(gateNum){
     <div class="gate-field-note-label">Your Field Note</div>
     ${escHtml(note.text)}
   </div>`;}
+
+// ── CENTER STATES & BODYGRAPH ──────────────────────────────────────────────
+let selectedBodygraphCenter=null;
+function loadCenterStates(){try{return JSON.parse(localStorage.getItem('lumina_center_states')||'{}')}catch(e){return{}}}
+function saveCenterStates(s){try{localStorage.setItem('lumina_center_states',JSON.stringify(s))}catch(e){}}
+function isCenterDefined(name){
+  const s=loadCenterStates()[name];
+  if(!s||!s.defined)return false;
+  if(s.endsDate&&new Date(s.endsDate)<new Date(new Date().toDateString()))return false;
+  return true;}
+function setCenterState(name,defined,endsDate){
+  const states=loadCenterStates();
+  if(defined){states[name]={defined:true,endsDate:endsDate||null};}
+  else{delete states[name];}
+  saveCenterStates(states);render();}
+function selectBodygraphCenter(name){
+  selectedBodygraphCenter=selectedBodygraphCenter===name?null:name;render();}
+
+function renderBodygraph(){
+  const states=loadCenterStates();
+  const sel=selectedBodygraphCenter;
+  function fill(n){return isCenterDefined(n)?'#B8860B':'white'}
+  function stroke(n){
+    if(n===sel)return'#2D5016';
+    return isCenterDefined(n)?'#96690A':'#C8C0A8';}
+  function sw(n){return n===sel?'3':'2'}
+  function tc(n){return isCenterDefined(n)?'white':'#1A1A10'}
+
+  const svg=`<svg viewBox="0 0 380 480" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:300px;display:block">
+  <!-- CHANNELS -->
+  <g stroke="#DDD8CC" stroke-width="13" stroke-linecap="round" fill="none">
+    <line x1="190" y1="97" x2="190" y2="102"/>
+    <line x1="190" y1="170" x2="190" y2="177"/>
+    <line x1="190" y1="215" x2="190" y2="227"/>
+    <line x1="190" y1="353" x2="190" y2="363"/>
+    <line x1="190" y1="401" x2="190" y2="415"/>
+    <line x1="228" y1="196" x2="286" y2="196"/>
+    <line x1="250" y1="290" x2="256" y2="276"/>
+    <line x1="130" y1="290" x2="94" y2="290"/>
+    <line x1="152" y1="383" x2="122" y2="398"/>
+    <line x1="228" y1="383" x2="256" y2="398"/>
+    <line x1="290" y1="276" x2="290" y2="290"/>
+    <line x1="94" y1="410" x2="160" y2="422"/>
+    <line x1="290" y1="410" x2="222" y2="422"/>
+  </g>
+  <!-- HEAD -->
+  <g onclick="selectBodygraphCenter('Head')" style="cursor:pointer">
+    <polygon points="190,20 145,97 235,97" fill="${fill('Head')}" stroke="${stroke('Head')}" stroke-width="${sw('Head')}"/>
+    <text x="190" y="64" text-anchor="middle" font-size="11" font-weight="700" font-family="Libre Baskerville,serif" fill="${tc('Head')}">HEAD</text>
+  </g>
+  <!-- AJNA -->
+  <g onclick="selectBodygraphCenter('Ajna')" style="cursor:pointer">
+    <polygon points="145,102 235,102 190,170" fill="${fill('Ajna')}" stroke="${stroke('Ajna')}" stroke-width="${sw('Ajna')}"/>
+    <text x="190" y="142" text-anchor="middle" font-size="11" font-weight="700" font-family="Libre Baskerville,serif" fill="${tc('Ajna')}">AJNA</text>
+  </g>
+  <!-- THROAT -->
+  <g onclick="selectBodygraphCenter('Throat')" style="cursor:pointer">
+    <rect x="152" y="177" width="76" height="38" fill="${fill('Throat')}" stroke="${stroke('Throat')}" stroke-width="${sw('Throat')}"/>
+    <text x="190" y="200" text-anchor="middle" font-size="10" font-weight="700" font-family="Libre Baskerville,serif" fill="${tc('Throat')}">THROAT</text>
+  </g>
+  <!-- G CENTER -->
+  <g onclick="selectBodygraphCenter('G')" style="cursor:pointer">
+    <polygon points="190,227 250,290 190,353 130,290" fill="${fill('G')}" stroke="${stroke('G')}" stroke-width="${sw('G')}"/>
+    <text x="190" y="285" text-anchor="middle" font-size="11" font-weight="700" font-family="Libre Baskerville,serif" fill="${tc('G')}">G</text>
+    <text x="190" y="300" text-anchor="middle" font-size="8" font-family="Libre Baskerville,serif" fill="${tc('G')}">Identity</text>
+  </g>
+  <!-- EGO/HEART -->
+  <g onclick="selectBodygraphCenter('Ego/Heart')" style="cursor:pointer">
+    <polygon points="290,196 257,276 323,276" fill="${fill('Ego/Heart')}" stroke="${stroke('Ego/Heart')}" stroke-width="${sw('Ego/Heart')}"/>
+    <text x="290" y="240" text-anchor="middle" font-size="9" font-weight="700" font-family="Libre Baskerville,serif" fill="${tc('Ego/Heart')}">EGO/</text>
+    <text x="290" y="253" text-anchor="middle" font-size="9" font-weight="700" font-family="Libre Baskerville,serif" fill="${tc('Ego/Heart')}">HEART</text>
+  </g>
+  <!-- SACRAL -->
+  <g onclick="selectBodygraphCenter('Sacral')" style="cursor:pointer">
+    <rect x="152" y="363" width="76" height="38" fill="${fill('Sacral')}" stroke="${stroke('Sacral')}" stroke-width="${sw('Sacral')}"/>
+    <text x="190" y="387" text-anchor="middle" font-size="10" font-weight="700" font-family="Libre Baskerville,serif" fill="${tc('Sacral')}">SACRAL</text>
+  </g>
+  <!-- SOLAR PLEXUS -->
+  <g onclick="selectBodygraphCenter('Solar Plexus')" style="cursor:pointer">
+    <polygon points="290,290 324,410 256,410" fill="${fill('Solar Plexus')}" stroke="${stroke('Solar Plexus')}" stroke-width="${sw('Solar Plexus')}"/>
+    <text x="290" y="358" text-anchor="middle" font-size="9" font-weight="700" font-family="Libre Baskerville,serif" fill="${tc('Solar Plexus')}">SOLAR</text>
+    <text x="290" y="371" text-anchor="middle" font-size="9" font-weight="700" font-family="Libre Baskerville,serif" fill="${tc('Solar Plexus')}">PLEXUS</text>
+  </g>
+  <!-- SPLEEN -->
+  <g onclick="selectBodygraphCenter('Spleen')" style="cursor:pointer">
+    <polygon points="90,290 56,410 124,410" fill="${fill('Spleen')}" stroke="${stroke('Spleen')}" stroke-width="${sw('Spleen')}"/>
+    <text x="90" y="360" text-anchor="middle" font-size="9" font-weight="700" font-family="Libre Baskerville,serif" fill="${tc('Spleen')}">SPLEEN</text>
+  </g>
+  <!-- ROOT -->
+  <g onclick="selectBodygraphCenter('Root')" style="cursor:pointer">
+    <rect x="136" y="415" width="108" height="38" fill="${fill('Root')}" stroke="${stroke('Root')}" stroke-width="${sw('Root')}"/>
+    <text x="190" y="438" text-anchor="middle" font-size="11" font-weight="700" font-family="Libre Baskerville,serif" fill="${tc('Root')}">ROOT</text>
+  </g>
+</svg>`;
+
+  let panel='';
+  if(sel){
+    const cd=CENTER_DATA[sel];
+    const defined=isCenterDefined(sel);
+    const endsDate=loadCenterStates()[sel]?.endsDate||'';
+    if(cd){
+      panel=`<div class="center-panel">
+        <div class="center-panel-header">
+          <div>
+            <div class="center-panel-name">${sel} Center</div>
+            <div class="center-panel-type">${cd.type}</div>
+          </div>
+          <span class="center-panel-badge ${defined?'defined':'open'}">${defined?'✦ Transit Defined':'○ Open (baseline)'}</span>
+        </div>
+        <div class="center-panel-text">${defined?cd.transit:cd.open}</div>
+        <div class="center-panel-strategy">⟶ ${cd.strategy}</div>
+        <div class="center-panel-controls">
+          <button class="chip-btn ${!defined?'selected':''}" style="${!defined?'background:var(--green);border-color:var(--green);':''}" onclick="setCenterState('${sel}',false,null)">○ Open</button>
+          <button class="chip-btn ${defined?'selected':''}" style="${defined?'background:var(--gold-warm);border-color:var(--gold-warm);':''}" onclick="setCenterState('${sel}',true,'${endsDate}')">✦ Transit Defined</button>
+          ${defined?`<div style="display:flex;align-items:center;gap:6px;margin-top:8px;width:100%"><span style="font-size:11px;color:var(--ink-faint);font-weight:700">Transit ends:</span><input type="date" class="field-input" style="width:160px;padding:6px 10px;font-size:12px" value="${endsDate}" onchange="setCenterState('${sel}',true,this.value)"/><button class="add-row-btn" style="margin:0;padding:6px 12px;font-size:11px" onclick="setCenterState('${sel}',true,null)">No end date</button></div>`:''}
+        </div>
+      </div>`;}}
+  return`<div class="bodygraph-wrap">
+    <div class="bodygraph-legend">
+      <span><span class="legend-swatch" style="background:white"></span>Open</span>
+      <span><span class="legend-swatch" style="background:#B8860B;border-color:#96690A"></span>Transit Defined</span>
+    </div>
+    ${svg}${panel}
+  </div>`;}
+
+function renderDayCenterContext(displayGates){
+  const activeCenters=[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))];
+  if(!activeCenters.length)return'';
+  let html=`<div class="day-center-context">
+    <div class="day-center-context-label">✦ Active Centers Today</div>
+    <div class="day-center-items">`;
+  activeCenters.forEach(center=>{
+    const cd=CENTER_DATA[center];if(!cd)return;
+    const defined=isCenterDefined(center);
+    const cc=CENTER_COLORS[center]||'#3A7A3A';
+    const text=defined?cd.transit:cd.open;
+    html+=`<div class="day-center-item">
+      <div class="day-center-item-header">
+        <span class="day-center-item-name" style="color:${cc}">${center} Center</span>
+        <span class="day-center-item-badge ${defined?'defined':'open'}">${defined?'✦ Transit Defined':'○ Open'}</span>
+      </div>
+      <div class="day-center-item-type">${cd.type}</div>
+      <div class="day-center-item-text">${text.substring(0,220)}${text.length>220?'…':''}</div>
+      <div class="day-center-item-strategy">⟶ ${cd.strategy}</div>
+    </div>`;});
+  html+=`</div>
+    <button class="add-row-btn" style="margin-top:10px;font-size:11px;width:100%;text-align:center" onclick="switchView('gates');selectedBodygraphCenter=null;render()">⚙ Update Center States in Gates Tab →</button>
+  </div>`;
+  return html;}
 
 function backToGrid(){selectedDay=null;render()}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
