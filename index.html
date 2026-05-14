@@ -230,7 +230,7 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .modal-btn-cancel:hover{border-color:var(--green);color:var(--green)}
 .modal-btn-save{background:var(--green);border:1.5px solid var(--green);color:white}
 .modal-btn-save:hover{background:var(--green-mid)}
-/* Spellwork */
+/* Rituals */
 .spell-list{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
 .spell-card{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;overflow:hidden}
 .spell-card-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;transition:background .15s}
@@ -407,7 +407,7 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
   <div class="nav">
     <button class="nav-btn active" id="navGrid" onclick="switchView('grid')">Monthly</button>
     <button class="nav-btn" id="navDecision" onclick="switchView('decision')">Decisions</button>
-    <button class="nav-btn" id="navSpellwork" onclick="switchView('spellwork')">Spellwork</button>
+    <button class="nav-btn" id="navRituals" onclick="switchView('rituals')">Rituals</button>
     <button class="nav-btn" id="navGates" onclick="switchView('gates')">Gates</button>
     <button class="nav-btn" id="navInsights" onclick="switchView('insights')">Insights</button>
   </div>
@@ -476,6 +476,26 @@ const ENERGY_COLORS={'High ✦':'#3A7A3A','Steady ○':'#B08820','Low ◌':'#7A5
 const BODY_STATES=['Grounded','Expansive','Tight','Tender','Spacious','Heavy','Light','Restless','Calm'];
 const MOOD_STATES=['Clear','Creative','Irritable','Inspired','Anxious','Joyful','Melancholic','Neutral','Overwhelmed','Peaceful'];
 const PLANNING_TAGS=['Manifestation','Releasing','Shadow Work','Self-Reflection','Ritual','Rest','Receiving','Clarity','Creativity','Protection','Abundance','Healing','Divination','Ancestral Work'];
+
+// Gate-aware rotating brain dump prompts
+const BRAIN_DUMP_PROMPTS={
+  default:["What felt like yours today?","What moved through you that wasn't yours?","Where did you feel the most yourself?","What are you still carrying from today?","What surprised you about today's energy?"],
+  'Head':["What questions kept circling that you couldn't resolve?","What inspiration arrived — did it feel like yours or from the field?"],
+  'Ajna':["What changed in how you saw something today?","Did any strong mental certainty arrive? Was it still there by evening?"],
+  'Throat':["When did words come easily, and when did you go quiet?","What did you say today that felt truly yours?"],
+  'G':["Where did you feel direction today — and where did you feel lost?","Did any environment or person make you feel more like yourself?"],
+  'Ego/Heart':["Did you feel pressure to prove something or push through?","Where did you make a promise or commitment — and did it feel right?"],
+  'Sacral':["When did your energy peak, and when did it crash?","Did you stop before you were depleted, or push past your limit?"],
+  'Solar Plexus':["Which emotions felt like yours vs. the room's?","What feelings are you still processing that arrived without clear cause?"],
+  'Spleen':["What gut signals arrived today — did you trust them?","Where did anxiety show up — was it yours or absorbed?"],
+  'Root':["Where did urgency or pressure show up? Was it external or internal?","Did you rush anything today that didn't actually need to be rushed?"]
+};
+
+function getRotatingPrompt(activeCenter){
+  const pool=BRAIN_DUMP_PROMPTS[activeCenter]||BRAIN_DUMP_PROMPTS.default;
+  const idx=Math.floor(new Date().getDate()%pool.length);
+  return pool[idx];
+}
 
 // ── ANGELA'S HUMAN DESIGN CHART ───────────────────────────────────────────
 const MY_GATES={
@@ -771,7 +791,7 @@ let currentView='grid',selectedDay=null,decisionSubTab='lunar',decisionViewMode=
 function switchView(v){currentView=v;selectedDay=null;
   document.getElementById('navGrid').classList.toggle('active',v==='grid');
   document.getElementById('navDecision').classList.toggle('active',v==='decision');
-  document.getElementById('navSpellwork').classList.toggle('active',v==='spellwork');
+  document.getElementById('navRituals').classList.toggle('active',v==='rituals');
   document.getElementById('navGates').classList.toggle('active',v==='gates');
   document.getElementById('navInsights').classList.toggle('active',v==='insights');
   render()}
@@ -779,7 +799,7 @@ function render(){const el=document.getElementById('mainContent');
   if(selectedDay!==null){renderDetail(el);return}
   if(currentView==='grid')renderGrid(el);
   else if(currentView==='decision')renderDecision(el);
-  else if(currentView==='spellwork')renderSpellwork(el);
+  else if(currentView==='rituals')renderRituals(el);
   else if(currentView==='gates')renderGatesTab(el);
   else renderInsights(el)}
 
@@ -884,17 +904,26 @@ function renderDetail(el){
       </div>
     </div>`}).join('')}</div>`;
 
-  // Build auto-digest
+  // Get active center for rotating prompt
+  const activeCenters=[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))];
+  const primaryCenter=activeCenters[0]||null;
+  const rotatingPrompt=!isFuture?getRotatingPrompt(primaryCenter):'';
+
+  // Build digest for bottom
   const digestHtml=buildDayDigest(selectedDay,day,dd,displayGates);
   const centerContextHtml=renderDayCenterContext(displayGates);
 
   el.innerHTML=`
     <button class="back-btn" onclick="backToGrid()">← Back to Monthly View</button>
-    ${digestHtml}
     ${gateBlocksHtml}
     ${centerContextHtml}
     <div class="fields">
-      <div class="field-section">
+      ${!isFuture?`<div class="brain-dump-section" style="border-top:none;padding-top:0;margin-top:0;margin-bottom:16px">
+        <div class="brain-dump-label">Brain Dump</div>
+        <div class="brain-dump-hint">${escHtml(rotatingPrompt)}</div>
+        <textarea class="brain-dump-textarea" placeholder="Just write…" oninput="updateDayPlanField(${selectedDay},'brainDump',this.value)">${escHtml(dd.brainDump||'')}</textarea>
+      </div>`:''}
+      <div class="field-section" ${!isFuture?'':'style="border-top:none;padding-top:0"'}>
         <div class="field-section-title">✦ Planning Notes</div>
         <div style="margin-bottom:14px"><label class="field-label">This day is good for</label><div class="chip-row">${planningTags}</div></div>
         <label class="field-label">Intentions & Notes</label>
@@ -903,12 +932,8 @@ function renderDetail(el){
       ${isFuture?`<div class="save-note">✦ Planning notes save automatically. Journal fields unlock once this day arrives.</div></div>`:`
       ${entriesHtml}
       <button class="add-entry-btn" onclick="addNewEntry(${selectedDay})">+ Log Entry for This Gate</button>
-      <div class="brain-dump-section">
-        <div class="brain-dump-label">Brain Dump</div>
-        <div class="brain-dump-hint">Raw space — no structure, no prompts. Whatever's on your mind.</div>
-        <textarea class="brain-dump-textarea" placeholder="Just write…" oninput="updateDayPlanField(${selectedDay},'brainDump',this.value)">${escHtml(dd.brainDump||'')}</textarea>
-      </div>
-      <div class="save-note">✦ Everything saves automatically.</div>
+      <div class="save-note" style="margin-bottom:0">✦ Everything saves automatically.</div>
+      ${digestHtml}
       </div>`}`}
 
 // ── DAILY DIGEST ───────────────────────────────────────────────────────────
@@ -948,7 +973,7 @@ function buildDayDigest(dayIdx,day,dd,displayGates){
   }));
   const allObs=dd.entries.flatMap(e=>[e.obsPatterns,e.obsReactions,e.obsImpulses,e.obsSurprises,e.obsOthers,e.obsEnv,e.reflectorLens].filter(Boolean));
 
-  // Check for spellwork on this day
+  // Check for rituals on this day
   const spells=loadSpells().filter(s=>{
     const sd=new Date(s.created);sd.setHours(0,0,0,0);
     const dd2=new Date(day.date);dd2.setHours(0,0,0,0);
@@ -969,7 +994,7 @@ function buildDayDigest(dayIdx,day,dd,displayGates){
       <div class="day-digest-row">${allCards.map(c=>`<span class="day-digest-chip card">${escHtml(c)}</span>`).join('')}</div>
     </div>`:''}
     ${spells.length?`<div class="day-digest-section">
-      <div class="day-digest-section-label">Spellwork</div>
+      <div class="day-digest-section-label">Rituals</div>
       <div class="day-digest-row">${spells.map(s=>`<span class="day-digest-chip spell">✦ ${escHtml(s.name||'Spell')}</span>`).join('')}</div>
     </div>`:''}
     ${dd.planningTags&&dd.planningTags.length?`<div class="day-digest-section">
@@ -981,7 +1006,7 @@ function buildDayDigest(dayIdx,day,dd,displayGates){
       <div class="day-digest-text">${allObs.slice(0,3).map(o=>escHtml(o.substring(0,120)+(o.length>120?'…':''))).join(' &nbsp;·&nbsp; ')}</div>
     </div>`:''}
     <div class="day-digest-ai">
-      ${storedAI?`<div class="day-digest-ai-text" id="dayAiText_${dayIdx}">${escHtml(storedAI)}</div><button class="day-digest-ai-btn" id="dayAiBtn_${dayIdx}" onclick="generateDayInsight(${dayIdx})" style="margin-top:10px">↺ Regenerate</button>`:`<button class="day-digest-ai-btn" id="dayAiBtn_${dayIdx}" onclick="generateDayInsight(${dayIdx})">✦ Synthesize This Day</button>`}
+      ${storedAI?`<div>${storedAI.split("\n").filter(l=>l.trim()).map(line=>line.startsWith("?")?"<div style=\"margin-top:12px;font-size:14px;font-style:italic;color:var(--gold-warm);line-height:1.6\">"+escHtml(line)+"</div>":line.startsWith("✦")?"<div style=\"margin-bottom:8px;font-size:13px;color:white;line-height:1.6\">"+escHtml(line)+"</div>":"<div style=\"font-size:12px;color:rgba(255,255,255,.7)\">"+escHtml(line)+"</div>").join("")}</div><button class="day-digest-ai-btn" id="dayAiBtn_${dayIdx}" onclick="generateDayInsight(${dayIdx})" style="margin-top:10px">↺ Regenerate</button>`:`<button class="day-digest-ai-btn" id="dayAiBtn_${dayIdx}" onclick="generateDayInsight(${dayIdx})">✦ Synthesize This Day</button>`}
       <div id="dayAiResult_${dayIdx}"></div>
     </div>
   </div>`;}
@@ -1067,59 +1092,93 @@ async function generateDayInsight(dayIdx){
     return`Gate ${g.gateNum} ${g.gate?.name||''}: ${context}`;
   }).join('\n');
 
-  const prompt=`You are Gela's personal pattern analyst and spiritual mirror. Gela is a 4/6 Reflector in Human Design — ALL energy centers open and undefined. She samples, amplifies, and reflects others' energy. She does NOT generate consistent energy of her own.
+  // Build guide notes for active gates
+  const gateGuideContext=displayGates.map(g=>{
+    const guide=getGateGuide(g.gateNum);
+    const parts=[
+      guide.whenActive&&`When active: ${guide.whenActive}`,
+      guide.watchFor&&`Watch for: ${guide.watchFor}`,
+      guide.bestUse&&`Best use: ${guide.bestUse}`,
+      guide.avoid&&`Avoid: ${guide.avoid}`,
+    ].filter(Boolean).join(' | ');
+    return parts?`Gate ${g.gateNum} guide: ${parts}`:'';
+  }).filter(Boolean).join('\n');
 
-HER CHART: Defined gates: ${MY_GATES.defined.join(', ')} · Profile 4/6 · Sag Sun, Pisces Moon, Gemini Rising · Jupiter return year · Nurse + holistic practitioner
+  const prompt=`You are Gela's personal pattern mirror. Gela is a 4/6 Reflector — ALL centers open. She samples and amplifies others' energy. She does NOT generate consistent energy of her own.
 
-TODAY: ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})} · Day ${day.dayNum} of 29 · New Moon in ${sign} · ${getSpellOccasion()}
+HER CHART: Defined gates: ${MY_GATES.defined.join(', ')} · Sag Sun, Pisces Moon, Gemini Rising
+
+TODAY: ${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})} · Day ${day.dayNum} of 29 · ${getSpellOccasion()}
 
 GATES ACTIVE:
 ${displayGates.map(g=>{
   const isBoth=MY_GATES.both.includes(g.gateNum);
   const isPersonality=MY_GATES.personality.includes(g.gateNum);
   const isDesign=MY_GATES.design.includes(g.gateNum);
-  let ctx=isBoth?'PERSONAL (both streams)':isPersonality?'PERSONAL (personality)':isDesign?'PERSONAL (design)':'TRANSIT-ONLY (open in her chart)';
+  let ctx=isBoth?'PERSONAL (both streams)':isPersonality?'PERSONAL (personality)':isDesign?'PERSONAL (design)':'TRANSIT-ONLY (open/environmental)';
   const fieldNote=getLatestGateNote(g.gateNum);
-  return`Gate ${g.gateNum}.${g.line||''} — ${g.gate?.name||''} (${g.gate?.center||''} Center) | ${g.gate?.theme||''} | ${ctx}${fieldNote?` | Her note: "${fieldNote.text}"`:''}`; 
+  return`Gate ${g.gateNum}.${g.line||''} ${g.gate?.name||''} | ${g.gate?.center||''} Center | ${ctx}${fieldNote?` | Her note: "${fieldNote.text}"`:''}`
 }).join('\n')}
+${gateGuideContext?'\nHER TRANSIT GUIDES:\n'+gateGuideContext:''}
 
-CENTERS ACTIVATED TODAY: ${[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))].join(', ')}
+CENTERS ACTIVATED: ${[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))].map(c=>`${c} (${isCenterDefined(c)?'TRANSIT DEFINED':'open'})`).join(', ')}
 
-JOURNAL ENTRIES:
-${entryBlocks.join('\n\n').substring(0,1500)||'None'}
-
-BRAIN DUMP:
-${(dd.brainDump||'Nothing written').substring(0,600)}
-
-CARDS PULLED:
-${cardBlocks.map(c=>c.substring(0,300)).join('\n\n').substring(0,1200)||'None'}
-
-SPELLWORK: ${spells.map(s=>`${s.name} — ${(s.types||[]).join(', ')} — Intention: ${s.intention||'—'}`).join(' | ')||'None'}
-
-PLANNING: ${(dd.planningTags||[]).join(', ')||'none'}
+BRAIN DUMP: ${(dd.brainDump||'—').substring(0,500)}
+JOURNAL: ${entryBlocks.join(' | ').substring(0,800)||'—'}
+CARDS: ${cardBlocks.map(c=>c.substring(0,200)).join(' | ').substring(0,800)||'—'}
+RITUALS: ${spells.map(s=>`${s.name} — ${s.intention||'—'}`).join(' | ')||'—'}
 
 ---
 
-Write a 3-4 paragraph day synthesis. Plain language — explain HD concepts immediately in plain terms.
+Write TWO versions of a synthesis, clearly separated.
 
-P1 — GATES: Explain each gate practically — body, interactions, mood. Tell her whether each is PERSONAL (already in her chart, familiar amplification) or TRANSIT-ONLY (entirely environmental). Name which center activated and what that concretely feels like.
+VERSION 1 — PEARLS (short, direct, no explanation):
+Write 6-8 one-line observations — maximum 2 per source. Sources: gate transit, cards as a whole, center state, personal vs transit gate. Each line is a direct statement, like holding up a mirror. No softening, no HD jargon, no explanation. Use plain language. Each pearl on its own line starting with ✦
 
-P2 — CARDS: Find the through-line across ALL cards together. What story are they collectively telling? What themes repeat across tarot and oracle? Don't go card-by-card — find the narrative.
+After the pearls, write ONE sharp question that cuts to what the day is really asking. Start it with a ? on its own line.
 
-P3 — CONVERGENCE: Where do gates + cards + brain dump + observations all point to the same thing? Name specific details she actually wrote.
-
-P4 — TWO QUESTIONS: End with exactly 2 warm, direct questions specific to her data. Not generic.`;
+VERSION 2 — DEEPER (separated by a line of three dashes ---):
+3 short paragraphs. Plain language. Gates first (personal vs environmental, what the center means in practice). Cards second (the through-line story, not card-by-card). Convergence third (where it all points, using specific things she actually wrote). End with the same question from Version 1.`;
 
   try{
-    const resp=await fetch('/.netlify/functions/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,max_tokens:1200})});
+    const resp=await fetch('/.netlify/functions/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,max_tokens:1000})});
     const data=await resp.json();if(data.error)throw new Error(data.error);
     const text=data.text||'Unable to synthesize.';
+
+    // Split into pearls and deeper
+    const parts=text.split(/\n---\n/);
+    const pearlsText=parts[0]||text;
+    const deeperText=parts[1]||'';
+
+    // Store full text
     localStorage.setItem(`lumina_day_ai_${getCycleStart()}_${dayIdx}`,text);
-    if(result)result.innerHTML=`<div class="day-digest-ai-text" style="margin-top:10px">${escHtml(text)}</div>`;
+
+    // Render pearls + expand option
+    const pearlLines=pearlsText.split('\n').filter(l=>l.trim());
+    const pearlsHtml=pearlLines.map(line=>{
+      if(line.startsWith('?'))return`<div style="margin-top:12px;font-size:14px;font-style:italic;color:var(--gold-warm);line-height:1.6">${escHtml(line)}</div>`;
+      if(line.startsWith('✦'))return`<div style="margin-bottom:8px;font-size:13px;color:white;line-height:1.6;padding-left:2px">${escHtml(line)}</div>`;
+      return`<div style="margin-bottom:6px;font-size:12px;color:rgba(255,255,255,.6)">${escHtml(line)}</div>`;
+    }).join('');
+
+    const deeperHtml=deeperText?`<div id="dayDeeper_${dayIdx}" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)">
+      <div class="day-digest-ai-text">${escHtml(deeperText)}</div>
+    </div>
+    <button onclick="toggleDayDeeper(${dayIdx})" id="dayDeeperBtn_${dayIdx}" style="margin-top:10px;background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);padding:6px 14px;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px">Go Deeper ↓</button>`:'';
+
+    if(result)result.innerHTML=`<div style="margin-top:10px">${pearlsHtml}${deeperHtml}</div>`;
     if(btn){btn.disabled=false;btn.textContent='↺ Regenerate';}
   }catch(e){
     if(result)result.innerHTML='<div style="color:#A84040;font-size:12px;padding:8px 0">Error. Please try again.</div>';
     if(btn)btn.disabled=false;}}
+
+function toggleDayDeeper(dayIdx){
+  const el=document.getElementById(`dayDeeper_${dayIdx}`);
+  const btn=document.getElementById(`dayDeeperBtn_${dayIdx}`);
+  if(!el)return;
+  const isOpen=el.style.display!=='none';
+  el.style.display=isOpen?'none':'block';
+  if(btn)btn.textContent=isOpen?'Go Deeper ↓':'Show Less ↑';}
 
 function toggleEntryOpen(id){const c=localStorage.getItem('lumina_open_entry');localStorage.setItem('lumina_open_entry',c===id?'':id);render()}
 function addNewEntry(day){const id=addEntryToDay(day);localStorage.setItem('lumina_open_entry',id);render()}
@@ -1463,6 +1522,7 @@ function renderCardSlots(day, entryId){
         </div>
       `:''}
       ${meaningHtml()}
+      <input class="card-notes-input" style="margin-bottom:6px" placeholder="Position in spread (e.g. What to release, What's emerging, Obstacle, Outcome…)" value="${escHtml(slot.position||'')}" onchange="updateCardSlot(${day},'${entryId}','${slot.id}','position',this.value)"/>
       <textarea class="card-notes-input" rows="2" placeholder="Your interpretive layer — what does this card mean to you right now?" onchange="updateCardSlot(${day},'${entryId}','${slot.id}','notes',this.value)">${escHtml(slot.notes||'')}</textarea>
     </div>`;
   });
@@ -1613,7 +1673,7 @@ function unarchiveSpell(spellId){
 
 async function pushSpell(spell){await db('upsert','spells',{id:spell.id,data:JSON.stringify(spell)})}
 
-function renderSpellwork(el){
+function renderRituals(el){
   const allSpells=loadSpells();
   const activeSpells=allSpells.filter(s=>!s.archived);
   const archivedSpells=allSpells.filter(s=>s.archived);
@@ -1622,7 +1682,7 @@ function renderSpellwork(el){
   const archiveOpen=localStorage.getItem('lumina_archive_open')==='1';
 
   let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green)">Spellwork</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green)">Rituals</div>
     <button class="add-decision-btn" onclick="newSpell()">+ New Spell</button>
   </div>
   <div class="reflector-hint" style="margin-bottom:20px">
@@ -1858,7 +1918,7 @@ function renderExecute(){
       <textarea class="exec-notes-input" rows="5" placeholder="What did you notice during the working? Signs, sensations, deviations from the plan…" onchange="updateSpellField('${spell.id}','castingNotes',this.value)">${escHtml(spell.castingNotes||'')}</textarea>
     </div>
     <div class="exec-nav-btns" style="margin-top:28px">
-      <button class="exec-btn exec-btn-done" onclick="closeExecute();addFollowup('${spell.id}');switchView('spellwork')">Log Follow-up →</button>
+      <button class="exec-btn exec-btn-done" onclick="closeExecute();addFollowup('${spell.id}');switchView('rituals')">Log Follow-up →</button>
     </div>`;}
   el.innerHTML=html;}
 
@@ -1888,6 +1948,14 @@ function execTimerReset(total){clearInterval(execState.timerInterval);execState.
 function loadGateNotes(){try{return JSON.parse(localStorage.getItem('lumina_gate_notes')||'{}')}catch(e){return{}}}
 function saveGateNotes(d){try{localStorage.setItem('lumina_gate_notes',JSON.stringify(d))}catch(e){}}
 function getGateNotes(gateNum){return(loadGateNotes()[gateNum]||[])}
+function loadGateGuides(){try{return JSON.parse(localStorage.getItem('lumina_gate_guides')||'{}')}catch(e){return{}}}
+function saveGateGuides(d){try{localStorage.setItem('lumina_gate_guides',JSON.stringify(d))}catch(e){}}
+function getGateGuide(gateNum){return loadGateGuides()[gateNum]||{whenActive:'',watchFor:'',bestUse:'',avoid:''}}
+function updateGateGuide(gateNum,field,value){
+  const guides=loadGateGuides();
+  if(!guides[gateNum])guides[gateNum]={whenActive:'',watchFor:'',bestUse:'',avoid:''};
+  guides[gateNum][field]=value;
+  saveGateGuides(guides);}
 function addGateNote(gateNum,text){
   if(!text.trim())return;
   const all=loadGateNotes();
@@ -1960,14 +2028,33 @@ function renderGatesTab(el){
         </div>
       </div>
       <div class="gate-entry-body ${isOpen?'open':''}">
-        ${notes.length?notes.map(note=>`<div class="gate-note-item">
-          <div class="gate-note-item-date">${new Date(note.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
-          <div class="gate-note-item-text">${escHtml(note.text)}</div>
-          <button class="gate-note-item-del" onclick="deleteGateNote(${n},'${note.id}')">×</button>
-        </div>`).join(''):'<div style="font-size:12px;color:var(--ink-faint);margin-bottom:12px">No notes yet for this gate.</div>'}
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <textarea class="field-textarea" id="gate_note_input_${n}" rows="2" placeholder="Add a field note — what did you observe when this gate was active?" style="flex:1;font-size:13px"></textarea>
-          <button class="add-decision-btn" style="align-self:flex-end;white-space:nowrap" onclick="addGateNoteFromInput(${n})">+ Add</button>
+        <!-- Transit Guide -->
+        <div style="margin-bottom:16px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:10px">Transit Guide</div>
+          ${[
+            {field:'whenActive',label:'When active'},
+            {field:'watchFor',label:'Watch for'},
+            {field:'bestUse',label:'Best use'},
+            {field:'avoid',label:'Avoid'},
+          ].map(({field,label})=>{
+            const guide=getGateGuide(n);
+            return`<div style="margin-bottom:8px">
+              <label style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--ink-faint);text-transform:uppercase;display:block;margin-bottom:4px">${label}</label>
+              <input class="field-input" style="font-size:13px;padding:8px 12px" value="${escHtml(guide[field]||'')}" placeholder="${label}…" onchange="updateGateGuide(${n},'${field}',this.value)"/>
+            </div>`;}).join('')}
+        </div>
+        <!-- Field Notes -->
+        <div style="border-top:1.5px solid var(--border-light);padding-top:14px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px">Field Notes</div>
+          ${notes.length?notes.map(note=>`<div class="gate-note-item">
+            <div class="gate-note-item-date">${new Date(note.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+            <div class="gate-note-item-text">${escHtml(note.text)}</div>
+            <button class="gate-note-item-del" onclick="deleteGateNote(${n},'${note.id}')">×</button>
+          </div>`).join(''):'<div style="font-size:12px;color:var(--ink-faint);margin-bottom:12px">No field notes yet — add observations from lived experience below.</div>'}
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <textarea class="field-textarea" id="gate_note_input_${n}" rows="2" placeholder="What did you observe when this gate was active?" style="flex:1;font-size:13px"></textarea>
+            <button class="add-decision-btn" style="align-self:flex-end;white-space:nowrap" onclick="addGateNoteFromInput(${n})">+ Add</button>
+          </div>
         </div>
       </div>
     </div>`});
