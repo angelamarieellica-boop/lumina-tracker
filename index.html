@@ -311,13 +311,28 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 /* Gates tab */
 .gate-field-note{background:var(--gold-pale);border-left:3px solid var(--gold-warm);border-radius:0 5px 5px 0;padding:8px 12px;margin-bottom:14px;font-size:12px;color:var(--ink-mid);line-height:1.6}
 .gate-field-note-label{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:3px}
-.gates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.gates-grid{display:grid;grid-template-columns:1fr;gap:10px}
 .gc{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;overflow:hidden;font-family:'Libre Baskerville',serif;cursor:pointer;transition:border-color .15s}
 .gc:hover{border-color:var(--green-light)}
-.gc.open{border-color:var(--green);grid-column:1/-1}
+.gc.open{border-color:var(--green)}
 .gc.active-today{border-color:var(--gold-warm);border-width:2px;background:linear-gradient(135deg,var(--white) 0%,var(--gold-pale) 100%)}
 .gc.active-today .gc-header{background:transparent}
+.gc.current-gate{border-color:var(--green);border-width:2.5px;background:linear-gradient(135deg,var(--green-pale) 0%,var(--white) 60%);box-shadow:0 0 0 3px rgba(45,80,22,.12)}
+.gc.current-gate .gc-header{background:transparent}
 .gc-active-tag{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-top:4px}
+.gc-current-tag{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--green);text-transform:uppercase;margin-top:4px}
+.gc-body.auto-open{display:block}
+.gc-emma-section{border-top:2px solid var(--border-light);padding:16px 16px 4px;background:var(--ivory)}
+.gc-emma-header{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border-light)}
+.gc-emma-ssd{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.gc-emma-chip{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.3px}
+.gc-emma-chip.shadow{background:#FDE8E8;color:#A84040;border:1px solid #ECC8C8}
+.gc-emma-chip.gift{background:var(--gold-pale);color:var(--gold);border:1px solid #D8C080}
+.gc-emma-chip.siddhi{background:var(--green-pale);color:var(--green);border:1px solid #B8D09A}
+.gc-emma-block{margin-bottom:14px}
+.gc-emma-block-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px}
+.gc-emma-block-text{font-size:12px;color:var(--ink-mid);line-height:1.75;white-space:pre-line}
+.gc-emma-block-text.empty{color:var(--ink-faint);font-style:italic}
 /* Day view gate columns */
 .day-gate-group{margin-bottom:28px}
 .day-gate-group+.day-gate-group{border-top:1.5px solid var(--border-light);padding-top:24px}
@@ -2082,6 +2097,10 @@ function renderGatesTab(el){
     if(wg.length>0)wg.forEach(g=>activeGateNums.add(g.gateNum));
     else activeGateNums.add(todayDay.gateNum);
   }
+  // Get the live current gate (moon right now)
+  let currentGateNum=null;
+  try{const deg=getMoonEclipticLongitude(new Date());currentGateNum=getGateFromDegree(deg);}catch(e){}
+
   const gateNums=Object.keys(GATES).map(Number).sort((a,b)=>a-b);
   const centers=[...new Set(Object.values(GATES).map(g=>g.center))].sort();
 
@@ -2096,9 +2115,10 @@ function renderGatesTab(el){
       if(!`gate ${n} ${g.name} ${g.theme} ${g.center}`.toLowerCase().includes(q))return false;
     }
     return true;}).sort((a,b)=>{
-      const aActive=activeGateNums.has(a)?-1:0;
-      const bActive=activeGateNums.has(b)?-1:0;
-      return aActive-bActive||a-b;});
+      // Current gate first, then other active today, then numerical
+      const aScore=(a===currentGateNum)?-2:(activeGateNums.has(a)?-1:0);
+      const bScore=(b===currentGateNum)?-2:(activeGateNums.has(b)?-1:0);
+      return aScore-bScore||a-b;});
 
   let html=`<div style="margin-bottom:28px">
     <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green);margin-bottom:6px">Your Bodygraph</div>
@@ -2120,11 +2140,14 @@ function renderGatesTab(el){
     const g=GATES[n];
     const notes=allGateNotes[n]||[];
     const guide=getGateGuide(n);
+    const gd=typeof gateData!=='undefined'?gateData[n]:null;
     const isPersonal=MY_GATES.defined.includes(n);
     const badgeStyle=CENTER_BADGE_STYLE[g.center]||'background:var(--ivory-mid);color:var(--ink-soft)';
-    const isOpen=localStorage.getItem('lumina_open_gate')===String(n);
+    const isActiveToday=activeGateNums.has(n);
+    const isCurrentGate=n===currentGateNum;
+    // Active today gates auto-expand; others use localStorage toggle
+    const isOpen=isActiveToday||localStorage.getItem('lumina_open_gate')===String(n);
     const hasGuide=guide.whenActive||guide.watchFor||guide.bestUse||guide.avoid;
-    const hasNotes=notes.length>0;
 
     const guideFields=[
       {field:'whenActive',label:'When active'},
@@ -2133,14 +2156,31 @@ function renderGatesTab(el){
       {field:'avoid',label:'Avoid'},
     ];
 
-    const isActiveToday=activeGateNums.has(n);
+    // Emma's reference content from gateData
+    const emmaSection=gd?`
+      <div class="gc-emma-section" onclick="event.stopPropagation()">
+        <div class="gc-emma-header">✦ Gate Reference</div>
+        ${gd.shadow||gd.gift||gd.siddhi?`<div class="gc-emma-ssd">
+          ${gd.shadow?`<span class="gc-emma-chip shadow">↓ ${escHtml(gd.shadow)}</span>`:''}
+          ${gd.gift?`<span class="gc-emma-chip gift">◈ ${escHtml(gd.gift)}</span>`:''}
+          ${gd.siddhi?`<span class="gc-emma-chip siddhi">✦ ${escHtml(gd.siddhi)}</span>`:''}
+        </div>`:''}
+        ${gd.hdSummary?`<div class="gc-emma-block"><div class="gc-emma-block-label">Human Design</div><div class="gc-emma-block-text">${escHtml(gd.hdSummary)}</div></div>`:''}
+        ${gd.geneKeySummary?`<div class="gc-emma-block"><div class="gc-emma-block-label">Gene Key</div><div class="gc-emma-block-text">${escHtml(gd.geneKeySummary)}</div></div>`:''}
+        ${gd.iChingSummary?`<div class="gc-emma-block"><div class="gc-emma-block-label">I Ching</div><div class="gc-emma-block-text">${escHtml(gd.iChingSummary)}</div></div>`:''}
+        ${gd.shadowDetail?`<div class="gc-emma-block"><div class="gc-emma-block-label">Shadow</div><div class="gc-emma-block-text">${escHtml(gd.shadowDetail)}</div></div>`:''}
+        ${gd.channel?`<div class="gc-emma-block"><div class="gc-emma-block-label">Channel</div><div class="gc-emma-block-text">${escHtml(gd.channel)}</div></div>`:''}
+        ${gd.emmaSummary?`<div class="gc-emma-block"><div class="gc-emma-block-label">Emma's Take</div><div class="gc-emma-block-text">${escHtml(gd.emmaSummary)}</div></div>`:''}
+        ${gd.theme?`<div class="gc-emma-block"><div class="gc-emma-block-label">Theme</div><div class="gc-emma-block-text">${escHtml(gd.theme)}</div></div>`:''}
+        ${gd.reflectorNote?`<div class="gc-emma-block"><div class="gc-emma-block-label">For Reflectors</div><div class="gc-emma-block-text">${escHtml(gd.reflectorNote)}</div></div>`:''}
+      </div>`:'';
 
-    html+=`<div class="gc ${isOpen?'open':''} ${isActiveToday?'active-today':''}">
+    html+=`<div class="gc ${isCurrentGate?'current-gate':isActiveToday?'active-today':''} ${isOpen&&!isActiveToday?'open':''}">
       <div class="gc-header" onclick="toggleGateEntry(${n})">
         <div>
           <div class="gc-num">${notes.length||hasGuide?'✦ ':''} Gate ${n} — ${g.name}</div>
           <div class="gc-name">${g.theme}</div>
-          ${isActiveToday?`<div class="gc-active-tag">🌙 Active today</div>`:''}
+          ${isCurrentGate?`<div class="gc-current-tag">● Moon here now</div>`:isActiveToday?`<div class="gc-active-tag">🌙 Active today</div>`:''}
         </div>
         <div class="gc-badges">
           <span class="gc-center-badge" style="${badgeStyle}">${g.center}</span>
@@ -2168,6 +2208,7 @@ function renderGatesTab(el){
           <input class="gc-add-input" id="gate_note_input_${n}" placeholder="Add a field note…"/>
           <button class="gc-add-btn" onclick="addGateNoteFromInput(${n})">+ Add</button>
         </div>
+        ${emmaSection}
       </div>
     </div>`});
 
