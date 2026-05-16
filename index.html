@@ -6,6 +6,7 @@
 <title>Lumina · Lunar Gate Tracker</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
 <script src="/cardData.js"></script>
+<script src="/gateData.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{--ivory:#FAF8F3;--ivory-mid:#F0EBE0;--green:#2D5016;--green-mid:#3D6B20;--green-light:#5A8A35;--green-pale:#E4EFD8;--gold:#96690A;--gold-warm:#B8860B;--gold-pale:#F8F0D8;--ink:#1A1A10;--ink-mid:#323222;--ink-soft:#525240;--ink-faint:#7A7A60;--border:#C8C0A8;--border-light:#DDD8CC;--white:#FFFFFF}
@@ -423,6 +424,7 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
     <div class="live-gate-label">Moon is currently in</div>
     <div class="live-gate-name" id="liveGateName">Calculating…</div>
     <div class="live-gate-theme" id="liveGateTheme"></div>
+    <div id="liveGateSSD" style="font-size:11px;color:var(--ink-soft);margin:4px 0 8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"></div>
     <div class="live-gate-meta" id="liveGateMeta"></div>
     <div class="transit-bar"><div class="transit-bar-fill" id="transitFill" style="width:0%"></div></div>
     <div class="transit-times" id="transitTimes"></div>
@@ -641,7 +643,7 @@ function fmtTime(d){if(!d||isNaN(d.getTime()))return'—';return d.toLocaleTimeS
 function fmtDateTime(d){if(!d||isNaN(d.getTime()))return'—';return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+fmtTime(d)}
 
 // ── LIVE GATE ─────────────────────────────────────────────────────────────
-function updateLiveGate(){const now=new Date(),deg=getMoonEclipticLongitude(now),gn=getGateFromDegree(deg),gate=GATES[gn];if(!gate)return;const line=getMoonLine(deg,gn),transit=getTransitTimes(gn,now),cc=CENTER_COLORS[gate.center]||'#3A7A3A';document.getElementById('liveGateName').textContent=`Gate ${gn}.${line} — ${gate.name}`;document.getElementById('liveGateName').style.color=cc;document.getElementById('liveGateTheme').textContent=gate.theme;document.getElementById('liveGateMeta').innerHTML=`<div class="live-meta-item"><strong>${gate.center}</strong> Center</div><div class="live-meta-item">Moon at <strong>${deg.toFixed(2)}°</strong></div><div class="live-meta-item">Line <strong>${line}</strong></div>`;if(transit){document.getElementById('transitFill').style.width=transit.pct+'%';document.getElementById('transitTimes').innerHTML=`<span>Entered ${fmtDateTime(transit.entryTime)}</span><span>Exits ~${fmtDateTime(transit.exitTime)}</span>`}}
+function updateLiveGate(){const now=new Date(),deg=getMoonEclipticLongitude(now),gn=getGateFromDegree(deg),gate=GATES[gn];if(!gate)return;const line=getMoonLine(deg,gn),transit=getTransitTimes(gn,now),cc=CENTER_COLORS[gate.center]||'#3A7A3A';document.getElementById('liveGateName').textContent=`Gate ${gn}.${line} — ${gate.name}`;document.getElementById('liveGateName').style.color=cc;document.getElementById('liveGateTheme').textContent=gate.theme;const _gd=typeof gateData!=='undefined'?gateData[gn]:null;const _ssdEl=document.getElementById('liveGateSSD');if(_ssdEl&&_gd){_ssdEl.innerHTML=`<span style="color:#A84040;font-weight:700">↓ ${_gd.shadow}</span><span style="color:var(--border)">→</span><span style="color:var(--gold);font-weight:700">◈ ${_gd.gift}</span><span style="color:var(--border)">→</span><span style="color:var(--green);font-weight:700">✦ ${_gd.siddhi}</span>${_gd.isNatal?'<span style="font-size:10px;font-weight:700;color:var(--gold);background:var(--gold-pale);padding:2px 8px;border-radius:10px;border:1px solid #D8C080;margin-left:4px">✦ Natal Gate</span>':''}`;}else if(_ssdEl)_ssdEl.innerHTML='';document.getElementById('liveGateMeta').innerHTML=`<div class="live-meta-item"><strong>${gate.center}</strong> Center</div><div class="live-meta-item">Moon at <strong>${deg.toFixed(2)}°</strong></div><div class="live-meta-item">Line <strong>${line}</strong></div>`;if(transit){document.getElementById('transitFill').style.width=transit.pct+'%';document.getElementById('transitTimes').innerHTML=`<span>Entered ${fmtDateTime(transit.entryTime)}</span><span>Exits ~${fmtDateTime(transit.exitTime)}</span>`}}
 
 // ── SUPABASE ───────────────────────────────────────────────────────────────
 let syncDebounceTimers={};
@@ -1052,6 +1054,7 @@ function buildDayDigest(dayIdx,day,dd,displayGates){
     ${displayGates.length?`<div class="day-digest-section">
       <div class="day-digest-section-label">Gates Active</div>
       <div class="day-digest-row">${displayGates.map(g=>{const cc=CENTER_COLORS[g.gate.center]||'#3A7A3A';return`<span class="day-digest-chip" style="border-color:${cc}55;color:white">Gate ${g.gateNum} ${g.gate.name} · <span style="color:${cc}">${g.gate.center}</span></span>`}).join('')}</div>
+      ${displayGates.map(g=>{const gd=typeof gateData!=='undefined'?gateData[g.gateNum]:null;if(!gd)return'';return`<div style="margin-top:6px;font-size:11px;color:rgba(255,255,255,.65);line-height:1.6"><span style="color:rgba(255,255,255,.35);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-right:6px">Gate ${g.gateNum}</span><span style="color:#CF8888">↓ ${gd.shadow}</span> <span style="color:rgba(255,255,255,.25)">→</span> <span style="color:#D4A840">◈ ${gd.gift}</span> <span style="color:rgba(255,255,255,.25)">→</span> <span style="color:#7EBF5A">✦ ${gd.siddhi}</span>${gd.isNatal?` <span style="font-size:9px;color:var(--gold);margin-left:4px">✦ natal</span>`:''}</div>`;}).join('')}
     </div>`:''}
     ${allCards.length?`<div class="day-digest-section">
       <div class="day-digest-section-label">Cards Pulled</div>
@@ -1184,6 +1187,9 @@ ${displayGates.map(g=>{
   return`Gate ${g.gateNum}.${g.line||''} ${g.gate?.name||''} | ${g.gate?.center||''} Center | ${ctx}${fieldNote?` | Her note: "${fieldNote.text}"`:''}`
 }).join('\n')}
 ${gateGuideContext?'\nYOUR TRANSIT GUIDES:\n'+gateGuideContext:''}
+
+GENE KEYS LAYER:
+${displayGates.map(g=>{const gd=typeof gateData!=='undefined'?gateData[g.gateNum]:null;if(!gd)return'';return`Gate ${g.gateNum} — Shadow: ${gd.shadow} | Gift: ${gd.gift} | Siddhi: ${gd.siddhi}. ${gd.theme}${gd.isNatal?' [Her natal gate — '+gd.reflectorNote+']':''}`;}).join('\n')}
 
 CENTERS ACTIVATED TODAY: ${[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))].map(c=>`${c} (${isCenterDefined(c)?'TRANSIT DEFINED':'open'})`).join(', ')}
 
