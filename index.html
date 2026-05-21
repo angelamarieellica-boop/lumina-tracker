@@ -346,6 +346,19 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .type-ref-row{display:grid;grid-template-columns:120px 1fr;gap:8px;margin-bottom:8px;font-size:11px}
 .type-ref-name{font-weight:700;color:var(--ink)}
 .type-ref-desc{color:var(--ink-soft);line-height:1.5}
+/* Lunar diary */
+.lunar-diary-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:12px}
+.lunar-diary-table th{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);padding:8px 10px;text-align:left;border-bottom:1.5px solid var(--border)}
+.lunar-diary-table td{padding:8px 10px;border-bottom:1px solid var(--border-light);vertical-align:top;line-height:1.5}
+.lunar-diary-table tr.current-row{background:linear-gradient(90deg,var(--green-pale),transparent)}
+.lunar-diary-table tr.birthday-row td:first-child{border-left:3px solid var(--gold-warm)}
+/* Daily type timeline */
+.day-type-timeline{background:var(--white);border:1.5px solid var(--border-light);border-radius:8px;margin-bottom:18px;overflow:hidden}
+.day-type-timeline-header{padding:10px 16px;border-bottom:1px solid var(--border-light);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint)}
+.day-type-timeline-scroll{overflow-x:auto;padding:10px 16px}
+.day-type-row{display:flex;gap:4px;min-width:max-content}
+.day-type-pill{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;border:1.5px solid transparent;transition:all .15s}
+.day-type-pill.current{outline:2px solid var(--green);outline-offset:1px}
 .day-gate-field-note-inline{font-size:12px;color:var(--ink-mid);line-height:1.65;margin-bottom:8px;padding:8px 10px;background:var(--ivory-mid);border-radius:4px}
 .day-gate-field-note-date{font-size:9px;font-weight:700;color:var(--ink-faint);margin-bottom:3px;letter-spacing:.5px}
 .gc-header{padding:14px 16px;border-bottom:1.5px solid var(--border-light);display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
@@ -890,9 +903,156 @@ function render(){const el=document.getElementById('mainContent');
   else renderInsights(el)}
 
 // ── GRID ───────────────────────────────────────────────────────────────────
+const HD_CHANNELS=[
+  [1,8,'G','Throat'],[2,14,'G','Sacral'],[3,60,'Sacral','Root'],
+  [4,63,'Ajna','Head'],[5,15,'Sacral','G'],[6,59,'Solar Plexus','Sacral'],
+  [7,31,'G','Throat'],[9,52,'Sacral','Root'],[10,20,'G','Throat'],
+  [11,56,'Ajna','Throat'],[12,22,'Throat','Solar Plexus'],[13,33,'G','Throat'],
+  [16,48,'Throat','Spleen'],[17,62,'Ajna','Throat'],[18,58,'Spleen','Root'],
+  [19,49,'Root','Solar Plexus'],[20,34,'Throat','Sacral'],[20,57,'Throat','Spleen'],
+  [21,45,'Ego/Heart','Throat'],[23,43,'Throat','Ajna'],[24,61,'Ajna','Head'],
+  [25,51,'G','Ego/Heart'],[26,44,'Ego/Heart','Spleen'],[27,50,'Sacral','Spleen'],
+  [28,38,'Spleen','Root'],[29,46,'Sacral','G'],[30,41,'Solar Plexus','Root'],
+  [32,54,'Spleen','Root'],[34,57,'Sacral','Spleen'],[35,36,'Throat','Solar Plexus'],
+  [37,40,'Solar Plexus','Ego/Heart'],[39,55,'Root','Solar Plexus'],[42,53,'Sacral','Root'],
+  [47,64,'Ajna','Head'],[50,27,'Spleen','Sacral']
+];
+
+// Motor centers
+const MOTORS=['Sacral','Root','Solar Plexus','Ego/Heart'];
+
+function getChannelPartner(gateNum){
+  // Returns [{partner, center1, center2}] for all channels this gate participates in
+  const results=[];
+  HD_CHANNELS.forEach(([g1,g2,c1,c2])=>{
+    if(g1===gateNum)results.push({partner:g2,myCenter:c1,partnerCenter:c2});
+    if(g2===gateNum)results.push({partner:g1,myCenter:c2,partnerCenter:c1});
+  });
+  return results;}
+
+function determineTypeFromChannels(completedChannels){
+  // completedChannels = [{myCenter, partnerCenter}]
+  // Collect all defined centers
+  const defined=new Set();
+  completedChannels.forEach(({myCenter,partnerCenter})=>{defined.add(myCenter);defined.add(partnerCenter);});
+  
+  const hasSacral=defined.has('Sacral');
+  const hasThroat=defined.has('Throat');
+  const hasMotor=[...defined].some(c=>MOTORS.includes(c));
+  const motorToThroat=completedChannels.some(({myCenter,partnerCenter})=>
+    (MOTORS.includes(myCenter)&&partnerCenter==='Throat')||(MOTORS.includes(partnerCenter)&&myCenter==='Throat'));
+
+  if(hasSacral&&motorToThroat)return'manifesting_generator';
+  if(hasSacral)return'generator';
+  if(motorToThroat)return'manifestor';
+  if(defined.size>0)return'projector';
+  return'reflector';}
+
+function getTypeForGate(moonGateNum){
+  // Find all channels completed when moon is in moonGateNum + Angela's natal gates
+  const completed=[];
+  const partners=getChannelPartner(moonGateNum);
+  partners.forEach(({partner,myCenter,partnerCenter})=>{
+    if(MY_GATES.defined.includes(partner)){
+      completed.push({myCenter:partnerCenter,partnerCenter:myCenter,moonGate:moonGateNum,natalGate:partner});
+    }});
+  if(!completed.length)return{type:'reflector',channels:[]};
+  return{type:determineTypeFromChannels(completed),channels:completed};}
+
+function buildCycleOfDefinitions(){
+  const days=buildDays();
+  return days.map((day,i)=>{
+    const wg=day.wakingGates||[];
+    const gates=wg.length>0?wg.map(g=>g.gateNum):[day.gateNum];
+    const typePriority=['manifesting_generator','manifestor','generator','projector','reflector'];
+    let bestType='reflector',bestChannels=[];
+    gates.forEach(gn=>{
+      const {type,channels}=getTypeForGate(gn);
+      if(typePriority.indexOf(type)<typePriority.indexOf(bestType)){
+        bestType=type;bestChannels=channels;}});
+    return{day,gateNums:gates,type:bestType,channels:bestChannels};});}
+
+// Lunar birthday gates — Angela's natal moon gates
+const LUNAR_BIRTHDAY_GATES=[11,22];
+
+// Narrative themes per gate
+const GATE_THEMES_NARRATIVE={
+  1:'Creative Spark',2:'Receiving Direction',3:'New Beginnings Stirring',4:'Seeking Answers',
+  5:'Settling into Rhythm',6:'Navigating Intimacy',7:'Finding Your Role',8:'Authentic Voice',
+  9:'Focused Detail',10:'Self-Alignment',11:'Imagination Flowing ✦ Lunar Moon',12:'Careful Expression',
+  13:'Listening & Witnessing',14:'Empowered Action',15:'Community Rhythm',16:'Sharing Your Gifts',
+  17:'Strong Perspectives',18:'Discernment & Correction',19:'Tender Sensitivity',20:'Presence & Now',
+  21:'Material Mastery',22:'Emotional Grace ✦ Lunar Moon',23:'Clarity & Simplicity',24:'Turning Inward',
+  25:'Innocent Openness',26:'Integrity Check',27:'Nourishing Others',28:'Questioning Purpose',
+  29:'Saying Yes',30:'Desire & Longing',31:'Democratic Voice',32:'What Endures',
+  33:'Retreat & Memory',34:'Independent Power',35:'Adventure & Change',36:'Emotional Deepening',
+  37:'Community Bonds',38:'Fighting for Purpose',39:'Provocation & Awakening',40:'Rest & Renewal',
+  41:'New Moon Dreaming',42:'Bringing to Completion',43:'Breakthrough Knowing',44:'Pattern Recognition',
+  45:'Gathering Resources',46:'Embodied Luck',47:'Making Meaning',48:'Depth & Wisdom',
+  49:'Values & Revolution',50:'Caring for the Tribe',51:'Initiation Through Shock',52:'Sacred Stillness',
+  53:'Gradual New Start',54:'Ambition & Rising',55:'Emotional Abundance',56:'Storytelling',
+  57:'Intuitive Clarity',58:'Vitality & Joy',59:'Intimacy & Dissolution',60:'Accepting Limits',
+  61:'Inner Mystery',62:'Precision & Facts',63:'Logical Doubt',64:'Inspired Confusion'};
+
+function buildLunarDiarySequence(){
+  const cycleStart=getCycleStart();
+  const startDate=new Date(cycleStart+'T12:00:00');
+  const endDate=new Date(startDate);endDate.setDate(endDate.getDate()+29);
+  const sequence=[];
+  let lastGate=null,lastType=null,gateStart=null;
+
+  for(let t=new Date(startDate);t<endDate;t=new Date(t.getTime()+30*60*1000)){
+    const deg=getMoonEclipticLongitude(t);
+    const gn=getGateFromDegree(deg);
+    const {type}=getTypeForGate(gn);
+    if(gn!==lastGate){
+      if(lastGate!==null&&gateStart){
+        sequence.push({gateNum:lastGate,gate:GATES[lastGate]||{},type:lastType,
+          startTime:new Date(gateStart),endTime:new Date(t),
+          durationHrs:(t-gateStart)/(1000*60*60),
+          isLunarBirthday:LUNAR_BIRTHDAY_GATES.includes(lastGate)});}
+      lastGate=gn;lastType=type;gateStart=new Date(t);}
+  }
+  if(lastGate&&gateStart){
+    sequence.push({gateNum:lastGate,gate:GATES[lastGate]||{},type:lastType,
+      startTime:new Date(gateStart),endTime:new Date(endDate),
+      durationHrs:(endDate-gateStart)/(1000*60*60),
+      isLunarBirthday:LUNAR_BIRTHDAY_GATES.includes(lastGate)});}
+  return sequence.map(s=>{const{channels}=getTypeForGate(s.gateNum);return{...s,channels};});}
+
+function getCurrentDiaryEntry(sequence){
+  const now=new Date();
+  return sequence.findIndex(s=>s.startTime<=now&&s.endTime>now);}
+
+function fmtDuration(hrs){
+  if(hrs<1)return'~'+Math.round(hrs*60)+'m';
+  if(hrs<24)return hrs.toFixed(1).replace('.0','')+' hr'+(hrs>=2?'s':'');
+  return(hrs/24).toFixed(1).replace('.0','')+' days';}
+
+// Cache diary sequence (expensive to compute)
+let _diaryCache=null,_diaryCacheKey='';
+function getDiarySequence(){
+  const key=getCycleStart();
+  if(_diaryCacheKey!==key){_diaryCache=buildLunarDiarySequence();_diaryCacheKey=key;}
+  return _diaryCache;}
+
+// Store functions on window for access from render
+window.buildCycleOfDefinitions=buildCycleOfDefinitions;
+
 function renderGrid(el){
   const days=buildDays(),data=loadData();
   const nm=getCycleStart(),sign=getNewMoonSign(nm);
+  // Pre-calculate types for all days
+  const dayTypes=days.map(day=>{
+    const wg=day.wakingGates||[];
+    const gates=wg.length>0?wg.map(g=>g.gateNum):[day.gateNum];
+    const typePriority=['manifesting_generator','manifestor','generator','projector','reflector'];
+    let bestType='reflector';
+    gates.forEach(gn=>{
+      const {type}=getTypeForGate(gn);
+      if(typePriority.indexOf(type)<typePriority.indexOf(bestType))bestType=type;});
+    return bestType;});
+
   let html='';
   if(viewingCycleOffset>0){
     html+=`<div class="viewing-future">✦ Planning view · New Moon in ${sign} · ${new Date(nm+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric'})} — All days available for planning</div>`;}
@@ -908,10 +1068,13 @@ function renderGrid(el){
     else if(wg.length===1){const cc=CENTER_COLORS[wg[0].gate.center]||'#3A7A3A';gatesHtml=`<div class="card-gate">Gate ${wg[0].gateNum}.${wg[0].line}</div><div class="card-name" style="color:${cc}">${wg[0].gate.name}</div>`}
     else{gatesHtml=wg.slice(0,2).map((g,gi)=>{const cc=CENTER_COLORS[g.gate.center]||'#3A7A3A';const ts=g.startTime?` · ${fmtTime(g.startTime)}`:(gi===0?' · 5am':'');return`<div class="card-gate" style="margin-bottom:1px">Gate ${g.gateNum}.${g.line}<span style="color:var(--ink-faint);font-size:10px">${ts}</span></div><div class="card-name" style="color:${cc};margin-bottom:3px">${g.gate.name}</div>`}).join('')}
     const forecast=(!day.isPast&&!day.isToday)?`<div class="card-forecast">${GATE_FORECAST[day.gateNum]||''}</div>`:'';
+    const dayType=dayTypes[i];
+    const typeData=TEMP_TYPES.find(t=>t.id===dayType)||TEMP_TYPES[0];
+    const typeTag=dayType!=='reflector'?`<div style="font-size:9px;font-weight:700;color:${typeData.color};margin-top:4px">${typeData.emoji} ${typeData.label}</div>`:'';
     html+=`<button class="${cls}" onclick="openDay(${i})">
       <div class="card-top"><span class="card-moon">${getMoonPhaseEmoji(i)}</span><span class="card-day-num">Day ${day.dayNum}</span></div>
       <div class="card-date">${day.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>
-      ${gatesHtml}${forecast}
+      ${gatesHtml}${forecast}${typeTag}
       ${day.isToday?'<div class="card-today-tag">✦ Today</div>':''}
     </button>`});
   html+='</div><div class="legend"><div class="legend-title">Energy Centers</div><div class="legend-items">';
@@ -1031,6 +1194,7 @@ function renderDetail(el){
   el.innerHTML=`
     <button class="back-btn" onclick="backToGrid()">← Back to Monthly View</button>
     ${renderPhaseTypeBar(selectedDay,isFuture)}
+    ${renderDayTypeTimeline(isFuture)}
     ${gateBlocksHtml}
     ${centerContextHtml}
     <div class="fields">
@@ -2169,6 +2333,7 @@ function renderGatesTab(el){
   </div>
   <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--green);margin-bottom:6px">Gate Field Notes</div>
   ${renderTypeGuideRef()}
+  ${renderCycleOfDefinitions()}
   <div style="font-size:12px;color:var(--ink-faint);margin-bottom:16px;line-height:1.6">Your personal observations about each gate — what you've noticed when it's active, patterns, best uses for your practice.</div>
   <input class="gate-search" placeholder="Search gates…" value="${escHtml(gateSearch)}" oninput="gateSearch=this.value;render()"/>
   <div class="gate-filter-row">
@@ -2438,13 +2603,96 @@ function renderPhaseTypeBar(dayIdx,isFuture){
 
   return`<div class="phase-type-bar">${phaseHtml}${typeHtml}</div>`;}
 
+function renderCycleOfDefinitions(){
+  const seq=getDiarySequence();
+  const currentIdx=getCurrentDiaryEntry(seq);
+  const typeLabels={'reflector':'True Reflector','generator':'Generator','manifesting_generator':'Manifesting Generator','manifestor':'Manifestor','projector':'Projector'};
+
+  // Count by type
+  const counts={};
+  seq.forEach(s=>{counts[s.type]=(counts[s.type]||0)+1;});
+
+  return`<div style="margin-bottom:28px">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--green);margin-bottom:6px">Lunar Diary — Cycle of Definitions</div>
+    <div style="font-size:12px;color:var(--ink-faint);margin-bottom:16px;line-height:1.6">Your type as the moon transits all 64 gates this cycle. ✦ marks your lunar birthday gates (Gate 11 and Gate 22).</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+      ${Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([type,count])=>{
+        const t=TEMP_TYPES.find(t=>t.id===type)||TEMP_TYPES[0];
+        return`<div style="background:${t.color}18;border:1.5px solid ${t.color}44;border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:8px">
+          <span style="font-size:18px">${t.emoji}</span>
+          <div><div style="font-size:12px;font-weight:700;color:${t.color}">${t.label}</div>
+          <div style="font-size:11px;color:var(--ink-faint)">${count} transit${count>1?'s':''}</div></div>
+        </div>`;}).join('')}
+    </div>
+    <table class="lunar-diary-table">
+      <thead><tr>
+        <th>Gate</th><th>Type</th><th>Theme</th><th>Center Defined</th><th>Channel</th><th>Duration</th><th>Starts</th>
+      </tr></thead>
+      <tbody>
+      ${seq.map((s,i)=>{
+        const t=TEMP_TYPES.find(t=>t.id===s.type)||TEMP_TYPES[0];
+        const isCurrent=i===currentIdx;
+        const centerDefined=s.channels.length?[...new Set(s.channels.flatMap(c=>[c.myCenter,c.partnerCenter]))].join(', '):'—';
+        const channelStr=s.channels.length?s.channels.map(c=>`${c.natalGate}↔${c.moonGate}`).join(', '):'—';
+        return`<tr class="${isCurrent?'current-row':''} ${s.isLunarBirthday?'birthday-row':''}">
+          <td><strong style="color:${t.color}">${s.isLunarBirthday?'✦ ':''}${s.gateNum}</strong></td>
+          <td><span style="color:${t.color};font-weight:700">${t.emoji} ${typeLabels[s.type]}</span>${isCurrent?' ← <strong>now</strong>':''}</td>
+          <td>${GATE_THEMES_NARRATIVE[s.gateNum]||s.gate.name||'—'}</td>
+          <td style="color:${CENTER_COLORS[centerDefined]||'var(--ink-faint)'}">${centerDefined}</td>
+          <td style="color:var(--ink-faint)">${channelStr}</td>
+          <td>${fmtDuration(s.durationHrs)}</td>
+          <td style="color:var(--ink-faint)">${s.startTime.toLocaleDateString('en-US',{month:'short',day:'numeric'})} ${fmtTime(s.startTime)}</td>
+        </tr>`;}).join('')}
+      </tbody>
+    </table>
+  </div>`;}
+
 function renderTypeGuideRef(){
+
+// ── CHANNEL MAP & CYCLE OF DEFINITIONS ────────────────────────────────────
+// All 36 HD channels: [gate1, gate2, center1, center2]
+
   return`<div class="type-ref-table">
     <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px">Type Reference Guide</div>
     ${TEMP_TYPES.map(t=>`<div class="type-ref-row">
       <span class="type-ref-name" style="color:${t.color}">${t.emoji} ${t.label}</span>
       <span class="type-ref-desc">${t.guide}</span>
     </div>`).join('')}
+  </div>`;}
+
+function renderDayTypeTimeline(isFuture){
+  if(isFuture)return'';
+  const seq=getDiarySequence();
+  const currentIdx=getCurrentDiaryEntry(seq);
+  const typeLabels={'reflector':'Reflector','generator':'Generator','manifesting_generator':'MG','manifestor':'Manifestor','projector':'Projector'};
+
+  // Group consecutive same-type entries
+  const pills=[];
+  seq.forEach((s,i)=>{
+    const t=TEMP_TYPES.find(t=>t.id===s.type)||TEMP_TYPES[0];
+    const isCurrent=i===currentIdx;
+    pills.push({type:s.type,color:t.color,emoji:t.emoji,label:typeLabels[s.type],
+      gate:s.gateNum,theme:GATE_THEMES_NARRATIVE[s.gateNum]||s.gate.name||'',
+      isCurrent,isLunarBirthday:s.isLunarBirthday,
+      startTime:s.startTime,duration:fmtDuration(s.durationHrs)});});
+
+  return`<div class="day-type-timeline">
+    <div class="day-type-timeline-header">Your Cycle of Definitions — where you are now</div>
+    <div class="day-type-timeline-scroll">
+      <div class="day-type-row">
+        ${pills.map(p=>`<div class="day-type-pill ${p.isCurrent?'current':''}"
+          style="background:${p.color}${p.isCurrent?'33':'15'};border-color:${p.color}${p.isCurrent?'88':'33'};color:${p.color}"
+          title="Gate ${p.gate} · ${p.theme} · ${p.duration} · starts ${p.startTime.toLocaleDateString('en-US',{month:'short',day:'numeric'})} ${fmtTime(p.startTime)}">
+          ${p.isLunarBirthday?'✦ ':''}${p.emoji} Gate ${p.gate}${p.isCurrent?' ← now':''}
+        </div>`).join('')}
+      </div>
+    </div>
+    ${currentIdx>=0?`<div style="padding:8px 16px;border-top:1px solid var(--border-light);font-size:11px;color:var(--ink-mid)">
+      <strong style="color:${(TEMP_TYPES.find(t=>t.id===seq[currentIdx].type)||TEMP_TYPES[0]).color}">${seq[currentIdx].type==='reflector'?'True Reflector':(TEMP_TYPES.find(t=>t.id===seq[currentIdx].type)||TEMP_TYPES[0]).label}</strong>
+      · Gate ${seq[currentIdx].gateNum} — ${GATE_THEMES_NARRATIVE[seq[currentIdx].gateNum]||seq[currentIdx].gate.name||''}
+      · Ends ~${fmtTime(seq[currentIdx].endTime)}
+      ${seq[currentIdx].channels.length?`· Channel ${seq[currentIdx].channels.map(c=>`${c.natalGate}-${c.moonGate}`).join(', ')}`:''}
+    </div>`:''}
   </div>`;}
 
 function backToGrid(){selectedDay=null;render()}
