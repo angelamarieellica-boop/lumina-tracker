@@ -180,6 +180,23 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .moment-outcome{width:100%;background:var(--ivory-mid);border:1.5px solid var(--border);color:var(--ink);padding:8px 12px;border-radius:4px;font-size:12px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.5;transition:border-color .15s}
 .moment-outcome:focus{border-color:var(--green)}
 .moment-outcome-label{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--ink-faint);text-transform:uppercase;margin-bottom:5px}
+/* Resolved decisions */
+.resolved-card{background:var(--white);border:1.5px solid var(--green);border-radius:8px;padding:18px 20px;margin-bottom:12px;position:relative}
+.resolved-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.resolved-card-title{font-size:13px;font-weight:700;color:var(--ink);line-height:1.4;flex:1;padding-right:12px}
+.resolved-badge{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);background:var(--green-pale);border-radius:3px;padding:3px 7px;white-space:nowrap}
+.resolved-meta{font-size:11px;color:var(--ink-faint);margin-bottom:10px}
+.resolved-decided{font-size:13px;color:var(--ink);line-height:1.5;background:var(--ivory-mid);border-radius:5px;padding:10px 12px;margin-bottom:10px;border-left:3px solid var(--green)}
+.resolved-trend-snap{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;padding:8px 12px;background:var(--ivory);border-radius:5px}
+.resolved-trend-item{font-size:11px;color:var(--ink-soft)}
+.resolved-trend-num{font-weight:700;font-size:14px}
+.resolved-note{font-size:12px;color:var(--ink-soft);line-height:1.6;margin-bottom:10px}
+.resolved-outcome-label{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--ink-faint);text-transform:uppercase;margin-bottom:5px}
+.resolved-outcome{width:100%;background:var(--ivory-mid);border:1.5px solid var(--border);color:var(--ink);padding:8px 12px;border-radius:4px;font-size:12px;font-family:'Libre Baskerville',serif;outline:none;resize:none;line-height:1.5;transition:border-color .15s;box-sizing:border-box}
+.resolved-outcome:focus{border-color:var(--green)}
+.resolved-empty{text-align:center;padding:48px 20px;color:var(--ink-faint);font-size:13px}
+.dec-tab-resolved{position:relative}
+.resolved-count-badge{position:absolute;top:-4px;right:-8px;background:var(--green);color:white;border-radius:10px;font-size:9px;font-weight:700;padding:1px 5px;min-width:14px;text-align:center}
 /* Insights */
 .insights-box{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:18px}
 .insights-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--green);margin-bottom:6px}
@@ -530,6 +547,36 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
   </div>
 </div>
 
+<!-- Resolve Decision Modal -->
+<div class="modal-overlay" id="resolveModalOverlay" style="display:none" onclick="closeResolveModal(event)">
+  <div class="modal">
+    <div class="modal-title">✓ Mark as Resolved</div>
+    <div class="setup-note">This decision has run its course. Capture what you decided and what the cycle showed you — this becomes your permanent record.</div>
+    <input type="hidden" id="resolveDecisionId">
+    <div style="margin-bottom:14px">
+      <label class="field-label">The decision you made</label>
+      <textarea class="field-textarea" id="resolveDecisionMade" rows="3" placeholder="e.g. I'm saying no to the collaboration. The contraction was consistent."></textarea>
+    </div>
+    <div style="margin-bottom:14px">
+      <label class="field-label">Gate it landed in <span style="font-weight:400;color:var(--ink-faint)">(auto-filled · edit if different)</span></label>
+      <input class="field-textarea" id="resolveGateLabel" style="font-size:12px;padding:8px 10px" placeholder="e.g. Gate 29.3 · The Abysmal">
+    </div>
+    <div style="margin-bottom:14px">
+      <label class="field-label">How does it feel in the body now?</label>
+      <div class="chip-row" id="resolveBodyChips"></div>
+    </div>
+    <div style="margin-bottom:4px">
+      <label class="field-label">What did the trend pattern show you?</label>
+      <div id="resolveTrendSummary" style="font-size:12px;color:var(--ink-soft);background:var(--ivory-mid);border-radius:5px;padding:10px 12px;margin-bottom:10px;line-height:1.6"></div>
+      <textarea class="field-textarea" id="resolveNote" rows="3" placeholder="Any final notes on how you arrived here…"></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeResolveModal()">Cancel</button>
+      <button class="modal-btn modal-btn-save" onclick="confirmResolve()">✓ Resolve Decision</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── CONSTANTS ─────────────────────────────────────────────────────────────
 const GATE_DEGREES=[[25,358.25,363.875],[17,3.875,9.5],[21,9.5,15.125],[51,15.125,20.75],[42,20.75,26.375],[3,26.375,32.0],[27,32.0,37.625],[24,37.625,43.25],[2,43.25,48.875],[23,48.875,54.5],[8,54.5,60.125],[20,60.125,65.75],[16,65.75,71.375],[35,71.375,77.0],[45,77.0,82.458],[12,82.625,88.25],[15,88.25,93.875],[52,93.875,99.5],[39,99.5,105.125],[53,105.125,110.75],[62,110.75,116.375],[56,116.375,122.0],[31,122.0,127.625],[33,127.625,133.25],[7,133.25,138.875],[4,138.875,144.5],[29,144.5,150.125],[59,150.125,155.75],[40,155.75,161.375],[64,161.375,167.0],[47,167.0,172.625],[6,172.625,178.25],[46,178.25,183.875],[18,183.875,189.5],[48,189.5,195.125],[57,195.125,200.75],[32,200.75,206.375],[50,206.375,212.0],[28,212.0,217.625],[44,217.625,223.25],[1,223.25,228.875],[43,228.875,234.5],[14,234.5,240.125],[34,240.125,245.75],[9,245.75,251.375],[5,251.375,257.0],[26,257.0,262.625],[11,262.625,268.25],[10,268.25,273.875],[58,273.875,279.5],[38,279.5,285.125],[54,285.125,290.75],[61,290.75,296.375],[60,296.375,302.0],[41,302.0,307.625],[19,307.625,313.25],[13,313.25,318.875],[49,318.875,324.5],[30,324.5,330.125],[55,330.125,335.75],[37,335.75,341.375],[63,341.375,347.0],[22,347.0,352.625],[36,352.625,358.25]];
@@ -717,9 +764,9 @@ async function db(action,table,data,match){
 async function pullFromDB(){
   setSyncStatus('syncing','Syncing…');
   try{
-    const[entries,decisions,decData,momentDecs,summaries]=await Promise.all([
+    const[entries,decisions,decData,momentDecs,summaries,resolvedDecs]=await Promise.all([
       db('select','entries'),db('select','decisions'),db('select','decision_data'),
-      db('select','moment_decisions'),db('select','cycle_summaries')
+      db('select','moment_decisions'),db('select','cycle_summaries'),db('select','resolved_decisions')
     ]);
     const spellsDb=await db('select','spells').catch(()=>null);
     if(entries===null){setSyncStatus('error','Sync error');return}
@@ -746,6 +793,13 @@ async function pullFromDB(){
     Object.entries(ddMap).forEach(([k,d])=>{try{localStorage.setItem(k,JSON.stringify(d))}catch(e){}});
     try{localStorage.setItem('lumina_moment_decisions',JSON.stringify(momentDecs||[]))}catch(e){}
     try{localStorage.setItem('lumina_summaries',JSON.stringify(summaries||[]))}catch(e){}
+    if(resolvedDecs&&resolvedDecs.length){
+      const parsed=resolvedDecs.map(r=>{
+        if(r.trend_snapshot&&typeof r.trend_snapshot==='string'){try{r.trend_snapshot=JSON.parse(r.trend_snapshot)}catch(e){}}
+        return r;
+      });
+      try{localStorage.setItem('lumina_resolved_decisions',JSON.stringify(parsed))}catch(e){}
+    }
     // Rebuild spells
     const spellsParsed=Array.isArray(spellsDb)?(spellsDb).map(r=>{try{return JSON.parse(r.data)}catch(e){return null}}).filter(Boolean):[];
     if(spellsParsed.length)try{localStorage.setItem('lumina_spells',JSON.stringify(spellsParsed))}catch(e){}
@@ -1509,12 +1563,16 @@ function addNewEntry(day){const id=addEntryToDay(day);localStorage.setItem('lumi
 
 // ── DECISION TRACKER ───────────────────────────────────────────────────────
 function renderDecision(el){
+  const resolved=loadResolvedDecisions();
+  const rCount=resolved.length;
   let html=`<div class="dec-tabs">
     <button class="dec-tab ${decisionSubTab==='lunar'?'active':''}" onclick="setDecTab('lunar')">Lunar Decisions</button>
     <button class="dec-tab ${decisionSubTab==='moment'?'active':''}" onclick="setDecTab('moment')">Moment Decisions</button>
+    <button class="dec-tab dec-tab-resolved ${decisionSubTab==='resolved'?'active':''}" onclick="setDecTab('resolved')">Resolved${rCount>0?`<span class="resolved-count-badge">${rCount}</span>`:''}</button>
   </div>`;
   if(decisionSubTab==='lunar')html+=renderLunarDecisions();
-  else html+=renderMomentDecisions();
+  else if(decisionSubTab==='moment')html+=renderMomentDecisions();
+  else html+=renderResolvedDecisions();
   el.innerHTML=html}
 
 function setDecTab(tab){decisionSubTab=tab;render()}
@@ -1594,12 +1652,135 @@ function renderLunarDecisions(){
               </div>
             </div>`}).join('')}
           </div>
+          <div style="padding:14px 20px;border-top:1px solid var(--border-light)">
+            <button class="add-decision-btn" style="background:var(--green);font-size:11px" onclick="openResolveModal('${dec.id}')">✓ Mark as Resolved</button>
+          </div>
         </div>
       </div>`});
     html+='</div>';}
   return html}
 
 function setDecView(mode){decisionViewMode=mode;render()}
+
+function renderResolvedDecisions(){
+  const resolved=loadResolvedDecisions();
+  let html=`<div class="decisions-header"><div class="decisions-title">Resolved Decisions</div></div>
+    <div class="reflector-hint">Decisions that have been made. Return here to log outcomes — let this record inform future cycles.</div>`;
+  if(!resolved.length)return html+'<div class="resolved-empty">No resolved decisions yet.<br><span style="font-size:12px;margin-top:6px;display:block">When a lunar decision is complete, open it in Trend view and tap Mark as Resolved.</span></div>';
+  html+='<div>';
+  [...resolved].reverse().forEach(rd=>{
+    const gateInfo=rd.resolved_gate_num?GATES[rd.resolved_gate_num]||{}:{};
+    const cc=CENTER_COLORS[gateInfo.center]||'var(--green)';
+    const snap=rd.trend_snapshot||{};
+    const snapTotal=(snap.yes||0)+(snap.neutral||0)+(snap.contracted||0)+(snap.unclear||0);
+    const rDate=rd.resolved_date?new Date(rd.resolved_date).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'';
+    html+=`<div class="resolved-card">
+      <div class="resolved-card-header">
+        <div class="resolved-card-title">${escHtml(rd.original_text)}</div>
+        <span class="resolved-badge">Resolved</span>
+      </div>
+      <div class="resolved-meta">${rDate}${rd.resolved_gate_num?` · <span style="color:${cc};font-weight:700">Gate ${rd.resolved_gate_num}${rd.resolved_gate_line?'.'+rd.resolved_gate_line:''} ${gateInfo.name||''}</span>`:''}${rd.body_feel?' · '+rd.body_feel:''}</div>
+      ${rd.decision_made?`<div class="resolved-decided">${escHtml(rd.decision_made)}</div>`:''}
+      ${snapTotal>0?`<div class="resolved-trend-snap">
+        ${snap.yes?`<div class="resolved-trend-item"><span class="resolved-trend-num" style="color:#3A7A3A">${snap.yes}</span> Expansive</div>`:''}
+        ${snap.neutral?`<div class="resolved-trend-item"><span class="resolved-trend-num" style="color:#B08820">${snap.neutral}</span> Neutral</div>`:''}
+        ${snap.contracted?`<div class="resolved-trend-item"><span class="resolved-trend-num" style="color:#A84040">${snap.contracted}</span> Contracted</div>`:''}
+        ${snap.unclear?`<div class="resolved-trend-item"><span class="resolved-trend-num" style="color:#888870">${snap.unclear}</span> Unclear</div>`:''}
+      </div>`:''}
+      ${rd.note?`<div class="resolved-note">${escHtml(rd.note)}</div>`:''}
+      <div class="resolved-outcome-label">How did it turn out?</div>
+      <textarea class="resolved-outcome" rows="3" placeholder="Return here to note the outcome — what actually unfolded…" onchange="saveResolvedOutcome('${rd.id}',this.value)">${escHtml(rd.outcome||'')}</textarea>
+      <div style="margin-top:10px;text-align:right"><button class="decision-delete" style="font-size:11px;color:var(--ink-faint)" onclick="deleteResolvedDecision('${rd.id}')">× Remove</button></div>
+    </div>`;
+  });
+  return html+'</div>'}
+
+function openResolveModal(decId){
+  const dec=loadDecisions().find(d=>d.id===decId);
+  if(!dec)return;
+  const days=buildDays(),today=new Date();today.setHours(0,0,0,0);
+  const todayIdx=days.findIndex(d=>{const dd=new Date(d.date);dd.setHours(0,0,0,0);return dd.getTime()===today.getTime();});
+  const currentDay=todayIdx>=0?days[todayIdx]:days[days.length-1];
+  const decData=loadDecisionData(decId);
+  const counts={yes:0,neutral:0,contracted:0,unclear:0};
+  days.forEach((_,i)=>{const v=(decData[i]||{}).feeling||'';if(v.startsWith('Expansive'))counts.yes++;else if(v.startsWith('Neutral'))counts.neutral++;else if(v.startsWith('Contracted'))counts.contracted++;else if(v.startsWith('Unclear'))counts.unclear++;});
+  document.getElementById('resolveDecisionId').value=decId;
+  document.getElementById('resolveDecisionMade').value='';
+  document.getElementById('resolveNote').value='';
+  document.getElementById('resolveGateLabel').value=currentDay?`Gate ${currentDay.gateNum}.${currentDay.line} · ${currentDay.gate.name}`:'';
+  const total=counts.yes+counts.neutral+counts.contracted+counts.unclear;
+  let snapText='No days logged yet.';
+  if(total>0){
+    const parts=[];
+    if(counts.yes)parts.push(`${counts.yes} Expansive`);
+    if(counts.neutral)parts.push(`${counts.neutral} Neutral`);
+    if(counts.contracted)parts.push(`${counts.contracted} Contracted`);
+    if(counts.unclear)parts.push(`${counts.unclear} Unclear`);
+    const dominant=counts.yes>total*.6?'Leaning yes':counts.contracted>total*.5?'Consistent contraction':counts.unclear>total*.5?'Remained unclear':'Mixed signal';
+    snapText=parts.join(' · ')+` — ${dominant}`;
+  }
+  document.getElementById('resolveTrendSummary').textContent=snapText;
+  const chipEl=document.getElementById('resolveBodyChips');
+  const feels=['Expansive ✦','Settled ○','Relieved ◇','At peace ♡','Still uncertain ~','Heavy ✗'];
+  chipEl.innerHTML=feels.map(f=>`<button class="chip" onclick="selectResolveChip(this,'${f}')">${f}</button>`).join('');
+  document.getElementById('resolveModalOverlay').style.display='flex';}
+
+function selectResolveChip(btn,val){
+  document.querySelectorAll('#resolveBodyChips .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');btn.dataset.val=val;}
+
+function closeResolveModal(e){if(e&&e.target!==document.getElementById('resolveModalOverlay'))return;document.getElementById('resolveModalOverlay').style.display='none';}
+
+function confirmResolve(){
+  const decId=document.getElementById('resolveDecisionId').value;
+  const decisionMade=document.getElementById('resolveDecisionMade').value.trim();
+  const note=document.getElementById('resolveNote').value.trim();
+  const gateLabel=document.getElementById('resolveGateLabel').value.trim();
+  const activeChip=document.querySelector('#resolveBodyChips .chip.active');
+  const bodyFeel=activeChip?activeChip.dataset.val||activeChip.textContent:'';
+  const gateMatch=gateLabel.match(/Gate\s*(\d+)\.?(\d*)/);
+  const gateNum=gateMatch?parseInt(gateMatch[1]):null;
+  const gateLine=gateMatch&&gateMatch[2]?parseInt(gateMatch[2]):null;
+  const days=buildDays(),decData=loadDecisionData(decId);
+  const snap={yes:0,neutral:0,contracted:0,unclear:0};
+  days.forEach((_,i)=>{const v=(decData[i]||{}).feeling||'';if(v.startsWith('Expansive'))snap.yes++;else if(v.startsWith('Neutral'))snap.neutral++;else if(v.startsWith('Contracted'))snap.contracted++;else if(v.startsWith('Unclear'))snap.unclear++;});
+  const origDec=loadDecisions().find(d=>d.id===decId);
+  const rd={
+    id:'rd_'+Date.now(),
+    original_text:origDec?origDec.text:'',
+    decision_made:decisionMade,
+    resolved_date:new Date().toISOString(),
+    resolved_gate_num:gateNum,
+    resolved_gate_line:gateLine,
+    body_feel:bodyFeel,
+    note,
+    outcome:'',
+    trend_snapshot:snap,
+    cycle_start:getCycleStart()
+  };
+  const existing=loadResolvedDecisions();existing.push(rd);
+  try{localStorage.setItem('lumina_resolved_decisions',JSON.stringify(existing))}catch(e){}
+  db('upsert','resolved_decisions',rd);
+  deleteDecision(null,decId);
+  document.getElementById('resolveModalOverlay').style.display='none';
+  decisionSubTab='resolved';render();}
+
+function loadResolvedDecisions(){try{return JSON.parse(localStorage.getItem('lumina_resolved_decisions')||'[]')}catch(e){return[]}}
+
+function saveResolvedOutcome(id,outcome){
+  const all=loadResolvedDecisions();
+  const rd=all.find(r=>r.id===id);
+  if(!rd)return;
+  rd.outcome=outcome;
+  try{localStorage.setItem('lumina_resolved_decisions',JSON.stringify(all))}catch(e){}
+  clearTimeout(syncDebounceTimers['resolved_'+id]);
+  syncDebounceTimers['resolved_'+id]=setTimeout(()=>db('upsert','resolved_decisions',rd),1500);}
+
+function deleteResolvedDecision(id){
+  if(!confirm('Remove this resolved decision permanently?'))return;
+  const all=loadResolvedDecisions().filter(r=>r.id!==id);
+  try{localStorage.setItem('lumina_resolved_decisions',JSON.stringify(all))}catch(e){}
+  db('delete','resolved_decisions',null,{id});render();}
 
 function renderMomentDecisions(){
   const moments=loadMomentDecisions();
@@ -1646,7 +1827,7 @@ async function generateInsights(){
   if(!btn||!result)return;
   btn.disabled=true;btn.textContent='Generating…';
   result.innerHTML='<div style="color:var(--ink-faint);font-size:13px;padding:12px 0">Pulling your data and generating insights…</div>';
-  const nm=getCurrentNewMoon(),days=buildDays(),data=loadData(),decisions=loadDecisions(),moments=loadMomentDecisions();
+  const nm=getCurrentNewMoon(),days=buildDays(),data=loadData(),decisions=loadDecisions(),moments=loadMomentDecisions(),resolved=loadResolvedDecisions();
   const sign=getNewMoonSign(nm);
   const energySummary={},moodSummary={},centerSummary={};
   days.forEach((day,i)=>{
@@ -1674,6 +1855,7 @@ MOST ACTIVATED CENTERS: ${Object.entries(centerSummary).sort((a,b)=>b[1]-a[1]).m
 GATE OBSERVATIONS: ${observations.join('\n')||'None logged'}
 LUNAR DECISIONS: ${decisionSummaries.map(d=>`"${d.text}": Expansive ${d.counts.expansive}x, Neutral ${d.counts.neutral}x, Contracted ${d.counts.contracted}x, Unclear ${d.counts.unclear}x. Notes: ${d.dayNotes.join(' | ')||'none'}`).join('\n')||'None'}
 MOMENT DECISIONS: ${moments.map(m=>`"${m.text}" (Gate ${m.gateNum}, felt: ${m.bodyFeel||'—'}). Outcome: ${m.outcome||'not yet noted'}`).join('\n')||'None'}
+RESOLVED DECISIONS THIS CYCLE: ${resolved.filter(r=>r.cycle_start===nm).map(r=>{const snap=r.trend_snapshot||{};return`"${r.original_text}" → decided: "${r.decision_made||'not recorded'}". Trend: ${snap.yes||0}x Expansive, ${snap.neutral||0}x Neutral, ${snap.contracted||0}x Contracted. Gate it landed in: ${r.resolved_gate_num?'Gate '+r.resolved_gate_num:'not recorded'}. Body: ${r.body_feel||'—'}. Outcome so far: ${r.outcome||'not yet noted'}`}).join('\n')||'None this cycle'}
 
 Write a warm, direct, insightful summary of this cycle. Plain prose, no bullet points, no headers. 4-6 paragraphs. Cover: what the energy and mood data suggests about how this cycle felt, which centers were prominent, what the decision data shows, notable gate observations, and a closing reflection on what this cycle is asking of her. Be specific to her actual data. Speak to her directly.`;
   try{
@@ -1692,7 +1874,7 @@ Write a warm, direct, insightful summary of this cycle. Plain prose, no bullet p
 function toggleDecision(id){const c=localStorage.getItem('lumina_open_dec');localStorage.setItem('lumina_open_dec',c===id?'':id);render()}
 function saveDecisionFeeling(decId,day,value){if(day<0)return;updateDecisionEntry(decId,day,value,undefined);render()}
 function saveDecisionComment(decId,day,value){if(day<0)return;updateDecisionEntry(decId,day,undefined,value)}
-function deleteDecision(e,id){e.stopPropagation();if(!confirm('Delete this decision?'))return;saveDecisions(loadDecisions().filter(d=>d.id!==id));localStorage.removeItem(getDecisionKey(id));if(localStorage.getItem('lumina_open_dec')===id)localStorage.removeItem('lumina_open_dec');deleteDecisionFromDB(id);render()}
+function deleteDecision(e,id){if(e)e.stopPropagation();if(e&&!confirm('Delete this decision?'))return;saveDecisions(loadDecisions().filter(d=>d.id!==id));localStorage.removeItem(getDecisionKey(id));if(localStorage.getItem('lumina_open_dec')===id)localStorage.removeItem('lumina_open_dec');deleteDecisionFromDB(id);render()}
 function openModal(){document.getElementById('modalOverlay').style.display='flex';document.getElementById('modalInput').value='';setTimeout(()=>document.getElementById('modalInput').focus(),100)}
 function closeModal(e){if(e&&e.target!==document.getElementById('modalOverlay'))return;document.getElementById('modalOverlay').style.display='none'}
 function addDecision(){
