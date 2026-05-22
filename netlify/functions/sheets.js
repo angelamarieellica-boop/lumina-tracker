@@ -42,7 +42,8 @@ exports.handler = async function(event) {
     decision_data: 'decision_id,cycle_start,day_index',
     moment_decisions: 'id',
     cycle_summaries: 'id',
-    spells: 'id'
+    spells: 'id',
+    resolved_decisions: 'id'
   };
 
   try {
