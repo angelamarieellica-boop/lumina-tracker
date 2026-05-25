@@ -45,7 +45,7 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .progress-bar-bg{height:3px;background:var(--border-light);border-radius:2px;overflow:hidden;margin-bottom:6px}
 .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold-warm));transition:width .4s}
 .progress-label{font-size:11px;font-weight:700;color:var(--ink-faint);letter-spacing:1px}
-.nav{display:flex;gap:4px;padding:0 8px 14px;border-bottom:1.5px solid var(--border-light);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap}
+.nav{display:flex;gap:4px;padding:0 8px 14px;border-bottom:1.5px solid var(--border-light);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;justify-content:center}
 .nav::-webkit-scrollbar{display:none}
 .nav-btn{flex-shrink:0}
 .nav-btn{background:none;border:1.5px solid var(--border);color:var(--ink-soft);padding:8px 22px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Libre Baskerville',serif;transition:all .15s}
@@ -1637,6 +1637,10 @@ function renderLunarDecisions(){
     <div class="reflector-hint">These are your big ones — tracked across the full 29-day cycle. A clear "yes" that persists across multiple gates and emotional states is real signal.</div>`;
   if(!decisions.length)return html+'<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No lunar decisions yet. Add one to begin tracking.</div>';
 
+  const activeDecisions=decisions.filter(d=>!d.resolved);
+  const resolvedDecisions=decisions.filter(d=>d.resolved);
+  const resolvedOpen=localStorage.getItem('lumina_resolved_open')==='1';
+
   // View toggle
   html+=`<div class="dec-view-toggle">
     <button class="dec-view-btn ${decisionViewMode==='entry'?'active':''}" onclick="setDecView('entry')">Today</button>
@@ -1644,11 +1648,10 @@ function renderLunarDecisions(){
   </div>`;
 
   if(decisionViewMode==='entry'){
-    // Entry view — just today's row per decision
     const day=todayIdx>=0?days[todayIdx]:null;
     const gateLabel=day?`Gate ${day.gateNum}.${day.line} · ${day.gate.name}`:'';
     html+='<div class="decision-cards">';
-    decisions.forEach(dec=>{
+    activeDecisions.forEach(dec=>{
       const decData=loadDecisionData(dec.id),dayData=decData[todayIdx]||{},fv=dayData.feeling||'',fc=dayData.comment||'';
       html+=`<div class="dec-entry-card">
         <div class="dec-entry-name">${escHtml(dec.text)}</div>
@@ -1662,13 +1665,16 @@ function renderLunarDecisions(){
           <option value="Excited ◈" ${fv.startsWith('Excited')?'selected':''}>◈ Excited</option>
         </select>
         <textarea class="decision-comment" rows="2" placeholder="Notes on how this feels today…" onchange="saveDecisionComment('${dec.id}',${todayIdx},this.value)">${escHtml(fc)}</textarea>
-        <button class="decision-delete" style="margin-top:8px;font-size:12px;color:var(--ink-faint)" onclick="deleteDecision(event,'${dec.id}')">× Remove</button>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="spell-action-btn" style="color:var(--green);border-color:var(--green)" onclick="resolveDecision('${dec.id}')">✓ Mark Resolved</button>
+          <button class="decision-delete" style="font-size:12px;color:var(--ink-faint)" onclick="deleteDecision(event,'${dec.id}')">× Remove</button>
+        </div>
       </div>`});
     html+='</div>';
   } else {
     // Trend view — full 29-day grid
     html+='<div class="decision-cards">';
-    decisions.forEach(dec=>{
+    activeDecisions.forEach(dec=>{
       const decData=loadDecisionData(dec.id),counts={yes:0,maybe:0,no:0,unclear:0};
       days.forEach((_,i)=>{const v=(decData[i]||{}).feeling||'';if(v.startsWith('Expansive'))counts.yes++;else if(v.startsWith('Neutral'))counts.maybe++;else if(v.startsWith('Contracted'))counts.no++;else if(v.startsWith('Unclear'))counts.unclear++});
       const total=counts.yes+counts.maybe+counts.no+counts.unclear;
@@ -1708,6 +1714,24 @@ function renderLunarDecisions(){
         </div>
       </div>`});
     html+='</div>';}
+
+  // Resolved decisions section
+  if(resolvedDecisions.length){
+    html+=`<button class="archive-section-toggle" onclick="localStorage.setItem('lumina_resolved_open',localStorage.getItem('lumina_resolved_open')==='1'?'':'1');render()">
+      <span>✓ Resolved (${resolvedDecisions.length})</span><span>${resolvedOpen?'▾':'▸'}</span>
+    </button>`;
+    if(resolvedOpen){
+      html+='<div class="decision-cards" style="margin-top:10px;opacity:.75">';
+      resolvedDecisions.forEach(dec=>{
+        const resolvedDate=new Date(dec.resolvedDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+        html+=`<div class="dec-entry-card" style="border-color:var(--green);background:var(--green-pale)">
+          <div class="dec-entry-name">${escHtml(dec.text)}</div>
+          <div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:4px">✓ Resolved ${resolvedDate}</div>
+          ${dec.resolvedNote?`<div style="font-size:12px;color:var(--ink-mid);line-height:1.6">${escHtml(dec.resolvedNote)}</div>`:''}
+          <button class="spell-action-btn" style="margin-top:8px" onclick="unresolveDecision('${dec.id}')">↩ Reopen</button>
+        </div>`;});
+      html+='</div>';}}
+
   return html}
 
 function setDecView(mode){decisionViewMode=mode;render()}
@@ -1804,6 +1828,24 @@ function toggleDecision(id){const c=localStorage.getItem('lumina_open_dec');loca
 function saveDecisionFeeling(decId,day,value){if(day<0)return;updateDecisionEntry(decId,day,value,undefined);render()}
 function saveDecisionComment(decId,day,value){if(day<0)return;updateDecisionEntry(decId,day,undefined,value)}
 function deleteDecision(e,id){e.stopPropagation();if(!confirm('Delete this decision?'))return;saveDecisions(loadDecisions().filter(d=>d.id!==id));localStorage.removeItem(getDecisionKey(id));if(localStorage.getItem('lumina_open_dec')===id)localStorage.removeItem('lumina_open_dec');deleteDecisionFromDB(id);render()}
+
+function resolveDecision(id){
+  const decisions=loadDecisions();
+  const idx=decisions.findIndex(d=>d.id===id);if(idx<0)return;
+  const outcome=prompt('How did this decision resolve? (optional note)');
+  if(outcome===null)return;
+  decisions[idx].resolved=true;
+  decisions[idx].resolvedDate=new Date().toISOString();
+  decisions[idx].resolvedNote=outcome.trim();
+  saveDecisions(decisions);render();}
+
+function unresolveDecision(id){
+  const decisions=loadDecisions();
+  const idx=decisions.findIndex(d=>d.id===id);if(idx<0)return;
+  decisions[idx].resolved=false;
+  delete decisions[idx].resolvedDate;
+  delete decisions[idx].resolvedNote;
+  saveDecisions(decisions);render();}
 function openModal(){document.getElementById('modalOverlay').style.display='flex';document.getElementById('modalInput').value='';setTimeout(()=>document.getElementById('modalInput').focus(),100)}
 function closeModal(e){if(e&&e.target!==document.getElementById('modalOverlay'))return;document.getElementById('modalOverlay').style.display='none'}
 function addDecision(){
