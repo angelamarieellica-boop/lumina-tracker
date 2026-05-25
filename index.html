@@ -2681,13 +2681,9 @@ function renderBodygraph(){return '';} // kept for reference, replaced by render
           ${defined?`<div style="display:flex;align-items:center;gap:6px;margin-top:8px;width:100%"><span style="font-size:11px;color:var(--ink-faint);font-weight:700">Transit ends:</span><input type="date" class="field-input" style="width:160px;padding:6px 10px;font-size:12px" value="${endsDate}" onchange="setCenterState('${sel}',true,this.value)"/><button class="add-row-btn" style="margin:0;padding:6px 12px;font-size:11px" onclick="setCenterState('${sel}',true,null)">No end date</button></div>`:''}
         </div>
       </div>`;}}
-  return`<div class="bodygraph-wrap">
-    <div class="bodygraph-legend">
-      <span><span class="legend-swatch" style="background:white"></span>Open</span>
-      <span><span class="legend-swatch" style="background:#B8860B;border-color:#96690A"></span>Transit Defined</span>
-    </div>
-    ${svg}${panel}
-  </div>`;}
+  return html;}
+
+function renderBodygraph(){return '';}
 
 function renderDayCenterContext(displayGates){
   const activeCenters=[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))];
