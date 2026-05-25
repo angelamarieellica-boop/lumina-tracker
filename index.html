@@ -2827,7 +2827,8 @@ function renderNotes(el){
 
   <!-- New note form (inline) -->
   <div id="newNoteForm" style="display:none;background:var(--white);border:1.5px solid var(--green);border-radius:8px;padding:18px;margin-bottom:16px">
-    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:12px">New Note</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:8px">New Note</div>
+    <div id="newNoteContextPreview" style="margin-bottom:12px;padding:8px 10px;background:var(--ivory-mid);border-radius:5px;min-height:22px"></div>
     <input id="noteTitle" class="gate-search" placeholder="Title (optional)" style="margin-bottom:10px"/>
     <textarea id="noteText" class="brain-dump-textarea" rows="4" placeholder="What did you observe? What example are you capturing?" style="margin-bottom:10px"></textarea>
     <div style="margin-bottom:10px">
@@ -2850,7 +2851,13 @@ function renderNotes(el){
       <div class="notes-entry-header">
         <div style="flex:1">
           ${n.title?`<div style="font-weight:700;color:var(--ink);margin-bottom:4px;font-size:14px">${n.title}</div>`:''}
-          <div class="notes-entry-date">${new Date(n.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+          <div class="notes-entry-date">${new Date(n.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})} · ${new Date(n.created).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</div>
+          ${n.lunarContext?`<div style="font-size:11px;color:var(--ink-faint);margin-top:4px;line-height:1.7">
+            Day ${n.lunarContext.cycleDay} · ${n.lunarContext.cycleSign} cycle
+            &nbsp;·&nbsp; <span style="color:${CENTER_COLORS[n.lunarContext.gateCenter]||'#3A7A3A'}">Gate ${n.lunarContext.gateNum}.${n.lunarContext.gateLine} ${n.lunarContext.gateName}</span>
+            &nbsp;·&nbsp; <span style="color:${(TEMP_TYPES.find(t=>t.id===n.lunarContext.type)||TEMP_TYPES[0]).color}">${(TEMP_TYPES.find(t=>t.id===n.lunarContext.type)||TEMP_TYPES[0]).emoji} ${n.lunarContext.typeName}</span>
+            ${n.lunarContext.channel?`&nbsp;·&nbsp; Ch ${n.lunarContext.channel}`:''}
+          </div>`:''}
           ${noteTags?`<div style="margin-top:6px">${noteTags}</div>`:''}
         </div>
         <button class="decision-delete" onclick="deleteNote('${n.id}')">×</button>
@@ -2861,16 +2868,47 @@ function renderNotes(el){
   el.innerHTML=html;}
 
 let _newNoteTags=new Set();
+let _newNoteContext=null;
+
 function openNewNote(){
   _newNoteTags=new Set();
+  const now=new Date();
+  const deg=getMoonEclipticLongitude(now);
+  const gn=getGateFromDegree(deg);
+  const gate=GATES[gn]||{};
+  const line=getMoonLine(deg,gn);
+  const days=buildDays();
+  const todayDay=days.find(d=>d.isToday)||days[0];
+  const nm=getCycleStart(),sign=getNewMoonSign(nm);
+  const {type,channels}=getTypeForGate(gn);
+  const typeData=TEMP_TYPES.find(t=>t.id===type)||TEMP_TYPES[0];
+  const channelStr=channels.length?channels.map(ch=>ch.natalGate+'-'+ch.moonGate).join(', '):'';
+  _newNoteContext={
+    timestamp:now.toISOString(),
+    cycleDay:todayDay?todayDay.dayNum:null,
+    cycleSign:sign,
+    gateNum:gn,gateLine:line,
+    gateName:gate.name||'',gateCenter:gate.center||'',
+    type,typeName:typeData.label,channel:channelStr,
+  };
   document.getElementById('newNoteForm').style.display='block';
   document.getElementById('noteTitle').value='';
   document.getElementById('noteText').value='';
-  getAllTags().forEach(t=>{const el=document.getElementById(`ntag_${t.id}`);if(el)el.style.opacity='0.5';});}
+  const ctx=document.getElementById('newNoteContextPreview');
+  if(ctx){
+    const cc=CENTER_COLORS[gate.center]||'#3A7A3A';
+    ctx.innerHTML='<span style="font-size:11px;color:var(--ink-faint)">'
+      +now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})
+      +' &nbsp;·&nbsp; Day '+(todayDay?todayDay.dayNum:'?')+' · '+sign+' cycle'
+      +' &nbsp;·&nbsp; <span style="color:'+cc+'">Gate '+gn+'.'+line+' '+gate.name+'</span>'
+      +' &nbsp;·&nbsp; <span style="color:'+typeData.color+'">'+typeData.emoji+' '+typeData.label+'</span>'
+      +(channelStr?' &nbsp;·&nbsp; <span style="color:var(--ink-faint)">Ch '+channelStr+'</span>':'')
+      +'</span>';}
+  getAllTags().forEach(t=>{const el=document.getElementById('ntag_'+t.id);if(el)el.style.opacity='0.5';});}
 
 function toggleNewNoteTag(id){
   if(_newNoteTags.has(id)){_newNoteTags.delete(id);}else{_newNoteTags.add(id);}
-  const el=document.getElementById(`ntag_${id}`);
+  const el=document.getElementById('ntag_'+id);
   if(el)el.style.opacity=_newNoteTags.has(id)?'1':'0.5';}
 
 function saveNewNote(){
@@ -2878,9 +2916,11 @@ function saveNewNote(){
   const text=document.getElementById('noteText')?.value.trim()||'';
   if(!text)return;
   const notes=loadNotes();
-  notes.unshift({id:Date.now().toString(),created:new Date().toISOString(),title,text,tags:[..._newNoteTags]});
+  notes.unshift({id:Date.now().toString(),created:(_newNoteContext?.timestamp)||new Date().toISOString(),
+    title,text,tags:[..._newNoteTags],lunarContext:_newNoteContext||null});
   saveNotes(notes);
   document.getElementById('newNoteForm').style.display='none';
+  _newNoteContext=null;
   renderNotes(document.getElementById('mainContent'));}
 
 function deleteNote(id){
