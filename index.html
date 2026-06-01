@@ -1946,8 +1946,10 @@ function renderCardSlots(day, entryId){
   let html='<div class="card-slots">';
   slots.forEach((slot,si)=>{
     const tarotSuits=['Major Arcana','Cups','Pentacles','Swords','Wands'];
-    const filteredTarot=slot.suit?TAROT_CARDS.filter(c=>c.suit===slot.suit||c.suit.includes(slot.suit)):TAROT_CARDS;
-    const selectedTarot=TAROT_CARDS.find(c=>c.name===slot.cardName);
+    const tarotDecks=TAROT_DECKS||[...new Set(TAROT_CARDS.map(c=>c.deck))];
+    const filteredTarotByDeck=slot.tarotDeck?TAROT_CARDS.filter(c=>c.deck===slot.tarotDeck):TAROT_CARDS;
+    const filteredTarot=slot.suit?filteredTarotByDeck.filter(c=>c.suit===slot.suit||c.suit.includes(slot.suit)):filteredTarotByDeck;
+    const selectedTarot=TAROT_CARDS.find(c=>c.name===slot.cardName&&(!slot.tarotDeck||c.deck===slot.tarotDeck))||TAROT_CARDS.find(c=>c.name===slot.cardName);
     const filteredOracle=slot.deck?ORACLE_CARDS.filter(c=>c.deck===slot.deck):ORACLE_CARDS;
     const selectedOracle=ORACLE_CARDS.find(c=>c.name===slot.cardName&&(!slot.deck||c.deck===slot.deck));
 
@@ -1995,6 +1997,15 @@ function renderCardSlots(day, entryId){
       </div>
       <div class="card-selectors">
         ${slot.type==='tarot'?`
+          <div style="margin-bottom:8px">
+            <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px">Deck</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              ${tarotDecks.map(d=>`<label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;color:${slot.tarotDeck===d?'var(--green)':'var(--ink-soft)'}">
+                <input type="radio" name="tarotDeck_${slot.id}" value="${escHtml(d)}" ${slot.tarotDeck===d||(!slot.tarotDeck&&d===tarotDecks[0])?'checked':''} onchange="updateCardSlot(${day},'${entryId}','${slot.id}','tarotDeck',this.value)" style="accent-color:var(--green)"/>
+                ${escHtml(d)}
+              </label>`).join('')}
+            </div>
+          </div>
           <select class="card-select" onchange="updateCardSlot(${day},'${entryId}','${slot.id}','suit',this.value)">
             <option value="">All suits</option>
             ${tarotSuits.map(s=>`<option value="${s}" ${slot.suit===s?'selected':''}>${s}</option>`).join('')}
