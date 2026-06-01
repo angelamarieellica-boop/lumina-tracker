@@ -863,6 +863,23 @@ function addEntryToDay(day){
   const now=new Date(),deg=getMoonEclipticLongitude(now),gn=getGateFromDegree(deg),ln=getMoonLine(deg,gn);
   const entry={id:Date.now().toString(),time:now.toISOString(),gateNum:gn,gateLine:ln,energy:'',moods:[],body:[],reflectorLens:'',obsPatterns:'',obsReactions:'',obsImpulses:'',obsSurprises:'',obsOthers:'',obsEnv:'',card:'',cardThemes:''};
   const dd=getDayData(day);dd.entries.push(entry);saveDayData(day,dd);return entry.id}
+function updateEntryTime(day,entryId,timeStr){
+  // timeStr is HH:MM from the input
+  const data=loadData();
+  if(!data[day])return;
+  const entry=data[day].entries.find(e=>e.id===entryId);
+  if(!entry)return;
+  const existing=entry.time?new Date(entry.time):new Date();
+  const [h,m]=timeStr.split(':').map(Number);
+  existing.setHours(h,m,0,0);
+  entry.time=existing.toISOString();
+  // Also recalculate which gate was active at that time
+  const deg=getMoonEclipticLongitude(existing);
+  entry.gateNum=getGateFromDegree(deg);
+  entry.gateLine=getMoonLine(deg,entry.gateNum);
+  saveDayData(day,data[day]);
+  scheduleSync(day,data[day]);}
+
 function updateEntryField(day,entryId,field,value){
   const dd=getDayData(day);const idx=dd.entries.findIndex(e=>e.id===entryId);
   if(idx<0)return;dd.entries[idx][field]=value;saveDayData(day,dd)}
@@ -1263,7 +1280,12 @@ function renderDetail(el){
     const bodyChips=BODY_STATES.map(b=>`<button class="chip-btn ${(e.body||[]).includes(b)?'selected':''}" style="${(e.body||[]).includes(b)?'background:var(--gold-warm);border-color:var(--gold-warm);':''}" onclick="toggleEntryBody(${selectedDay},'${e.id}','${b}');render()">${b}</button>`).join('');
     return`<div class="entry-item">
       <div class="entry-item-header" onclick="toggleEntryOpen('${e.id}')">
-        <div><div class="entry-item-time">✦ ${eTime||'Entry'}</div><div class="entry-item-gate" style="color:${cc}">Gate ${e.gateNum}.${e.gateLine} — ${entryGate.name||''}</div></div>
+        <div><div class="entry-item-time" style="display:flex;align-items:center;gap:6px">
+          ✦ <input type="time" value="${e.time?new Date(e.time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false}):'00:00'}" 
+            style="background:none;border:none;border-bottom:1px solid var(--border-light);font-size:12px;font-weight:700;color:var(--ink);font-family:'Libre Baskerville',serif;width:80px;outline:none;cursor:pointer;padding:0"
+            onchange="updateEntryTime(${selectedDay},'${e.id}',this.value)"
+            onclick="event.stopPropagation()" title="Edit entry time"/>
+        </div><div class="entry-item-gate" style="color:${cc}">Gate ${e.gateNum}.${e.gateLine} — ${entryGate.name||''}</div></div>
         <button class="entry-item-delete" onclick="event.stopPropagation();deleteEntry(${selectedDay},'${e.id}')">×</button>
       </div>
       <div class="entry-item-body ${isOpen?'open':''}">
