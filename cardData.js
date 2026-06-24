@@ -1192,6 +1192,23 @@ const ORACLE_CARDS = [
     }
   },
   {
+    "deck": "Dreamscape Oracle",
+    "card_number": "19.0",
+    "name": "The Word",
+    "theme": "",
+    "core_message": "Write your story down; have a playful attitude towards life.",
+    "meaning": "Stories and storytelling have been with us since the beginning. Our minds are designed to share our experiences with each other. We crave the sharing of stories to remind us that we are connected through our words. The Word leans into her wings. She steadies a stack of parchment on her lap, her knees curled up to meet the paper. The girl holds a plume in her right hand, poised to strike the page at any moment. Her eyes remain closed, engrossed in the visions of the story her mind describes.\nWhen she is ready, a new story will get inked on the page.",
+    "shadow": "",
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    }
+  },
+  {
     "deck": "Loputyn Oracle",
     "card_number": "27.0",
     "name": "Inner Healing",
@@ -1282,6 +1299,23 @@ const ORACLE_CARDS = [
     "name": "Desire",
     "theme": "",
     "core_message": "There can be no Oracle without desire because desire underlies our search for fulfilling something that is somehow absent in our life. This theme is an excellent starting point for understanding the nature of whatever we want to manifest, whether it is something tangible rather than an emotion or a way of being or acting to improve ourselves.\nHowever, when desire goes against what is good for us or our personal evolution, it risks harming us or possessing us, as in the case of the Power card. It can make you free, but at the same time it can become an obsession. Think of what happened with Eve and the apple, the fruit of sin in Eden. On the one hand, the urge to bite into it broke the enchantment of a perfect but limited life; on the other, having bitten into it freed human beings and put them in a position to struggle and wonder what was beyond the boundaries of Eden. Can reaching the object of your desire enchain you or set you free?",
+    "meaning": "",
+    "shadow": "",
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    }
+  },
+  {
+    "deck": "Loputyn Oracle",
+    "card_number": "11.0",
+    "name": "Rebuke",
+    "theme": "",
+    "core_message": "In the midst of the process of change, we are not yet fully capable of using the new tools that appear in our hands, and thus risk doing more harm than good.\nHow hard are you on yourself when you make mis-takes? Is your severe self-judgement justified by the extent of the mistake you made, or are you perhaps exaggerating in your negative assessment? Remember that experience also comes through imperfec-tions, the road to perfection is an ideal road, but like any ideal it makes us feel small, out of place and inadequate and increases the distance between us and our goals. Don't extinguish your desire to try with words that are as sharp as thorns, be objective when you go off track and don't call yourself a fool when someone Points out mistakes. You can do better next time, you are learning.",
     "meaning": "",
     "shadow": "",
     "guidebook": "",
@@ -1402,6 +1436,23 @@ const ORACLE_CARDS = [
     "theme": "",
     "core_message": "I am a creative force of nature. \n\nImagine, Shape, Fabricate",
     "meaning": "The sky's the limit! Don't put a glass ceiling on your goals. The whole shebang is possible for you. You can achieve anything if you decide to. It's up to you to dream extravagantly! \n\nEverything you need is within reach. Just like Goddess Hina scatters her seeds on the wind like enchanted moondust, you have the essential elements to cast your gleaming vision.\n\nFollow the goddess spiral inward and upward to realise your immeasurable capacity. It is time to harness your creative power and gather your courage to birth blossoming new beginnings. From the seeds of faith, bright blooms unfurl and dance in the radiant light.\nMould your life consciously from the sacred earth of the goddess. Hold your vision high and stay focused on your long-term vision to refill and sustain your motivation. Plant the seeds of hope and then bring your soulful offerings to life through faith in action. Surrender and synchronise with the natural phases of the moon. Time flies when you flow freely and enjoy the process of your creations.\n\nBring your playful inner child out to play, draw, paint and daydream. Spirited fun opens gateways of abundance and scatters your path with golden gems of effervescent joy.\n\nDelight in the riches that are revealed to you along the way.",
+    "shadow": "",
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    }
+  },
+  {
+    "deck": "Moon Temple Oracle",
+    "card_number": "38.0",
+    "name": "Progress",
+    "theme": "",
+    "core_message": "My life evolves at the exact right time. \n\nGrow, defend, insulate",
+    "meaning": "You are making progress! You may feel like it is not happening quickly enough for you, but if you go back and reflect on how far you have come, you will be pleasantly surprised about the headway you have made so far. Take the time to celebrate your small wins, ongoing advancement and ever-evolving growth to date.\nYou may have been so focused on the end result and achieving your goals, that you've missed the actual development of your dreams. The journey is far more rewarding than the final outcome. If you were to instantly manifest your wishes, you would miss out on rejoicing the incremental improvements and milestones along the way.\n\nAccomplishment is not about the final destination; it is about the expedition. It doesn't mean the endpoint is irrelevant, but the journey shapes your soul's evolution. It is about who you become in the process. The path you walk has a greater role in your overall fulfilment.\n\nIt is up to you to cultivate a supportive environment where you can nurture your creative offerings through to abundant completion. Surround yourself with supportive people that encourage you and help you on your quest. Delegate and ask for assistance where possible to speed up your progress. Create collaborative connections to ensure a win-win for everyone.\n\nHealthy boundaries will keep you focused and aligned with your divine plan. Learn to say, \"No thanks\" to unnecessary distractions that take you off track. Detach from negative chatter, comparison and competition. A positive mindset grows a 'can-do' attitude that supports your vision. Preserve your energy levels and repair any draining leaks that hold you back from your growth. Weather the storms with a shield of optimism and maintain a solution-based outlook to arise triumphant.",
     "shadow": "",
     "guidebook": "",
     "your_layer": "",
@@ -1617,6 +1668,23 @@ const ORACLE_CARDS = [
     }
   },
   {
+    "deck": "White Light Oracle",
+    "card_number": "15.0",
+    "name": "Spirit Bear of 396Hz",
+    "theme": "",
+    "core_message": "You are being healed from guilt and fear. Such emotions will no longer steal your personal power or dissuade you from confidence, happiness and realising your own worth. No matter how unlikely it may seem, you are going to emerge from a spiritual winter into light and life. The divinely ordained time for your liberation, healing and emergence is much closer than you realise. Abundant blessings are stirring and shall soon manifest.\n\nThe frequency of 396Hz is deeply nurturing and protective. It is the heart frequency of the Universal Mother protecting her This frequency helps the body to ground. It helps the mind settle into the body, rather than constantly flitting from one possibility to the next, creating excitement but also an excess of nervous energy. It helps the mind and body play nicely with each other, supporting each other, rather than opposing each other.\n\nThen, your mind won't be constantly haranguing your body, leaving it feeling bad about itself, tired or unhappy or even angry and rebellious. In these and other ways, the 396Hz frequency helps reconcile the push-pull of competing interests, integrating awareness in the heart and providing a clear pathway to a transcendent resolution where all is working for the one higher purpose.\n\nThis frequency harmonises beautifully with the spiritual medicine of the bear soul totem. It encourages our natural ability to find the sweetness in life necessary to sustain hope and heal our hearts. Spirit Bear connects us to the restorative power of hibernation, that deep rest of body and mind. If you are highly strung and, like many modern people find it hard to consciously relax your body and mind through spiritual practices, Spirit Bear brings the comfort and encouragement to allow your mind to rest within the body. It is as if the mind were in a cave for renewal, safe from predators and external forces, undisturbed and able to rest.\nThis oracle urges you to go within, where there is a tremendous healing force awakening. Give it the time and space it needs to do its best work for you.\n\nHEALING PROCESS\nFind a place to lie down comfortably on your back, with your arms and legs slightly apart and your head slightly elevated so your neck is comfortable. If you tend to cool down as you relax, as many people do, cover yourself with appropriate layers. If you have a health condition which prevents you from lying down, seat yourself comfortably. Say this prayer:\n\nI invoke the healing frequency of unconditional love and wisdom of the Divine Mother. May my body, mind and soul be sheltered in a sanctuary of protective grace to fully relax and deeply beal.\n\nNow, it is time for you to relax. You can play sacred music or simply listen to your own breath flowing in and out. If the room can be darkened, this can promote restfulness, too. If you are tired, you will likely fall asleep rather than simply rest. That is okay.\nGently ease your muscles into a state of relaxation, allowing them to become heavy and settled. Allow your awareness to continue to drift within until your mind begins to let go. Your mind may like to rest within your body or on your breath or to float away in reverie. Rest for as long as you choose.\n\nEmerging from hibernation can take some time and adjustment. Move slowly if needs be. Ground, nourish and hydrate your body. You have completed your healing process.",
+    "meaning": "",
+    "shadow": "",
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": "",
+    "field_labels": {
+      "core_message": "Core Message",
+      "meaning": "Expanded Meaning",
+      "shadow": "Shadow / Reversed"
+    }
+  },
+  {
     "deck": "Mystical Shaman Oracle",
     "card_number": "22.0",
     "name": "The Ghost Dance",
@@ -1726,6 +1794,23 @@ const ORACLE_CARDS = [
     "core_message": "THE ESSENCE\nThe seven colors represent the seven chakras and a complete spiritual path. It is the \"rainbow bridge\" to higher realms and signifies you are in alignment with Spirit.",
     "meaning": "THE INVITATION\nThe end of the \"storm\" is near. Keep persevering and don't give up hope, as things are about to shift in a positive direction.",
     "shadow": "THE MEDICINE\nA warning not to get caught chasing the illusion of a \"pot of gold\". It asks you to appreciate your current blessings rather than always looking for future rewards.",
+    "guidebook": "",
+    "your_layer": "",
+    "imagery": "",
+    "field_labels": {
+      "core_message": "The Essence",
+      "meaning": "The Invitation",
+      "shadow": "The Medicine"
+    }
+  },
+  {
+    "deck": "Mystical Shaman Oracle",
+    "card_number": "5.0",
+    "name": "The Beloved",
+    "theme": "",
+    "core_message": "THE ESSENCE\nThe Beloved is the recognition of Spirit in another, and moving toward Spirit through the other. It is when the divine appears to us in the form of our child, our partner, our friend, and we experience being in love.\nAs we grow, we start to recognize the Beloved in everyone, not confusing their personality with their divine nature.\n\nTHE INVITATION\nAccept the invitation to learn through the path of love. Expand your being through union with another. When you recognize the Beloved in another, you call forth their highest and purest nature. Follow the path of love.\n\nTHE MEDICINE\nBe careful with romantic love, the kind of love you \"fall\" in and out of. Own all the projections you have placed upon the person you are dreaming of. Remember that they are only mirroring back your own deep longings rather than revealing their true selves. If you fail to notice this, be prepared to walk through the fire of strong emotions once again.",
+    "meaning": "",
+    "shadow": "",
     "guidebook": "",
     "your_layer": "",
     "imagery": "",
