@@ -755,18 +755,40 @@ function updateLiveGate(){const now=new Date(),deg=getMoonEclipticLongitude(now)
 // ── SUPABASE ───────────────────────────────────────────────────────────────
 let syncDebounceTimers={};
 function setSyncStatus(state,msg){const dot=document.getElementById('syncDot'),lbl=document.getElementById('syncLabel');if(!dot)return;dot.className='sync-dot '+state;lbl.textContent=msg}
-async function db(action,table,data,match){
-  try{const r=await fetch('/.netlify/functions/sheets',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,table,data,match})});if(!r.ok){console.error('DB error',await r.text());return null}return r.json()}
-  catch(e){console.error('DB error',e);return null}}
+async function db(action,table,data,match,retries=2){
+  for(let attempt=0;attempt<=retries;attempt++){
+    try{
+      const controller=new AbortController();
+      const timeout=setTimeout(()=>controller.abort(),20000); // 20s timeout
+      const r=await fetch('/.netlify/functions/sheets',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action,table,data,match}),
+        signal:controller.signal
+      });
+      clearTimeout(timeout);
+      if(!r.ok){console.error('DB error',await r.text());return null}
+      return r.json();
+    }catch(e){
+      if(attempt<retries&&e.name!=='AbortError'){
+        await new Promise(res=>setTimeout(res,1000*(attempt+1))); // backoff
+        continue;
+      }
+      console.error('DB error',e);return null;
+    }
+  }
+  return null;}
 
 async function pullFromDB(){
   setSyncStatus('syncing','Syncing…');
   try{
-    const[entries,decisions,decData,momentDecs,summaries]=await Promise.all([
-      db('select','entries'),db('select','decisions'),db('select','decision_data'),
-      db('select','moment_decisions'),db('select','cycle_summaries')
-    ]);
-    const spellsDb=await db('select','spells').catch(()=>null);
+    // Sequential to avoid overwhelming Supabase on cold start
+    const entries    = await db('select','entries');
+    const decisions  = await db('select','decisions');
+    const decData    = await db('select','decision_data');
+    const momentDecs = await db('select','moment_decisions');
+    const summaries  = await db('select','cycle_summaries');
+    const spellsDb   = await db('select','spells').catch(()=>null);
     if(entries===null){setSyncStatus('error','Sync error');return}
     const cycleMap={};
     (entries||[]).forEach(row=>{
@@ -2662,6 +2684,16 @@ function renderCenterStateControls(){
 
 function renderBodygraph(){return '';} // kept for reference, replaced by renderCenterStateControls
 
+function toggleCenterExpand(id){
+  const short=document.getElementById(id+'_short');
+  const full=document.getElementById(id+'_full');
+  const btn=document.getElementById(id+'_btn');
+  if(!short||!full||!btn)return;
+  const isExpanded=full.style.display!=='none';
+  short.style.display=isExpanded?'block':'none';
+  full.style.display=isExpanded?'none':'block';
+  btn.textContent=isExpanded?'Read more ↓':'Show less ↑';}
+
 function renderDayCenterContext(displayGates){
   const activeCenters=[...new Set(displayGates.map(g=>g.gate?.center).filter(Boolean))];
   if(!activeCenters.length)return'';
@@ -2673,13 +2705,17 @@ function renderDayCenterContext(displayGates){
     const defined=isCenterDefined(center);
     const cc=CENTER_COLORS[center]||'#3A7A3A';
     const text=defined?cd.transit:cd.open;
+    const centerId=`center_expand_${center.replace(/[^a-z]/gi,'_')}`;
+    const truncated=text.length>220;
     html+=`<div class="day-center-item">
       <div class="day-center-item-header">
         <span class="day-center-item-name" style="color:${cc}">${center} Center</span>
         <span class="day-center-item-badge ${defined?'defined':'open'}">${defined?'✦ Transit Defined':'○ Open'}</span>
       </div>
       <div class="day-center-item-type">${cd.type}</div>
-      <div class="day-center-item-text">${text.substring(0,220)}${text.length>220?'…':''}</div>
+      <div id="${centerId}_short" class="day-center-item-text">${truncated?text.substring(0,220)+'…':text}</div>
+      ${truncated?`<div id="${centerId}_full" class="day-center-item-text" style="display:none">${text}</div>
+      <button onclick="toggleCenterExpand('${centerId}')" id="${centerId}_btn" style="background:none;border:none;color:var(--green);font-size:11px;font-weight:700;cursor:pointer;padding:4px 0;font-family:'Libre Baskerville',serif">Read more ↓</button>`:''}
       <div class="day-center-item-strategy">⟶ ${cd.strategy}</div>
     </div>`;});
   html+=`</div>
@@ -2691,8 +2727,19 @@ function renderPhaseTypeBar(dayIdx,isFuture){
   if(isFuture)return'';
   const meta=getDayMeta(dayIdx);
   const currentPhase=meta.phase||null;
-  const currentType=loadTempType();
-  const typeData=TEMP_TYPES.find(t=>t.id===currentType)||TEMP_TYPES[0];
+
+  // Auto-calculate type from Cycle of Definitions
+  const days=buildDays();
+  const day=days[dayIdx];
+  const wg=day?.wakingGates||[];
+  const gates=wg.length>0?wg.map(g=>g.gateNum):[day?.gateNum].filter(Boolean);
+  const typePriority=['manifesting_generator','manifestor','generator','projector','reflector'];
+  let bestType='reflector',bestChannels=[];
+  gates.forEach(gn=>{
+    const {type,channels}=getTypeForGate(gn);
+    if(typePriority.indexOf(type)<typePriority.indexOf(bestType)){bestType=type;bestChannels=channels;}});
+  const typeData=TEMP_TYPES.find(t=>t.id===bestType)||TEMP_TYPES[0];
+  const channelStr=bestChannels.length?bestChannels.map(c=>`${c.natalGate}-${c.moonGate}`).join(', '):'';
 
   const phaseHtml=`<div class="phase-type-block">
     <div class="phase-type-block-label">Cycle Phase</div>
@@ -2705,21 +2752,23 @@ function renderPhaseTypeBar(dayIdx,isFuture){
     ${currentPhase?`<div style="font-size:11px;color:var(--ink-faint);margin-top:8px">${PERIOD_PHASES.find(p=>p.id===currentPhase)?.desc||''}</div>`:''}
   </div>`;
 
-  const typeHtml=`<div class="phase-type-block">
+  const strategyHtml=`<div class="phase-type-block">
     <div class="phase-type-block-label">Running As</div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
-      ${TEMP_TYPES.map(t=>`<button class="phase-chip ${currentType===t.id?'selected':''}"
-        style="${currentType===t.id?`background:${t.color};`:''}"
-        onclick="saveTempType('${t.id}');render()">${t.emoji} ${t.label}</button>`).join('')}
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span style="font-size:20px">${typeData.emoji}</span>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:${typeData.color}">${typeData.label}</div>
+        ${channelStr?`<div style="font-size:10px;color:var(--ink-faint);margin-top:1px">Channel ${channelStr}</div>`:''}
+      </div>
     </div>
     <div class="type-guide-box">
       <div class="type-guide-label">Today's strategy</div>
       ${escHtml(typeData.desc)}
-      ${currentType!=='reflector'?`<div style="margin-top:6px;font-size:10px;color:var(--ink-faint)">${escHtml(typeData.guide)}</div>`:''}
+      ${bestType!=='reflector'?`<div style="margin-top:6px;font-size:10px;color:var(--ink-faint)">${escHtml(typeData.guide)}</div>`:''}
     </div>
   </div>`;
 
-  return`<div class="phase-type-bar">${phaseHtml}${typeHtml}</div>`;}
+  return`<div class="phase-type-bar">${phaseHtml}${strategyHtml}</div>`;}
 
 function renderCycleOfDefinitions(){
   const seq=getDiarySequence();
