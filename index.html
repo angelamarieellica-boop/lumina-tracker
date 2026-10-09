@@ -940,7 +940,14 @@ function getCurrentNewMoon(){const today=new Date();today.setHours(0,0,0,0);let 
 function getNewMoonSign(dateStr){const signs={'2026-01-18':'Capricorn','2026-02-17':'Aquarius','2026-03-18':'Pisces','2026-04-17':'Aries','2026-05-16':'Taurus','2026-06-14':'Gemini','2026-07-14':'Cancer','2026-08-12':'Leo','2026-09-10':'Virgo','2026-10-10':'Libra','2026-11-09':'Scorpio','2026-12-08':'Sagittarius'};return signs[dateStr]||''}
 
 // ── BUILD DAYS ─────────────────────────────────────────────────────────────
-function getMoonPhaseEmoji(i){return MOON_PHASES[Math.floor((i/29)*8)%8]}
+function getCycleLength(){
+  const currentIdx=NEW_MOONS_2026.indexOf(getCurrentNewMoon());
+  if(currentIdx<0||currentIdx>=NEW_MOONS_2026.length-1)return 30;
+  const start=new Date(NEW_MOONS_2026[currentIdx]+'T00:00:00');
+  const end=new Date(NEW_MOONS_2026[currentIdx+1]+'T00:00:00');
+  return Math.round((end-start)/(1000*60*60*24));
+}
+function getMoonPhaseEmoji(i){const cl=getCycleLength();return MOON_PHASES[Math.floor((i/cl)*8)%8]}
 function getWakingGates(date){
   const gates=[];let lastGate=null;
   for(let min=5*60;min<=22*60;min+=30){
@@ -957,7 +964,8 @@ function getWakingGates(date){
 function buildDays(){
   const cycleStart=getCycleStart(),startDate=new Date(cycleStart+'T12:00:00'),today=new Date();today.setHours(12,0,0,0);
   const isFutureCycle=viewingCycleOffset>0;
-  return Array.from({length:29},(_,i)=>{
+  const cycleLen=getCycleLength();
+  return Array.from({length:cycleLen},(_,i)=>{
     const date=new Date(startDate);date.setDate(startDate.getDate()+i);
     const noon=new Date(date);noon.setHours(12,0,0,0);
     const deg=getMoonEclipticLongitude(noon),gn=getGateFromDegree(deg),gate=GATES[gn],line=getMoonLine(deg,gn),transit=getTransitTimes(gn,noon),wakingGates=getWakingGates(date);
@@ -966,8 +974,9 @@ function buildDays(){
     return{date,gate,gateNum:gn,line,deg,transit,wakingGates,isToday,isPast,isFutureCycle,dayNum:i+1,index:i}})}
 function updateProgress(){
   const data=loadData(),filled=Object.keys(data).filter(k=>{const e=data[k];return e&&(e.entries&&e.entries.length>0)}).length;
-  document.getElementById('progressFill').style.width=(filled/29*100)+'%';
-  document.getElementById('progressLabel').textContent=filled+' of 29 days recorded'}
+  const cl=getCycleLength();
+  document.getElementById('progressFill').style.width=(filled/cl*100)+'%';
+  document.getElementById('progressLabel').textContent=filled+' of '+cl+' days recorded'}
 
 // ── VIEWS ─────────────────────────────────────────────────────────────────
 let currentView='grid',selectedDay=null,decisionSubTab='lunar',decisionViewMode='entry';
@@ -1845,7 +1854,7 @@ async function generateInsights(){
     return obs}).flat().slice(0,10);
   const prompt=`You are generating a personalized cycle summary for Gela, a 4/6 Reflector in Human Design. She is a nurse informaticist and holistic practitioner (reiki, tarot, calligraphy). Sag Sun, Pisces Moon, Gemini Rising. Jupiter in Cancer 1st house, Saturn in Capricorn 7th house. First house profection year with Jupiter return.
 
-Current lunar cycle: New Moon in ${sign}, started ${nm}. ${Object.keys(data).length} of 29 days logged.
+Current lunar cycle: New Moon in ${sign}, started ${nm}. ${Object.keys(data).length} of ${getCycleLength()} days logged.
 
 ENERGY DATA: ${Object.entries(energySummary).map(([k,v])=>`${k}: ${v} days`).join(', ')||'None logged'}
 MOOD PATTERNS: ${Object.entries(moodSummary).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k}: ${v} days`).join(', ')||'None logged'}
