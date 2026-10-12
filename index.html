@@ -1226,7 +1226,7 @@ function renderGrid(el){
     if(wg.length===0){const cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';gatesHtml=`<div class="card-gate">Gate ${day.gateNum}.${day.line}</div><div class="card-name" style="color:${cc}">${day.gate.name}</div>`}
     else if(wg.length===1){const cc=CENTER_COLORS[wg[0].gate.center]||'#3A7A3A';gatesHtml=`<div class="card-gate">Gate ${wg[0].gateNum}.${wg[0].line}</div><div class="card-name" style="color:${cc}">${wg[0].gate.name}</div>`}
     else{gatesHtml=wg.slice(0,2).map((g,gi)=>{const cc=CENTER_COLORS[g.gate.center]||'#3A7A3A';const ts=g.startTime?` · ${fmtTime(g.startTime)}`:(gi===0?' · 5am':'');return`<div class="card-gate" style="margin-bottom:1px">Gate ${g.gateNum}.${g.line}<span style="color:var(--ink-faint);font-size:10px">${ts}</span></div><div class="card-name" style="color:${cc};margin-bottom:3px">${g.gate.name}</div>`}).join('')}
-    const forecast=(!day.isPast&&!day.isToday)?`<div class="card-forecast">${GATE_FORECAST[day.gateNum]||''}</div>`:'';
+    const forecast=GATE_FORECAST[day.gateNum]?`<div class="card-forecast">${GATE_FORECAST[day.gateNum]}</div>`:'';
     let bestType='reflector';
     const gates=wg.length>0?wg.map(g=>g.gateNum):[day.gateNum];
     gates.forEach(gn=>{const{type}=getTypeForGate(gn);if(typePriority.indexOf(type)<typePriority.indexOf(bestType))bestType=type;});
