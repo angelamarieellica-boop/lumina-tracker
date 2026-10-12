@@ -1781,7 +1781,10 @@ function renderLunarDecisions(){
           <div class="dec-entry-name">${escHtml(dec.text)}</div>
           <div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:4px">✓ Resolved ${resolvedDate}</div>
           ${dec.resolvedNote?`<div style="font-size:12px;color:var(--ink-mid);line-height:1.6">${escHtml(dec.resolvedNote)}</div>`:''}
-          <button class="spell-action-btn" style="margin-top:8px" onclick="unresolveDecision('${dec.id}')">↩ Reopen</button>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="spell-action-btn" onclick="unresolveDecision('${dec.id}')">↩ Reopen</button>
+            <button class="spell-action-btn" style="color:#A84040;border-color:#A84040" onclick="deleteDecision('${dec.id}')">✕ Remove</button>
+          </div>
         </div>`;});
       html+='</div>';}}
 
@@ -1898,6 +1901,11 @@ function unresolveDecision(id){
   decisions[idx].resolved=false;
   delete decisions[idx].resolvedDate;
   delete decisions[idx].resolvedNote;
+  saveDecisions(decisions);render();}
+
+function deleteDecision(id){
+  if(!confirm('Remove this resolved decision permanently?'))return;
+  const decisions=loadDecisions().filter(d=>d.id!==id);
   saveDecisions(decisions);render();}
 function openModal(){document.getElementById('modalOverlay').style.display='flex';document.getElementById('modalInput').value='';setTimeout(()=>document.getElementById('modalInput').focus(),100)}
 function closeModal(e){if(e&&e.target!==document.getElementById('modalOverlay'))return;document.getElementById('modalOverlay').style.display='none'}
