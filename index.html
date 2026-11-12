@@ -575,6 +575,23 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
   </div>
 </div>
 
+<!-- Resolve Decision Modal -->
+<div class="modal-overlay" id="resolveModalOverlay" style="display:none" onclick="closeResolveModal(event)">
+  <div class="modal">
+    <div class="modal-title">Mark as Resolved</div>
+    <div class="setup-note">This decision will move to your archive with all of its cycle data intact.</div>
+    <div id="resolveDecisionLabel" style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;line-height:1.5"></div>
+    <div style="margin-bottom:4px">
+      <label class="field-label">How did this resolve? (optional)</label>
+      <textarea class="field-textarea" id="resolveNoteInput" rows="3" placeholder="What did you decide? What made it clear?"></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeResolveModal()">Cancel</button>
+      <button class="modal-btn modal-btn-save" onclick="confirmResolveDecision()">Move to Archive</button>
+    </div>
+  </div>
+</div>
+
 <!-- Add Moment Decision Modal -->
 <div class="modal-overlay" id="momentModalOverlay" style="display:none" onclick="closeMomentModal(event)">
   <div class="modal">
@@ -1976,16 +1993,31 @@ function renderArchivedDecisions(){
   const decisions=loadDecisions();
   const resolved=decisions.filter(d=>d.resolved);
   let html=`<div class="decisions-header"><div class="decisions-title">Archived</div></div>
-    <div class="reflector-hint">Decisions you've marked resolved. Kept here for reflection — you can reopen or permanently remove them.</div>`;
+    <div class="reflector-hint">Decisions you've marked resolved — with their full cycle data. Reopen to track again or remove permanently.</div>`;
   if(!resolved.length)return html+'<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No archived decisions yet.</div>';
   html+='<div class="decision-cards">';
   resolved.forEach(dec=>{
     const resolvedDate=dec.resolvedDate?new Date(dec.resolvedDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
+    // Build feeling counts from stored cycle data
+    const decData=loadDecisionData(dec.id),counts={yes:0,soft:0,meh:0,resistant:0,no:0};
+    Object.values(decData).forEach(d=>{const v=(d.feeling||'');if(v.startsWith('Yes'))counts.yes++;else if(v.startsWith('Soft'))counts.soft++;else if(v.startsWith('Meh'))counts.meh++;else if(v.startsWith('Resistant'))counts.resistant++;else if(v.startsWith('No'))counts.no++});
+    const total=counts.yes+counts.soft+counts.meh+counts.resistant+counts.no;
+    const isOpen=localStorage.getItem('lumina_open_arc')===dec.id;
     html+=`<div class="dec-entry-card" style="border-color:var(--border-light);background:var(--ivory-mid)">
       <div class="dec-entry-name" style="color:var(--ink-mid)">${escHtml(dec.text)}</div>
-      ${resolvedDate?`<div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:4px">✓ Resolved ${resolvedDate}</div>`:''}
-      ${dec.resolvedNote?`<div style="font-size:12px;color:var(--ink-faint);line-height:1.6;margin-bottom:8px">${escHtml(dec.resolvedNote)}</div>`:''}
-      <div style="display:flex;gap:8px;margin-top:8px">
+      ${resolvedDate?`<div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:6px">✓ Resolved ${resolvedDate}</div>`:''}
+      ${dec.resolvedNote?`<div style="font-size:12px;color:var(--ink-faint);line-height:1.6;margin-bottom:8px;font-style:italic">"${escHtml(dec.resolvedNote)}"</div>`:''}
+      ${total>0?`<div class="decision-mini-bar" style="margin-bottom:10px">
+        <div class="mini-count"><div class="mini-num" style="color:#3A7A3A">${counts.yes}</div><div class="mini-label">Yes</div></div>
+        <div class="mini-count"><div class="mini-num" style="color:#4A7AAA">${counts.soft}</div><div class="mini-label">Soft</div></div>
+        <div class="mini-count"><div class="mini-num" style="color:#B08820">${counts.meh}</div><div class="mini-label">Meh</div></div>
+        <div class="mini-count"><div class="mini-num" style="color:#A86830">${counts.resistant}</div><div class="mini-label">Resistant</div></div>
+        <div class="mini-count"><div class="mini-num" style="color:#A84040">${counts.no}</div><div class="mini-label">No</div></div>
+        <div class="mini-insight" style="font-size:11px">${total} day${total!==1?'s':''} logged</div>
+      </div>`:'<div style="font-size:11px;color:var(--ink-faint);margin-bottom:10px">No daily feelings logged.</div>'}
+      <button style="font-size:11px;color:var(--ink-faint);background:none;border:none;cursor:pointer;padding:0;margin-bottom:8px" onclick="const c=localStorage.getItem('lumina_open_arc');localStorage.setItem('lumina_open_arc',c==='${dec.id}'?'':'${dec.id}');render()">${isOpen?'▲ Hide':'▼ Show'} day-by-day</button>
+      ${isOpen?`<div style="max-height:300px;overflow-y:auto;margin-bottom:10px">${(()=>{const days=buildDays();return days.map((day,i)=>{const dd=decData[i]||{},fv=dd.feeling||'',fc=dd.comment||'';if(!fv&&!fc)return'';const cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';return`<div style="padding:7px 0;border-bottom:1px solid var(--border-light);font-size:11px"><div style="color:${cc};font-weight:700">Gate ${day.gateNum}.${day.line} · ${day.gate.name} <span style="color:var(--ink-faint);font-weight:400">· ${day.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span></div>${fv?`<div style="color:var(--ink-mid)">${fv}</div>`:''}${fc?`<div style="color:var(--ink-faint);font-style:italic">${escHtml(fc)}</div>`:''}</div>`}).join('')})()||'<div style="color:var(--ink-faint);font-size:11px;padding:4px 0">No entries for this cycle.</div>'}</div>`:''}
+      <div style="display:flex;gap:8px;margin-top:4px">
         <button class="spell-action-btn" onclick="unresolveDecision('${dec.id}')">↩ Reopen</button>
         <button class="spell-action-btn" style="color:#A84040;border-color:#A84040" onclick="permanentDeleteDecision('${dec.id}')">✕ Remove</button>
       </div>
@@ -2093,15 +2125,27 @@ function saveDecisionFeeling(decId,day,value){if(day<0)return;updateDecisionEntr
 function saveDecisionComment(decId,day,value){if(day<0)return;updateDecisionEntry(decId,day,undefined,value)}
 function deleteDecision(e,id){e.stopPropagation();if(!confirm('Delete this decision?'))return;saveDecisions(loadDecisions().filter(d=>d.id!==id));localStorage.removeItem(getDecisionKey(id));if(localStorage.getItem('lumina_open_dec')===id)localStorage.removeItem('lumina_open_dec');deleteDecisionFromDB(id);render()}
 
+let _resolveTargetId=null;
 function resolveDecision(id){
   const decisions=loadDecisions();
-  const idx=decisions.findIndex(d=>d.id===id);if(idx<0)return;
-  const outcome=prompt('How did this decision resolve? (optional note)');
-  if(outcome===null)return;
+  const dec=decisions.find(d=>d.id===id);if(!dec)return;
+  _resolveTargetId=id;
+  document.getElementById('resolveDecisionLabel').textContent=dec.text;
+  document.getElementById('resolveNoteInput').value='';
+  document.getElementById('resolveModalOverlay').style.display='flex';
+  setTimeout(()=>document.getElementById('resolveNoteInput').focus(),100);}
+function closeResolveModal(e){if(e&&e.target!==document.getElementById('resolveModalOverlay'))return;document.getElementById('resolveModalOverlay').style.display='none';_resolveTargetId=null;}
+function confirmResolveDecision(){
+  if(!_resolveTargetId)return;
+  const decisions=loadDecisions();
+  const idx=decisions.findIndex(d=>d.id===_resolveTargetId);if(idx<0)return;
   decisions[idx].resolved=true;
   decisions[idx].resolvedDate=new Date().toISOString();
-  decisions[idx].resolvedNote=outcome.trim();
-  saveDecisions(decisions);render();}
+  decisions[idx].resolvedNote=document.getElementById('resolveNoteInput').value.trim();
+  saveDecisions(decisions);
+  document.getElementById('resolveModalOverlay').style.display='none';
+  _resolveTargetId=null;
+  render();}
 
 function unresolveDecision(id){
   const decisions=loadDecisions();
