@@ -1226,7 +1226,7 @@ function renderGrid(el){
     if(wg.length===0){const cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';gatesHtml=`<div class="card-gate">Gate ${day.gateNum}.${day.line}</div><div class="card-name" style="color:${cc}">${day.gate.name}</div>`}
     else if(wg.length===1){const cc=CENTER_COLORS[wg[0].gate.center]||'#3A7A3A';gatesHtml=`<div class="card-gate">Gate ${wg[0].gateNum}.${wg[0].line}</div><div class="card-name" style="color:${cc}">${wg[0].gate.name}</div>`}
     else{gatesHtml=wg.slice(0,2).map((g,gi)=>{const cc=CENTER_COLORS[g.gate.center]||'#3A7A3A';const ts=g.startTime?` · ${fmtTime(g.startTime)}`:(gi===0?' · 5am':'');return`<div class="card-gate" style="margin-bottom:1px">Gate ${g.gateNum}.${g.line}<span style="color:var(--ink-faint);font-size:10px">${ts}</span></div><div class="card-name" style="color:${cc};margin-bottom:3px">${g.gate.name}</div>`}).join('')}
-    const forecast=GATE_FORECAST[day.gateNum]?`<div class="card-forecast">${GATE_FORECAST[day.gateNum]}</div>`:'';
+    const forecast=(!day.isPast&&!day.isToday)?`<div class="card-forecast">${GATE_FORECAST[day.gateNum]||''}</div>`:'';
     let bestType='reflector';
     const gates=wg.length>0?wg.map(g=>g.gateNum):[day.gateNum];
     gates.forEach(gn=>{const{type}=getTypeForGate(gn);if(typePriority.indexOf(type)<typePriority.indexOf(bestType))bestType=type;});
@@ -1676,9 +1676,11 @@ function renderDecision(el){
   let html=`<div class="dec-tabs">
     <button class="dec-tab ${decisionSubTab==='lunar'?'active':''}" onclick="setDecTab('lunar')">Lunar Decisions</button>
     <button class="dec-tab ${decisionSubTab==='moment'?'active':''}" onclick="setDecTab('moment')">Moment Decisions</button>
+    <button class="dec-tab ${decisionSubTab==='archived'?'active':''}" onclick="setDecTab('archived')">Archived</button>
   </div>`;
   if(decisionSubTab==='lunar')html+=renderLunarDecisions();
-  else html+=renderMomentDecisions();
+  else if(decisionSubTab==='moment')html+=renderMomentDecisions();
+  else html+=renderArchivedDecisions();
   el.innerHTML=html}
 
 function setDecTab(tab){decisionSubTab=tab;render()}
@@ -1691,8 +1693,6 @@ function renderLunarDecisions(){
   if(!decisions.length)return html+'<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No lunar decisions yet. Add one to begin tracking.</div>';
 
   const activeDecisions=decisions.filter(d=>!d.resolved);
-  const resolvedDecisions=decisions.filter(d=>d.resolved);
-  const resolvedOpen=localStorage.getItem('lumina_resolved_open')==='1';
 
   // View toggle
   html+=`<div class="dec-view-toggle">
@@ -1768,29 +1768,37 @@ function renderLunarDecisions(){
       </div>`});
     html+='</div>';}
 
-  // Resolved decisions section
-  if(resolvedDecisions.length){
-    html+=`<button class="archive-section-toggle" onclick="localStorage.setItem('lumina_resolved_open',localStorage.getItem('lumina_resolved_open')==='1'?'':'1');render()">
-      <span>✓ Resolved (${resolvedDecisions.length})</span><span>${resolvedOpen?'▾':'▸'}</span>
-    </button>`;
-    if(resolvedOpen){
-      html+='<div class="decision-cards" style="margin-top:10px;opacity:.75">';
-      resolvedDecisions.forEach(dec=>{
-        const resolvedDate=new Date(dec.resolvedDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-        html+=`<div class="dec-entry-card" style="border-color:var(--green);background:var(--green-pale)">
-          <div class="dec-entry-name">${escHtml(dec.text)}</div>
-          <div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:4px">✓ Resolved ${resolvedDate}</div>
-          ${dec.resolvedNote?`<div style="font-size:12px;color:var(--ink-mid);line-height:1.6">${escHtml(dec.resolvedNote)}</div>`:''}
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button class="spell-action-btn" onclick="unresolveDecision('${dec.id}')">↩ Reopen</button>
-            <button class="spell-action-btn" style="color:#A84040;border-color:#A84040" onclick="deleteDecision('${dec.id}')">✕ Remove</button>
-          </div>
-        </div>`;});
-      html+='</div>';}}
-
   return html}
 
 function setDecView(mode){decisionViewMode=mode;render()}
+
+function renderArchivedDecisions(){
+  const decisions=loadDecisions();
+  const resolved=decisions.filter(d=>d.resolved);
+  let html=`<div class="decisions-header"><div class="decisions-title">Archived</div></div>
+    <div class="reflector-hint">Decisions you've marked resolved. Kept here for reflection — you can reopen or permanently remove them.</div>`;
+  if(!resolved.length)return html+'<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No archived decisions yet.</div>';
+  html+='<div class="decision-cards">';
+  resolved.forEach(dec=>{
+    const resolvedDate=dec.resolvedDate?new Date(dec.resolvedDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
+    html+=`<div class="dec-entry-card" style="border-color:var(--border-light);background:var(--ivory-mid)">
+      <div class="dec-entry-name" style="color:var(--ink-mid)">${escHtml(dec.text)}</div>
+      ${resolvedDate?`<div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:4px">✓ Resolved ${resolvedDate}</div>`:''}
+      ${dec.resolvedNote?`<div style="font-size:12px;color:var(--ink-faint);line-height:1.6;margin-bottom:8px">${escHtml(dec.resolvedNote)}</div>`:''}
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="spell-action-btn" onclick="unresolveDecision('${dec.id}')">↩ Reopen</button>
+        <button class="spell-action-btn" style="color:#A84040;border-color:#A84040" onclick="permanentDeleteDecision('${dec.id}')">✕ Remove</button>
+      </div>
+    </div>`;});
+  html+='</div>';
+  return html}
+
+function permanentDeleteDecision(id){
+  if(!confirm('Permanently remove this decision?'))return;
+  saveDecisions(loadDecisions().filter(d=>d.id!==id));
+  localStorage.removeItem(getDecisionKey(id));
+  deleteDecisionFromDB(id);
+  render();}
 
 function renderMomentDecisions(){
   const moments=loadMomentDecisions();
@@ -1901,11 +1909,6 @@ function unresolveDecision(id){
   decisions[idx].resolved=false;
   delete decisions[idx].resolvedDate;
   delete decisions[idx].resolvedNote;
-  saveDecisions(decisions);render();}
-
-function deleteDecision(id){
-  if(!confirm('Remove this resolved decision permanently?'))return;
-  const decisions=loadDecisions().filter(d=>d.id!==id);
   saveDecisions(decisions);render();}
 function openModal(){document.getElementById('modalOverlay').style.display='flex';document.getElementById('modalInput').value='';setTimeout(()=>document.getElementById('modalInput').focus(),100)}
 function closeModal(e){if(e&&e.target!==document.getElementById('modalOverlay'))return;document.getElementById('modalOverlay').style.display='none'}
