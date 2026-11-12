@@ -451,6 +451,62 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
 .day-digest-ai-btn{background:rgba(184,134,11,.2);border:1px solid rgba(184,134,11,.4);color:var(--gold-warm);padding:8px 18px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Libre Baskerville',serif;letter-spacing:1px;transition:all .15s;margin-top:4px}
 .day-digest-ai-btn:hover{background:rgba(184,134,11,.35)}
 .day-digest-ai-btn:disabled{opacity:.5;cursor:default}
+/* ── HOME TAB ─────────────────────────────────────────────────────────────── */
+.home-section-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ink-faint);margin:20px 0 10px}
+.home-today-card{background:var(--ivory-mid);border:1.5px solid var(--border-light);border-radius:16px;padding:20px;margin-bottom:4px;cursor:pointer;transition:opacity .15s}
+.home-today-card:hover{opacity:.85}
+.home-today-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.home-today-date{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ink)}
+.home-today-day{font-size:11px;color:var(--ink-faint);margin-top:3px}
+.home-type-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;border:1.5px solid;white-space:nowrap}
+.home-today-gate{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.home-gate-num{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;line-height:1}
+.home-gate-name{font-size:16px;font-weight:700;margin-bottom:3px}
+.home-gate-line{font-size:11px;color:var(--ink-faint)}
+.home-forecast{font-style:italic;font-size:13px;color:var(--ink-soft);line-height:1.6;margin-top:4px}
+.home-progress-bar{height:3px;background:var(--border-light);border-radius:2px;margin-top:14px}
+.home-progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .3s}
+.home-progress-label{font-size:10px;color:var(--ink-faint);margin-top:5px;text-align:right}
+.home-week-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.home-week-dot{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 10px 8px;border-radius:12px;cursor:pointer;min-width:52px;border:1.5px solid var(--border-light);background:var(--ivory-mid);transition:opacity .15s}
+.home-week-dot:hover{opacity:.75}
+.home-week-dot.active{background:var(--green);border-color:var(--green)}
+.home-week-dot.past{opacity:.7}
+.home-week-dot.future{border-style:dashed;opacity:.6}
+.home-week-month{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-faint)}
+.home-week-dot.active .home-week-month,.home-week-dot.active .home-week-day,.home-week-dot.active .home-week-gate{color:var(--ivory)}
+.home-week-day{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--ink);line-height:1}
+.home-week-gate{font-size:9px;font-weight:700;letter-spacing:.5px}
+.home-decisions-list{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.home-dec-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;background:var(--ivory-mid);border:1.5px solid var(--border-light);border-radius:10px;cursor:pointer;transition:opacity .15s}
+.home-dec-row:hover{opacity:.8}
+.home-dec-text{font-size:13px;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-dec-feel{font-size:12px;font-weight:700;white-space:nowrap}
+.home-mini-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:5px;margin-bottom:32px}
+.home-mini-dot{display:flex;flex-direction:column;align-items:center;padding:6px 4px;border-radius:8px;cursor:pointer;border:1.5px solid;transition:opacity .15s}
+.home-mini-dot:hover{opacity:.75}
+.home-mini-dot.past{background:rgba(58,122,58,.12);border-color:rgba(58,122,58,.3)}
+.home-mini-dot.today{background:var(--green);border-color:var(--green)}
+.home-mini-dot.future{background:transparent;border-color:var(--border-light);border-style:dashed;opacity:.6}
+.mini-dot-month{font-size:8px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);line-height:1}
+.home-mini-dot.today .mini-dot-month,.home-mini-dot.today .mini-dot-day{color:var(--ivory)}
+.mini-dot-day{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;color:var(--ink);line-height:1.1}
+.home-day-back{background:none;border:none;color:var(--ink-soft);font-size:13px;padding:0 0 16px;cursor:pointer;font-weight:700;letter-spacing:.5px;display:block}
+.home-day-back:hover{color:var(--ink)}
+.home-day-gate-card{display:flex;align-items:flex-start;gap:16px;padding:18px;background:var(--ivory-mid);border:1.5px solid;border-radius:14px;margin-bottom:12px}
+.home-day-gate-num{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:700;line-height:1;min-width:52px}
+.home-day-gate-name{font-size:18px;font-weight:700;margin-bottom:3px}
+.home-day-gate-meta{font-size:11px;color:var(--ink-faint);margin-bottom:6px}
+.home-forecast-block{font-style:italic;font-size:13px;color:var(--ink-soft);line-height:1.7;padding:12px 14px;background:rgba(176,136,32,.08);border-radius:8px;margin-bottom:12px}
+.home-reading-text{font-size:13px;color:var(--ink-soft);line-height:1.75;padding:14px;background:var(--ivory-mid);border-radius:10px;border:1px solid var(--border-light);margin-bottom:4px}
+.home-decisions-checkin{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
+.home-checkin-row{padding:12px 14px;background:var(--ivory-mid);border:1.5px solid var(--border-light);border-radius:10px}
+.home-checkin-name{font-size:13px;color:var(--ink);margin-bottom:8px;line-height:1.4}
+.home-checkin-select{width:100%}
+.home-quick-note{width:100%;padding:12px;font-size:13px;border:1.5px solid var(--border-light);border-radius:10px;background:var(--ivory-mid);color:var(--ink);line-height:1.6;resize:vertical;font-family:inherit;box-sizing:border-box;margin-bottom:12px}
+.home-quick-note:focus{outline:none;border-color:var(--green)}
+.home-full-entry-btn{width:100%;padding:12px;background:transparent;border:1.5px solid var(--border-light);border-radius:10px;color:var(--ink-soft);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:all .15s;margin-bottom:32px;display:block}
+.home-full-entry-btn:hover{border-color:var(--green);color:var(--green)}
 </style>
 </head>
 <body>
@@ -480,7 +536,8 @@ body{background:var(--ivory);color:var(--ink);font-family:'Libre Baskerville',Ge
     <div class="progress-label" id="progressLabel">0 of 29 days recorded</div>
   </div>
   <div class="nav">
-    <button class="nav-btn active" id="navGrid" onclick="switchView('grid')">Monthly</button>
+    <button class="nav-btn active" id="navHome" onclick="switchView('home')">Home</button>
+    <button class="nav-btn" id="navGrid" onclick="switchView('grid')">Monthly</button>
     <button class="nav-btn" id="navGates" onclick="switchView('gates')">Gates</button>
     <button class="nav-btn" id="navDecision" onclick="switchView('decision')">Decisions</button>
     <button class="nav-btn" id="navInsights" onclick="switchView('insights')">Insights</button>
@@ -979,8 +1036,9 @@ function updateProgress(){
   document.getElementById('progressLabel').textContent=filled+' of '+cl+' days recorded'}
 
 // ── VIEWS ─────────────────────────────────────────────────────────────────
-let currentView='grid',selectedDay=null,decisionSubTab='lunar',decisionViewMode='entry';
+let currentView='home',selectedDay=null,decisionSubTab='lunar',decisionViewMode='entry';
 function switchView(v){currentView=v;selectedDay=null;
+  document.getElementById('navHome').classList.toggle('active',v==='home');
   document.getElementById('navGrid').classList.toggle('active',v==='grid');
   document.getElementById('navDecision').classList.toggle('active',v==='decision');
   document.getElementById('navRituals').classList.toggle('active',v==='rituals');
@@ -989,13 +1047,154 @@ function switchView(v){currentView=v;selectedDay=null;
   document.getElementById('navNotes').classList.toggle('active',v==='notes');
   render();}
 function render(){const el=document.getElementById('mainContent');
-  if(selectedDay!==null){renderDetail(el);return}
-  if(currentView==='grid')renderGrid(el);
+  if(selectedDay!==null){if(currentView==='home')renderHomeDay(el);else renderDetail(el);return}
+  if(currentView==='home')renderHome(el);
+  else if(currentView==='grid')renderGrid(el);
   else if(currentView==='decision')renderDecision(el);
   else if(currentView==='rituals')renderRituals(el);
   else if(currentView==='gates')renderGatesTab(el);
   else if(currentView==='notes')renderNotes(el);
   else renderInsights(el);}
+
+// ── HOME ───────────────────────────────────────────────────────────────────
+function saveHomeDayNote(dayIdx,value){updateDayMeta(dayIdx,'quickNote',value)}
+
+function renderHome(el){
+  const days=buildDays();
+  const todayIdx=days.findIndex(d=>d.isToday);
+  const today=todayIdx>=0?days[todayIdx]:null;
+  const seq=getDiarySequence();
+  const currentDiaryIdx=getCurrentDiaryEntry(seq);
+  const currentEntry=currentDiaryIdx>=0?seq[currentDiaryIdx]:null;
+  const typeData=currentEntry?(TEMP_TYPES.find(t=>t.id===currentEntry.type)||TEMP_TYPES[0]):null;
+  const decisions=loadDecisions().filter(d=>!d.resolved);
+  let html='';
+
+  // ── TODAY CARD ──
+  if(today){
+    const forecast=GATE_FORECAST[today.gateNum]||'';
+    const cc=CENTER_COLORS[today.gate.center]||'#3A7A3A';
+    const pct=Math.round((todayIdx+1)/days.length*100);
+    html+=`<div class="home-today-card" onclick="openDay(${todayIdx})">
+      <div class="home-today-top">
+        <div>
+          <div class="home-today-date">${today.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
+          <div class="home-today-day">Day ${today.dayNum} of ${days.length}</div>
+        </div>
+        ${typeData?`<div class="home-type-pill" style="background:${typeData.color}22;border-color:${typeData.color}44;color:${typeData.color}">${typeData.emoji} ${typeData.label}</div>`:''}
+      </div>
+      <div class="home-today-gate">
+        <div class="home-gate-num" style="color:${cc}">${today.gateNum}</div>
+        <div>
+          <div class="home-gate-name" style="color:${cc}">${today.gate.name}</div>
+          <div class="home-gate-line">Line ${today.line} · ${today.gate.center}</div>
+        </div>
+      </div>
+      ${forecast?`<div class="home-forecast">${forecast}</div>`:''}
+      <div class="home-progress-bar"><div class="home-progress-fill" style="width:${pct}%"></div></div>
+      <div class="home-progress-label">Day ${today.dayNum} · ${pct}% through cycle</div>
+    </div>`;}
+
+  // ── WEEK STRIP ──
+  const stripStart=Math.max(0,todayIdx-2);
+  const stripEnd=Math.min(days.length-1,todayIdx+4);
+  html+=`<div class="home-section-label">This Week</div>
+  <div class="home-week-strip">`;
+  for(let i=stripStart;i<=stripEnd;i++){
+    const d=days[i];
+    const cls=d.isToday?'active':d.isPast?'past':'future';
+    const cc=CENTER_COLORS[d.gate.center]||'#3A7A3A';
+    html+=`<div class="home-week-dot ${cls}" onclick="openDay(${i})">
+      <div class="home-week-month">${d.date.toLocaleDateString('en-US',{month:'short'})}</div>
+      <div class="home-week-day">${d.date.getDate()}</div>
+      <div class="home-week-gate" style="color:${d.isToday?'var(--ivory)':cc}">G${d.gateNum}</div>
+    </div>`;}
+  html+=`</div>`;
+
+  // ── ACTIVE DECISIONS ──
+  if(decisions.length){
+    html+=`<div class="home-section-label">Active Decisions</div>
+    <div class="home-decisions-list">`;
+    decisions.slice(0,5).forEach(dec=>{
+      const decData=loadDecisionData(dec.id);
+      let latestFeel='';
+      for(let i=days.length-1;i>=0;i--){if((decData[i]||{}).feeling){latestFeel=(decData[i]||{}).feeling;break;}}
+      const feelColor=latestFeel.startsWith('Yes')?'var(--green)':latestFeel.startsWith('Soft')?'#4A7AAA':latestFeel.startsWith('No')?'#A84040':latestFeel.startsWith('Resistant')?'#A84040':'var(--ink-faint)';
+      const feelLabel=latestFeel?latestFeel.split(' ')[0]:'—';
+      const feelIcon=latestFeel.startsWith('Yes')?'✦':latestFeel.startsWith('Soft')?'↑':latestFeel.startsWith('Meh')?'—':latestFeel.startsWith('Resistant')?'↓':latestFeel.startsWith('No')?'✗':'';
+      html+=`<div class="home-dec-row" onclick="switchView('decision')">
+        <div class="home-dec-text">${escHtml(dec.text)}</div>
+        <div class="home-dec-feel" style="color:${feelColor}">${latestFeel?feelIcon+' '+feelLabel:'—'}</div>
+      </div>`;});
+    html+=`</div>`;}
+
+  // ── MINI CYCLE GRID ──
+  html+=`<div class="home-section-label">This Cycle</div>
+  <div class="home-mini-grid">`;
+  days.forEach((d,i)=>{
+    const cls=d.isToday?'today':d.isPast?'past':'future';
+    html+=`<div class="home-mini-dot ${cls}" onclick="openDay(${i})" title="${d.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})} · Gate ${d.gateNum}">
+      <span class="mini-dot-month">${d.date.toLocaleDateString('en-US',{month:'short'})}</span>
+      <span class="mini-dot-day">${d.date.getDate()}</span>
+    </div>`;});
+  html+=`</div>`;
+
+  el.innerHTML=html;}
+
+function renderHomeDay(el){
+  const days=buildDays();
+  const day=days[selectedDay];
+  if(!day){selectedDay=null;render();return}
+  const cc=CENTER_COLORS[day.gate.center]||'#3A7A3A';
+  const forecast=GATE_FORECAST[day.gateNum]||'';
+  const reading=GATE_READINGS[day.gateNum]||'';
+  const badgeStyle=CENTER_BADGE_STYLE[day.gate.center]||'background:var(--ivory-mid);color:var(--ink-soft)';
+  const seq=getDiarySequence();
+  const currentDiaryIdx=getCurrentDiaryEntry(seq);
+  const currentEntry=currentDiaryIdx>=0?seq[currentDiaryIdx]:null;
+  const typeData=currentEntry?(TEMP_TYPES.find(t=>t.id===currentEntry.type)||TEMP_TYPES[0]):null;
+  const decisions=loadDecisions().filter(d=>!d.resolved);
+  const quickNote=getDayMeta(selectedDay).quickNote||'';
+  const canLog=day.isPast||day.isToday;
+
+  let html=`<button class="home-day-back" onclick="backToGrid()">← Back</button>
+
+  <div class="home-day-gate-card" style="border-color:${cc}44">
+    <div class="home-day-gate-num" style="color:${cc}">${day.gateNum}</div>
+    <div>
+      <div class="home-day-gate-name" style="color:${cc}">${day.gate.name}</div>
+      <div class="home-day-gate-meta">${day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})} · Day ${day.dayNum}</div>
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+        <span class="gc-center-badge" style="${badgeStyle}">${day.gate.center}</span>
+        ${typeData&&day.isToday?`<span class="home-type-pill" style="background:${typeData.color}22;border-color:${typeData.color}44;color:${typeData.color}">${typeData.emoji} ${typeData.label}</span>`:''}
+      </div>
+    </div>
+  </div>
+  ${forecast?`<div class="home-forecast-block">${forecast}</div>`:''}
+  ${reading?`<div class="home-section-label">Gate ${day.gateNum} Reading</div>
+  <div class="home-reading-text">${escHtml(reading)}</div>`:''}
+  ${decisions.length&&canLog?`<div class="home-section-label">Decisions Check-In</div>
+  <div class="home-decisions-checkin">
+    ${decisions.map(dec=>{
+      const decData=loadDecisionData(dec.id);
+      const fv=(decData[selectedDay]||{}).feeling||'';
+      return`<div class="home-checkin-row">
+        <div class="home-checkin-name">${escHtml(dec.text)}</div>
+        <select class="ddr-select home-checkin-select" onchange="saveDecisionFeeling('${dec.id}',${selectedDay},this.value)">
+          <option value="">— feel? —</option>
+          <option value="Yes ✦" ${fv.startsWith('Yes')?'selected':''}>✦ Yes</option>
+          <option value="Soft ↑" ${fv.startsWith('Soft')?'selected':''}>↑ Soft</option>
+          <option value="Meh —" ${fv.startsWith('Meh')?'selected':''}>— Meh</option>
+          <option value="Resistant ↓" ${fv.startsWith('Resistant')?'selected':''}>↓ Resistant</option>
+          <option value="No ✗" ${fv.startsWith('No')?'selected':''}>✗ No</option>
+        </select>
+      </div>`;}).join('')}
+  </div>`:''}
+  <div class="home-section-label">Quick Note</div>
+  <textarea class="home-quick-note" rows="4" placeholder="What are you noticing…" onchange="saveHomeDayNote(${selectedDay},this.value)">${escHtml(quickNote)}</textarea>
+  <button class="home-full-entry-btn" onclick="renderDetail(document.getElementById('mainContent'))">Open Full Entry →</button>`;
+
+  el.innerHTML=html;}
 
 // ── GRID ───────────────────────────────────────────────────────────────────
 const HD_CHANNELS=[
@@ -1711,11 +1910,11 @@ function renderLunarDecisions(){
         <div class="dec-entry-gate">${gateLabel}</div>
         <select class="ddr-select" style="margin-bottom:8px" onchange="saveDecisionFeeling('${dec.id}',${todayIdx},this.value)">
           <option value="">— how does it feel today? —</option>
-          <option value="Expansive ✦" ${fv.startsWith('Expansive')?'selected':''}>✦ Expansive</option>
-          <option value="Neutral ○" ${fv.startsWith('Neutral')?'selected':''}>○ Neutral</option>
-          <option value="Contracted ✗" ${fv.startsWith('Contracted')?'selected':''}>✗ Contracted</option>
-          <option value="Unclear ~" ${fv.startsWith('Unclear')?'selected':''}>~ Unclear</option>
-          <option value="Excited ◈" ${fv.startsWith('Excited')?'selected':''}>◈ Excited</option>
+          <option value="Yes ✦" ${fv.startsWith('Yes')?'selected':''}>✦ Yes</option>
+          <option value="Soft ↑" ${fv.startsWith('Soft')?'selected':''}>↑ Soft</option>
+          <option value="Meh —" ${fv.startsWith('Meh')?'selected':''}>— Meh</option>
+          <option value="Resistant ↓" ${fv.startsWith('Resistant')?'selected':''}>↓ Resistant</option>
+          <option value="No ✗" ${fv.startsWith('No')?'selected':''}>✗ No</option>
         </select>
         <textarea class="decision-comment" rows="2" placeholder="Notes on how this feels today…" onchange="saveDecisionComment('${dec.id}',${todayIdx},this.value)">${escHtml(fc)}</textarea>
         <div style="display:flex;gap:8px;margin-top:8px">
@@ -1728,10 +1927,10 @@ function renderLunarDecisions(){
     // Trend view — full 29-day grid
     html+='<div class="decision-cards">';
     activeDecisions.forEach(dec=>{
-      const decData=loadDecisionData(dec.id),counts={yes:0,maybe:0,no:0,unclear:0};
-      days.forEach((_,i)=>{const v=(decData[i]||{}).feeling||'';if(v.startsWith('Expansive'))counts.yes++;else if(v.startsWith('Neutral'))counts.maybe++;else if(v.startsWith('Contracted'))counts.no++;else if(v.startsWith('Unclear'))counts.unclear++});
-      const total=counts.yes+counts.maybe+counts.no+counts.unclear;
-      let insight=total>=5?(counts.yes>total*.6?'Leaning <strong>yes</strong>':counts.no>total*.5?'Showing <strong>contraction</strong>':counts.unclear>total*.5?'<strong>Unclear</strong>':'<strong>Mixed</strong>'):total>0?`${total} day${total>1?'s':''} logged`:'No days logged yet.';
+      const decData=loadDecisionData(dec.id),counts={yes:0,soft:0,meh:0,resistant:0,no:0};
+      days.forEach((_,i)=>{const v=(decData[i]||{}).feeling||'';if(v.startsWith('Yes'))counts.yes++;else if(v.startsWith('Soft'))counts.soft++;else if(v.startsWith('Meh'))counts.meh++;else if(v.startsWith('Resistant'))counts.resistant++;else if(v.startsWith('No'))counts.no++});
+      const total=counts.yes+counts.soft+counts.meh+counts.resistant+counts.no;
+      let insight=total>=5?(counts.yes>total*.6?'Leaning <strong>yes</strong>':(counts.no+counts.resistant)>total*.5?'Showing <strong>resistance</strong>':counts.meh>total*.5?'<strong>Meh</strong>':'<strong>Mixed</strong>'):total>0?`${total} day${total>1?'s':''} logged`:'No days logged yet.';
       const isOpen=localStorage.getItem('lumina_open_dec')===dec.id;
       html+=`<div class="decision-card">
         <div class="decision-card-header ${isOpen?'open':''}" onclick="toggleDecision('${dec.id}')">
@@ -1740,10 +1939,11 @@ function renderLunarDecisions(){
         </div>
         <div class="decision-card-body ${isOpen?'open':''}">
           <div class="decision-mini-bar">
-            <div class="mini-count"><div class="mini-num" style="color:#3A7A3A">${counts.yes}</div><div class="mini-label">Expansive</div></div>
-            <div class="mini-count"><div class="mini-num" style="color:#B08820">${counts.maybe}</div><div class="mini-label">Neutral</div></div>
-            <div class="mini-count"><div class="mini-num" style="color:#A84040">${counts.no}</div><div class="mini-label">Contracted</div></div>
-            <div class="mini-count"><div class="mini-num" style="color:#888870">${counts.unclear}</div><div class="mini-label">Unclear</div></div>
+            <div class="mini-count"><div class="mini-num" style="color:#3A7A3A">${counts.yes}</div><div class="mini-label">Yes</div></div>
+            <div class="mini-count"><div class="mini-num" style="color:#4A7AAA">${counts.soft}</div><div class="mini-label">Soft</div></div>
+            <div class="mini-count"><div class="mini-num" style="color:#B08820">${counts.meh}</div><div class="mini-label">Meh</div></div>
+            <div class="mini-count"><div class="mini-num" style="color:#A86830">${counts.resistant}</div><div class="mini-label">Resistant</div></div>
+            <div class="mini-count"><div class="mini-num" style="color:#A84040">${counts.no}</div><div class="mini-label">No</div></div>
             <div class="mini-insight">${insight}</div>
           </div>
           <div class="decision-day-rows">${days.map((day,i)=>{
@@ -1754,11 +1954,11 @@ function renderLunarDecisions(){
                 <div class="ddr-info"><div class="ddr-gate" style="color:${cc}">Gate ${day.gateNum}.${day.line} · ${day.gate.name}</div><div class="ddr-date">${day.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div></div>
                 <select class="ddr-select" ${isFut?'disabled':''} onchange="saveDecisionFeeling('${dec.id}',${i},this.value)">
                   <option value="">— feel? —</option>
-                  <option value="Expansive ✦" ${fv.startsWith('Expansive')?'selected':''}>✦ Expansive</option>
-                  <option value="Neutral ○" ${fv.startsWith('Neutral')?'selected':''}>○ Neutral</option>
-                  <option value="Contracted ✗" ${fv.startsWith('Contracted')?'selected':''}>✗ Contracted</option>
-                  <option value="Unclear ~" ${fv.startsWith('Unclear')?'selected':''}>~ Unclear</option>
-                  <option value="Excited ◈" ${fv.startsWith('Excited')?'selected':''}>◈ Excited</option>
+                  <option value="Yes ✦" ${fv.startsWith('Yes')?'selected':''}>✦ Yes</option>
+                  <option value="Soft ↑" ${fv.startsWith('Soft')?'selected':''}>↑ Soft</option>
+                  <option value="Meh —" ${fv.startsWith('Meh')?'selected':''}>— Meh</option>
+                  <option value="Resistant ↓" ${fv.startsWith('Resistant')?'selected':''}>↓ Resistant</option>
+                  <option value="No ✗" ${fv.startsWith('No')?'selected':''}>✗ No</option>
                 </select>
                 ${!isFut?`<textarea class="decision-comment" rows="2" placeholder="Notes on this day…" onchange="saveDecisionComment('${dec.id}',${i},this.value)">${escHtml(fc)}</textarea>`:''}
               </div>
@@ -1856,8 +2056,8 @@ async function generateInsights(){
       if(e.energy){const c=day.gate.center;centerSummary[c]=(centerSummary[c]||0)+1;}
     });});
   const decisionSummaries=decisions.map(dec=>{
-    const dd=loadDecisionData(dec.id),counts={expansive:0,neutral:0,contracted:0,unclear:0},dayNotes=[];
-    days.forEach((_,i)=>{const v=dd[i]||{};if((v.feeling||'').startsWith('Expansive'))counts.expansive++;else if((v.feeling||'').startsWith('Neutral'))counts.neutral++;else if((v.feeling||'').startsWith('Contracted'))counts.contracted++;else if((v.feeling||'').startsWith('Unclear'))counts.unclear++;if(v.comment)dayNotes.push(`Day ${i+1}: ${v.comment}`)});
+    const dd=loadDecisionData(dec.id),counts={yes:0,soft:0,meh:0,resistant:0,no:0},dayNotes=[];
+    days.forEach((_,i)=>{const v=dd[i]||{};if((v.feeling||'').startsWith('Yes'))counts.yes++;else if((v.feeling||'').startsWith('Soft'))counts.soft++;else if((v.feeling||'').startsWith('Meh'))counts.meh++;else if((v.feeling||'').startsWith('Resistant'))counts.resistant++;else if((v.feeling||'').startsWith('No'))counts.no++;if(v.comment)dayNotes.push(`Day ${i+1}: ${v.comment}`)});
     return{text:dec.text,counts,dayNotes}});
   const observations=days.map((day,i)=>{
     const dd=data[i]||{};const obs=[];
@@ -1871,7 +2071,7 @@ ENERGY DATA: ${Object.entries(energySummary).map(([k,v])=>`${k}: ${v} days`).joi
 MOOD PATTERNS: ${Object.entries(moodSummary).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k}: ${v} days`).join(', ')||'None logged'}
 MOST ACTIVATED CENTERS: ${Object.entries(centerSummary).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k}: ${v} days`).join(', ')||'None'}
 GATE OBSERVATIONS: ${observations.join('\n')||'None logged'}
-LUNAR DECISIONS: ${decisionSummaries.map(d=>`"${d.text}": Expansive ${d.counts.expansive}x, Neutral ${d.counts.neutral}x, Contracted ${d.counts.contracted}x, Unclear ${d.counts.unclear}x. Notes: ${d.dayNotes.join(' | ')||'none'}`).join('\n')||'None'}
+LUNAR DECISIONS: ${decisionSummaries.map(d=>`"${d.text}": Yes ${d.counts.yes}x, Soft ${d.counts.soft}x, Meh ${d.counts.meh}x, Resistant ${d.counts.resistant}x, No ${d.counts.no}x. Notes: ${d.dayNotes.join(' | ')||'none'}`).join('\n')||'None'}
 MOMENT DECISIONS: ${moments.map(m=>`"${m.text}" (Gate ${m.gateNum}, felt: ${m.bodyFeel||'—'}). Outcome: ${m.outcome||'not yet noted'}`).join('\n')||'None'}
 
 Write a warm, direct, insightful summary of this cycle. Plain prose, no bullet points, no headers. 4-6 paragraphs. Cover: what the energy and mood data suggests about how this cycle felt, which centers were prominent, what the decision data shows, notable gate observations, and a closing reflection on what this cycle is asking of her. Be specific to her actual data. Speak to her directly.`;
