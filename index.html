@@ -1885,8 +1885,8 @@ function renderDecision(el){
 function setDecTab(tab){decisionSubTab=tab;render()}
 
 function renderLunarDecisions(){
-  const days=buildDays(),decisions=loadDecisions(),today=new Date();today.setHours(0,0,0,0);
-  const todayIdx=days.findIndex(d=>{const dd=new Date(d.date);dd.setHours(0,0,0,0);return dd.getTime()===today.getTime()});
+  const days=buildDays(),decisions=loadDecisions();
+  const todayIdx=days.findIndex(d=>d.isToday);
   let html=`<div class="decisions-header"><div class="decisions-title">Lunar Decisions</div><button class="add-decision-btn" onclick="openModal()">+ Add Decision</button></div>
     <div class="reflector-hint">These are your big ones — tracked across the full 29-day cycle. A clear "yes" that persists across multiple gates and emotional states is real signal.</div>`;
   if(!decisions.length)return html+'<div style="text-align:center;padding:48px 20px;color:var(--ink-faint)">No lunar decisions yet. Add one to begin tracking.</div>';
